@@ -1,0 +1,40 @@
+{
+  "private": true,
+  "type": "module",
+  "name": "next-js",
+  "version": "1.0.0",
+  "description": "Bun + Next.js 프로젝트 템플릿",
+  "scripts": {
+    "dev": "bun --bun next dev --turbopack",
+    "prod": "bun --bun next build",
+    "start": "next start -p 3001",
+    "lint": "bun lint:check --fix",
+    "lint:check": "eslint . --cache --cache-location ./node_modules/.cache/eslint/.eslintcache",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json}\" --cache --list-different --ignore-path .gitignore",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json}\" --cache --ignore-path .gitignore"
+  },
+  "dependencies": {
+    "next": "^15.5.3",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "swr": "^2.3.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "@types/node": "24.5.1",
+    "@types/react": "19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@typescript-eslint/eslint-plugin": "^8.44.0",
+    "@typescript-eslint/parser": "^8.44.0",
+    "eslint": "^9.35.0",
+    "eslint-config-next": "^15.5.3",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "globals": "^16.4.0",
+    "prettier": "^3.4.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}

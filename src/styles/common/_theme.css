@@ -1,0 +1,103 @@
+:root {
+  /* color */
+  --text-color: #000;
+  --text-color-50: #00000080;
+  --border-color: #0000001a;
+  --bg-color: #f5f7fa;
+  --outline: #0056ab;
+  --bg-hover-color: #e2e4e7;
+  --body-bg-color: #fff;
+  --card-bg-color: #fff;
+  --card-element-bg-color: #f5f7fa;
+
+  --label-text-color: #fff;
+  --label-bg-color: #0056ab;
+
+  --svg-bg-color: #181818;
+
+  --modal-error-color: #f7616e;
+  --modal-button-outline: #0056ab;
+
+  /* font-size */
+  --font-xs: 1.25rem;
+  --font-sm: 1.5rem;
+  --font-md: 1.75rem;
+  --font-lg: 2.5rem;
+  --font-xl: 3.5rem;
+  --font-2xl: 5rem;
+  --font-3xl: 7.5rem;
+
+  /* space */
+  --space-xs: 0.25rem;
+  --space-s: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-ms: 1.125rem;
+  --space-md: 1.375rem;
+  --space-ml: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 2.5rem;
+  --space-2xl: 3.5rem;
+  --space-3xl: 4rem;
+  --space-4xl: 5rem;
+  --space-5xl: 6rem;
+  --space-6xl: 8rem;
+  --space-7xl: 10rem;
+
+  /* radius */
+  --radius-md: 1.5rem;
+  --radius-lg: 2rem;
+  --radius-xl: 4rem;
+  --radius-full: 624.9375rem;
+}
+
+@media screen and (width <= 40rem) {
+  :root {
+    /* font */
+    --font-xs: 0.8125rem;
+    --font-sm: 0.9375rem;
+    --font-md: 1.125rem;
+    --font-lg: 1.5625rem;
+    --font-xl: 2.1875rem;
+    --font-2xl: 3.125rem;
+    --font-3xl: 4.6875rem;
+
+    /* space */
+    --space-xs: 0.1875rem;
+    --space-s: 0.3125rem;
+    --space-sm: 0.5rem;
+    --space-ms: 0.625rem;
+    --space-md: 0.8125rem;
+    --space-ml: 0.9375rem;
+    --space-lg: 1.25rem;
+    --space-xl: 1.5625rem;
+    --space-2xl: 2.1875rem;
+    --space-3xl: 2.5rem;
+    --space-4xl: 3.125rem;
+    --space-5xl: 3.75rem;
+    --space-6xl: 5rem;
+    --space-7xl: 6.25rem;
+
+    /* radius */
+    --radius-md: 0.8125rem;
+    --radius-lg: 1.25rem;
+    --radius-xl: 2.5rem;
+  }
+}
+
+[data-theme="dark"] {
+  /* color */
+  --text-color: #fff;
+  --text-color-50: #ffffff80;
+  --border-color: #fff;
+  --body-bg-color: #181818;
+  --card-bg-color: #121212;
+  --card-element-bg-color: rgba(255, 255, 255, 0.1);
+  --outline: #f9004d;
+
+  --label-text-color: #000;
+  --label-bg-color: #fff;
+
+  --svg-bg-color: #fff;
+
+  --modal-button-outline: #7df9ff;
+}
