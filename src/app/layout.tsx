@@ -1,6 +1,8 @@
-import type { PropsWithChildren } from 'react'
 import type { Metadata } from 'next'
+import type { PropsWithChildren } from 'react'
+
 import '@/styles/common/index.css'
+import Header from '@/components/header'
 
 // --------------------------------------------------------------------------
 // 메타데이터
@@ -17,8 +19,8 @@ export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="ko-KR">
       <body>
-        <header>헤더</header>
-        <main>{children}</main>
+        <Header />
+        <main className="web-main">{children}</main>
       </body>
     </html>
   )

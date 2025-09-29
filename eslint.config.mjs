@@ -51,7 +51,7 @@ export default [
           trailingComma: 'es5',
           printWidth: 80,
           endOfLine: 'auto',
-          arrowParens: 'avoid',
+          arrowParens: 'always',
           bracketSpacing: true,
           bracketSameLine: false,
           jsxSingleQuote: false,
