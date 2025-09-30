@@ -8,10 +8,8 @@
 }
 
 .footer-inner {
-  max-inline-size: 80rem;
-  margin-inline: auto;
   padding-block: var(--space-lg);
-  padding-inline: var(--space-ms);
+  padding-inline: var(--space-ml);
   display: grid;
   gap: var(--space-lg);
 }
@@ -89,7 +87,7 @@
 .footer-bottom {
   border-top: 1px solid var(--color-border);
   padding-block: var(--space-sm);
-  padding-inline: var(--space-ms);
+  padding-inline: var(--space-ml);
   text-align: center;
   background-color: var(--color-bg-primary);
 }
@@ -113,9 +111,6 @@
     grid-template-columns: repeat(3, 1fr);
   }
 
-  .footer-bottom {
-    text-align: left;
-  }
 }
 
 /* ≥1024px: 내부 여백 확대 */
