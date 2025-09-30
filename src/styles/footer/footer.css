@@ -1,0 +1,126 @@
+/* styles/common/footer.css */
+
+/* 레이아웃 토큰(간격/색/타이포)은 theme.css 변수를 사용 */
+.site-footer {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  border-top: 1px solid var(--color-border);
+}
+
+.footer-inner {
+  max-inline-size: 80rem;
+  margin-inline: auto;
+  padding-block: var(--space-lg);
+  padding-inline: var(--space-ms);
+  display: grid;
+  gap: var(--space-lg);
+}
+
+/* 브랜드 영역 */
+.footer-brand {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  text-decoration: none;
+  color: var(--color-text-primary);
+}
+
+.brand-mark {
+  inline-size: 1rem;
+  block-size: 1rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary);
+  display: inline-block;
+}
+
+.brand-text {
+  font-size: var(--font-lg);
+  font-weight: 600;
+}
+
+.brand-desc {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+}
+
+/* 네비게이션 */
+.footer-nav {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.nav-group {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.nav-title {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.nav-link {
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-size: var(--font-md);
+}
+
+.nav-link:hover,
+.nav-link:focus {
+  text-decoration: underline;
+  outline: none;
+}
+
+/* 하단 바 */
+.footer-bottom {
+  border-top: 1px solid var(--color-border);
+  padding-block: var(--space-sm);
+  padding-inline: var(--space-ms);
+  text-align: center;
+  background-color: var(--color-bg-primary);
+}
+
+.copyright {
+  margin: 0;
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+}
+
+/* ---------- 반응형 ---------- */
+
+/* ≥768px: 브랜드/네비 2컬럼 */
+@media (min-width: 768px) {
+  .footer-inner {
+    grid-template-columns: 1.2fr 2fr;
+    align-items: start;
+  }
+
+  .footer-nav {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .footer-bottom {
+    text-align: left;
+  }
+}
+
+/* ≥1024px: 내부 여백 확대 */
+@media (min-width: 1024px) {
+  .footer-inner {
+    padding-block: var(--space-xl);
+  }
+}

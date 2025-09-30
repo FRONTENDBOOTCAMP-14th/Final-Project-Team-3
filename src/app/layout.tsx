@@ -1,7 +1,9 @@
 import type { PropsWithChildren } from 'react'
 import type { Metadata } from 'next'
+
 import '@/styles/common/index.css'
 
+import SiteFooter from '@/components/footer/footer'
 // --------------------------------------------------------------------------
 // 메타데이터
 
@@ -17,8 +19,8 @@ export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="ko-KR">
       <body>
-        <header>헤더</header>
-        <main>{children}</main>
+        <main className="web-main">{children}</main>
+        < SiteFooter />
       </body>
     </html>
   )
