@@ -20,7 +20,10 @@ function Header() {
 
   useEffect(() => {
     const media = window.matchMedia('(min-width: 64rem)')
-    const resizeHandler = (e: MediaQueryListEvent) => setIsDesktop(e.matches)
+    const resizeHandler = (e: MediaQueryListEvent) => {
+      setIsDesktop(e.matches)
+      setSearchVisible(false)
+    }
 
     setIsDesktop(media.matches)
 

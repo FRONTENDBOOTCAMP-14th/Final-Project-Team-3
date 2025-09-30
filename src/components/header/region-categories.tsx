@@ -24,7 +24,7 @@ function RegionCategories({
   const [selectedRegion, setSelectedRegion] = useState<RegionName>('서울특별시')
   const [selectedDepth, setSelectedDepth] = useState('강남구')
 
-  useFocusTrap(categoryRef)
+  useFocusTrap(categoryRef, categoryVisible)
   useKeyEvent(
     'Escape',
     () => {
@@ -35,7 +35,6 @@ function RegionCategories({
 
   const regionNames = Object.keys(REGION_DATA) as RegionName[]
   const depths: DepthName<RegionName>[] = [...REGION_DATA[selectedRegion]]
-
   return (
     <>
       <div
@@ -43,7 +42,7 @@ function RegionCategories({
         aria-modal={true}
         ref={categoryRef}
         aria-label="지역 카테고리"
-        aria-hidden={!categoryVisible}
+        inert={!categoryVisible ? true : undefined}
       >
         <div className="region-wrapper">
           <div className="region-header">
@@ -60,6 +59,8 @@ function RegionCategories({
                   <button
                     type="button"
                     onClick={() => setSelectedRegion(region)}
+                    tabIndex={categoryVisible ? 0 : -1}
+                    aria-disabled={!categoryVisible}
                   >
                     {region}
                   </button>
@@ -79,6 +80,8 @@ function RegionCategories({
                       setSelectCategory(depth)
                       setCategoryVisible(false)
                     }}
+                    tabIndex={categoryVisible ? 0 : -1}
+                    aria-disabled={!categoryVisible}
                   >
                     {depth}
                   </button>
@@ -91,6 +94,7 @@ function RegionCategories({
       <div
         className={`category-overlay ${categoryVisible ? 'active' : ''}`}
         onClick={() => setCategoryVisible(false)}
+        aria-hidden="true"
       ></div>
     </>
   )
