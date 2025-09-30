@@ -6,6 +6,7 @@ interface Props {
   setSearchVisible: (value: React.SetStateAction<boolean>) => void
   setNavVisible: (value: React.SetStateAction<boolean>) => void
   setCategoryVisible: (value: React.SetStateAction<boolean>) => void
+  selectCategory: string
   hidden: boolean
 }
 
@@ -13,6 +14,7 @@ function HeaderContent({
   setSearchVisible,
   setNavVisible,
   setCategoryVisible,
+  selectCategory,
   hidden,
 }: Props) {
   return (
@@ -22,11 +24,11 @@ function HeaderContent({
         aria-label="카테고리 버튼"
         onClick={() => setCategoryVisible((prev) => !prev)}
       >
-        <span>강서구</span>
+        <span>{selectCategory}</span>
         <Icons name="arrow-down" aria-hidden />
       </button>
       <button
-        className="header-btn-icon"
+        className="header-btn-icon header-search-btn-icon"
         aria-label="검색 버튼"
         onClick={() => {
           setSearchVisible(true)

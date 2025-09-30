@@ -6,6 +6,7 @@
   /* bg-color */
   --color-bg-primary: #ffffff;
   --color-bg-secondary: #f8f8f8;
+  --color-bg-tertiary: #dddddd;
 
   /* border-color */
   --color-border: #cccccc;
@@ -62,6 +63,7 @@
     --space-s: 0.75rem;
     --space-sm: 1rem;
     --space-md: 1.5rem;
+    --space-ml: 2.25rem;
     --space-lg: 3rem;
     --space-xl: 4rem;
     --space-2xl: 5rem;
@@ -82,6 +84,7 @@
     --font-5xl: 6rem;
 
     /* space */
+    --space-ml: 3rem;
     --space-lg: 4rem;
     --space-xl: 5rem;
     --space-2xl: 6rem;

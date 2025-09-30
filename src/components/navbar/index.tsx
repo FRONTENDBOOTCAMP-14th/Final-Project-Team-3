@@ -28,7 +28,7 @@ function NavBar({ setNavVisible, navVisible }: Props) {
   return (
     <>
       <nav
-        className="main-navbar"
+        className={`main-navbar ${navVisible ? 'is-open' : ''}`}
         ref={navRef}
         aria-label="메인 네비게이션"
         aria-hidden={!navVisible}
@@ -57,8 +57,7 @@ function NavBar({ setNavVisible, navVisible }: Props) {
         </div>
       </nav>
       <div
-        role="button"
-        className="navbar-overlay active"
+        className={`navbar-overlay ${navVisible ? 'active' : ''}`}
         onClick={() => setNavVisible(false)}
       ></div>
     </>
