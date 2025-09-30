@@ -3,12 +3,12 @@ import { useEffect } from 'react'
 export default function useKeyEvent(
   keys: string[] | string,
   callback: () => void,
-  state: boolean
+  state: boolean = true
 ) {
   useEffect(() => {
     if (!state) return
 
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: globalThis.KeyboardEvent) => {
       const keyList = Array.isArray(keys) ? keys : [keys]
       if (keyList.includes(e.key)) {
         callback()
@@ -18,7 +18,7 @@ export default function useKeyEvent(
     window.addEventListener('keydown', handleKeyDown)
 
     return () => {
-      window.addEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keydown', handleKeyDown)
     }
   }, [callback, keys, state])
 }

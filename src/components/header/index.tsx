@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import '@/styles/header/header.css'
 import useScrollLock from '../../hooks/useScrollLock'
@@ -15,6 +15,21 @@ function Header() {
   const [searchVisible, setSearchVisible] = useState<boolean>(false)
   const [navVisible, setNavVisible] = useState<boolean>(false)
   const [categoryVisible, setCategoryVisible] = useState<boolean>(false)
+  const [selectCategory, setSelectCategory] = useState<string>('강남구')
+  const [isDesktop, setIsDesktop] = useState<boolean>(false)
+
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 64rem)')
+    const resizeHandler = (e: MediaQueryListEvent) => setIsDesktop(e.matches)
+
+    setIsDesktop(media.matches)
+
+    media.addEventListener('change', resizeHandler)
+
+    return () => {
+      media.removeEventListener('change', resizeHandler)
+    }
+  }, [])
 
   useScrollLock(navVisible || categoryVisible, [
     '.main-header',
@@ -29,23 +44,35 @@ function Header() {
             <Link href={'/'}>모이다</Link>
           </h2>
         </div>
+        {isDesktop ? (
+          <HeaderSearch
+            setSearchVisible={setSearchVisible}
+            searchVisible={searchVisible}
+          />
+        ) : (
+          searchVisible && (
+            <HeaderSearch
+              setSearchVisible={setSearchVisible}
+              searchVisible={searchVisible}
+            />
+          )
+        )}
         <HeaderContent
           setSearchVisible={setSearchVisible}
           setNavVisible={setNavVisible}
           setCategoryVisible={setCategoryVisible}
+          selectCategory={selectCategory}
           hidden={searchVisible ? true : false}
         />
-        {searchVisible && <HeaderSearch setSearchVisible={setSearchVisible} />}
       </header>
-      {navVisible && (
-        <NavBar setNavVisible={setNavVisible} navVisible={navVisible} />
-      )}
-      {categoryVisible && (
-        <RegionCategories
-          setCategoryVisible={setCategoryVisible}
-          categoryVisible={categoryVisible}
-        />
-      )}
+
+      <NavBar setNavVisible={setNavVisible} navVisible={navVisible} />
+
+      <RegionCategories
+        setCategoryVisible={setCategoryVisible}
+        setSelectCategory={setSelectCategory}
+        categoryVisible={categoryVisible}
+      />
     </>
   )
 }

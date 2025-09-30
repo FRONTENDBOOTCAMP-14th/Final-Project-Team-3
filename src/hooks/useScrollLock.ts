@@ -40,8 +40,8 @@ export default function useScrollLock(
       document.body.style.overflow = bodyOverflowStyle
       document.body.style.paddingRight = bodyPaddingRight
 
-      originalStyles.forEach((originalValue, element) => {
-        element.style.paddingRight = originalValue
+      originalStyles.forEach((_, element) => {
+        element.style.paddingRight = ''
       })
     }
   }, [elementsClassName, isLocked])

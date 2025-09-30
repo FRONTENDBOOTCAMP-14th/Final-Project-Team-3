@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+
 import type {
   Database,
   Tables,
@@ -6,8 +7,8 @@ import type {
   TablesUpdate,
 } from './database.types'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAPIKey = process.env.NEXT_PUBLIC_SUPABASE_API_KEY
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string
+const supabaseAPIKey = process.env.NEXT_PUBLIC_SUPABASE_API_KEY as string
 
 const supabase = createClient<Database>(supabaseUrl, supabaseAPIKey)
 
