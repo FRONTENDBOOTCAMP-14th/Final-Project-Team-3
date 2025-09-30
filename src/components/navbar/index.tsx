@@ -15,7 +15,7 @@ interface Props {
 function NavBar({ setNavVisible, navVisible }: Props) {
   const navRef = useRef<HTMLElement | null>(null)
 
-  useFocusTrap(navRef)
+  useFocusTrap(navRef, navVisible)
 
   useKeyEvent(
     'Escape',
@@ -31,9 +31,14 @@ function NavBar({ setNavVisible, navVisible }: Props) {
         className={`main-navbar ${navVisible ? 'is-open' : ''}`}
         ref={navRef}
         aria-label="메인 네비게이션"
-        aria-hidden={!navVisible}
+        inert={!navVisible ? true : undefined}
       >
-        <div className="navbar-user" role="button" tabIndex={0}>
+        <div
+          className="navbar-user"
+          role="button"
+          tabIndex={navVisible ? 0 : -1}
+          aria-disabled={!navVisible}
+        >
           <div className="navbar-user-group">
             <div className="user-icon">
               <Icons name="user" aria-hidden />
@@ -47,11 +52,15 @@ function NavBar({ setNavVisible, navVisible }: Props) {
           <ul className="navbar-lists">
             <li className="lists-item">
               <Icons name="home" width={24} height={24} aria-hidden />
-              <Link href={'/'}>홈</Link>
+              <Link href={'/profile'} tabIndex={navVisible ? 0 : -1}>
+                홈
+              </Link>
             </li>
             <li className="lists-item">
               <Icons name="user-check" width={24} height={24} aria-hidden />
-              <Link href={'/'}>내정보</Link>
+              <Link href={'/profile2'} tabIndex={navVisible ? 0 : -1}>
+                내정보
+              </Link>
             </li>
           </ul>
         </div>
@@ -59,6 +68,7 @@ function NavBar({ setNavVisible, navVisible }: Props) {
       <div
         className={`navbar-overlay ${navVisible ? 'active' : ''}`}
         onClick={() => setNavVisible(false)}
+        aria-hidden="true"
       ></div>
     </>
   )

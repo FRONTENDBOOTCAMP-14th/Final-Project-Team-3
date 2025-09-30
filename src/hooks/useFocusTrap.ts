@@ -3,7 +3,10 @@ import { useCallback, useEffect } from 'react'
 
 // Focus Trap을 위한 커스텀 Hooks
 // React.RefObject를 Props로 받는다
-export default function useFocusTrap(ref: React.RefObject<HTMLElement | null>) {
+export default function useFocusTrap(
+  ref: React.RefObject<HTMLElement | null>,
+  state?: React.SetStateAction<boolean>
+) {
   const handleKeydown = useCallback(
     (e: globalThis.KeyboardEvent) => {
       if (e.key !== 'Tab') return
@@ -54,5 +57,5 @@ export default function useFocusTrap(ref: React.RefObject<HTMLElement | null>) {
 
       ;(firstFocusable as HTMLElement)?.focus()
     }
-  }, [ref])
+  }, [ref, state])
 }
