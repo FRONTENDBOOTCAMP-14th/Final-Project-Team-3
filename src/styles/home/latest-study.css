@@ -14,12 +14,18 @@
   overflow-x: auto;
   gap: 0.625rem;
   scrollbar-width: none;
+
+  @media screen and (width >= 48rem) {
+    gap: 1.25rem;
+  }
+
+  @media screen and (width >= 64rem) {
+    gap: 1.5625rem;
+  }
 }
 
 .latest-lists-item {
   padding: var(--space-s);
-  inline-size: 11.25rem;
-  min-inline-size: 11.25rem;
 
   & a {
     text-decoration: none;
@@ -50,5 +56,27 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+
+  @media screen and (width >= 48rem) {
+    & .image-wrapper {
+      inline-size: 12.5rem;
+      block-size: 12.5rem;
+    }
+
+    & h3 {
+      font-size: var(--font-lg);
+    }
+  }
+
+  @media screen and (width >= 64rem) {
+    & .image-wrapper {
+      inline-size: 15.625rem;
+      block-size: 15.625rem;
+    }
+
+    & h3 {
+      font-size: var(--font-lg);
+    }
   }
 }
