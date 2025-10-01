@@ -1,10 +1,10 @@
 import Link from 'next/link'
 import React, { useRef } from 'react'
 
+import Icons from '@/components/icons'
+import useFocusTrap from '@/hooks/useFocusTrap'
+import useKeyEvent from '@/hooks/useKeyEvent'
 import '@/styles/navbar/navbar.css'
-import useFocusTrap from '../../hooks/useFocusTrap'
-import useKeyEvent from '../../hooks/useKeyEvent'
-import Icons from '../icons'
 
 interface Props {
   setNavVisible: (value: React.SetStateAction<boolean>) => void
@@ -26,6 +26,14 @@ function NavBar({ setNavVisible, setOpenModal, navVisible }: Props) {
     navVisible
   )
 
+  const keyDownEventHandler = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      setOpenModal(true)
+      setNavVisible(false)
+    }
+  }
+
   return (
     <>
       <nav
@@ -39,21 +47,17 @@ function NavBar({ setNavVisible, setOpenModal, navVisible }: Props) {
           role="button"
           tabIndex={navVisible ? 0 : -1}
           aria-disabled={!navVisible}
+          onClick={() => {
+            setOpenModal(true)
+            setNavVisible(false)
+          }}
+          onKeyDown={keyDownEventHandler}
         >
           <div className="navbar-user-group">
             <div className="user-icon">
               <Icons name="user" aria-hidden />
             </div>
-            <button
-              type="button"
-              className="modal-open-btn"
-              onClick={() => {
-                setOpenModal(true)
-                setNavVisible(false)
-              }}
-            >
-              로그인 또는 회원가입
-            </button>
+            <span className="modal-open-btn">로그인 또는 회원가입</span>
           </div>
           <Icons name="arrow-right" aria-hidden />
         </div>
@@ -62,13 +66,13 @@ function NavBar({ setNavVisible, setOpenModal, navVisible }: Props) {
           <ul className="navbar-lists">
             <li className="lists-item">
               <Icons name="home" width={24} height={24} aria-hidden />
-              <Link href={'/profile'} tabIndex={navVisible ? 0 : -1}>
+              <Link href={'/'} tabIndex={navVisible ? 0 : -1}>
                 홈
               </Link>
             </li>
             <li className="lists-item">
               <Icons name="user-check" width={24} height={24} aria-hidden />
-              <Link href={'/profile2'} tabIndex={navVisible ? 0 : -1}>
+              <Link href={'/profile'} tabIndex={navVisible ? 0 : -1}>
                 내정보
               </Link>
             </li>

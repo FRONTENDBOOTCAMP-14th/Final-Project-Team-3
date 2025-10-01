@@ -1,13 +1,10 @@
-import Icons from '../components/icons'
-import LoginTestButton from '../components/login-test'
+import HomeComponents from '@/components/home'
 
 export default function HomePage() {
   return (
     <section>
-      <p>홈</p>
-      <LoginTestButton />
-      <Icons name="kakao-icon" width={36} height={36} />
-      <Icons name="google" width={36} height={36} />
+      <HomeComponents />
+
       <p>
         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aspernatur
         quia dolores praesentium. Ea aut obcaecati atque alias optio iusto,

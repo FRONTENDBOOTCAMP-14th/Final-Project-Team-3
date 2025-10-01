@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Icons from '../icons'
+import Icons from '@/components/icons'
 
 interface Props {
   setSearchVisible: (value: React.SetStateAction<boolean>) => void

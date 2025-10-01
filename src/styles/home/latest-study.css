@@ -1,0 +1,54 @@
+.latest-container {
+  padding-block: var(--space-ml);
+}
+
+.latest-header {
+  margin-block-end: 0.625rem;
+}
+
+.latest-lists {
+  display: flex;
+  align-items: center;
+  flex-flow: row nowrap;
+  inline-size: 100%;
+  overflow-x: auto;
+  gap: 0.625rem;
+  scrollbar-width: none;
+}
+
+.latest-lists-item {
+  padding: var(--space-s);
+  inline-size: 11.25rem;
+  min-inline-size: 11.25rem;
+
+  & a {
+    text-decoration: none;
+    color: var(--color-text-secondary);
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  & .image-wrapper {
+    position: relative;
+    inline-size: 10.3125rem;
+    block-size: 10.3125rem;
+    margin-block-end: 0.625rem;
+  }
+
+  & .studybanner-img {
+    object-fit: cover;
+    border-radius: 50%;
+    margin-block-end: 0.625rem;
+  }
+
+  & h3 {
+    inline-size: 100%;
+    text-align: center;
+    font-size: var(--font-sm);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
