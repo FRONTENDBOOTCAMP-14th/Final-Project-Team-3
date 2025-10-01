@@ -4,7 +4,7 @@
   inset-inline-start: 0;
   inline-size: 100%;
   block-size: 100%;
-  z-index: 1000; /* 높은 z-index */
+  z-index: 9999;
   background-color: rgba(0, 0, 0, 0.5);
 
   display: flex;
@@ -129,6 +129,7 @@
   font-size: var(--font-sm);
   color: var(--color-text-secondary);
   margin-block-end: var(--space-lg);
+  white-space: nowrap;
 }
 
 .login-links a {
@@ -136,6 +137,7 @@
   text-decoration: none;
   transition: color 0.2s;
   padding-inline: var(--space-sm);
+  white-space: nowrap;
 }
 
 .login-links a:hover {

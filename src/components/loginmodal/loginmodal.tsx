@@ -6,8 +6,8 @@ import { useFormStatus } from 'react-dom'
 
 import '@/styles/login-modal/login-modal.css'
 import useFocusTrap from '../../hooks/useFocusTrap'
-import useKeyEvent from '../../hooks/useKeyEvent' // ✅ 추가
-import useScrollLock from '../../hooks/useScrollLock' // ✅ 추가
+import useKeyEvent from '../../hooks/useKeyEvent'
+import useScrollLock from '../../hooks/useScrollLock'
 import supabase from '../../libs/supabase'
 import Icons from '../icons'
 
@@ -47,17 +47,9 @@ function LoginModal({ openModal, setOpenModal }: Props) {
   const modalRef = useRef<HTMLDivElement | null>(null)
 
   useFocusTrap(modalRef)
+  useScrollLock(openModal, 'body')
 
-  // 🔹 변경 1: 스크롤 막기 추가
-  useScrollLock(openModal, 'body') // ✅ 여기 추가됨
-
-  // 🔹 변경 2: ESC 키 훅으로 교체
-  useKeyEvent(
-    // ✅ 여기 추가됨
-    'Escape',
-    () => setOpenModal(false),
-    openModal // 모달 열렸을 때만 활성화
-  )
+  useKeyEvent('Escape', () => setOpenModal(false), openModal)
 
   const toggleModal = () => setOpenModal((prev) => !prev)
 
@@ -118,6 +110,7 @@ function LoginModal({ openModal, setOpenModal }: Props) {
                   카카오
                 </button>
                 <button onClick={signInGoogle} className="social-btn google">
+                  <Icons name="google" width={24} height={24} />
                   구글
                 </button>
               </div>
