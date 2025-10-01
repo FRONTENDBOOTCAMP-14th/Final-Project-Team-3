@@ -3,9 +3,11 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
+import NavBar from '@/components/navbar'
 import '@/styles/header/header.css'
+
 import useScrollLock from '../../hooks/useScrollLock'
-import NavBar from '../navbar'
+import LoginModal from '../loginmodal/loginmodal'
 
 import HeaderContent from './header-content'
 import HeaderSearch from './header-search'
@@ -17,6 +19,7 @@ function Header() {
   const [categoryVisible, setCategoryVisible] = useState<boolean>(false)
   const [selectCategory, setSelectCategory] = useState<string>('강남구')
   const [isDesktop, setIsDesktop] = useState<boolean>(false)
+  const [openModal, setOpenModal] = useState<boolean>(false)
 
   useEffect(() => {
     const media = window.matchMedia('(min-width: 64rem)')
@@ -69,13 +72,21 @@ function Header() {
         />
       </header>
 
-      <NavBar setNavVisible={setNavVisible} navVisible={navVisible} />
+      <NavBar
+        setNavVisible={setNavVisible}
+        navVisible={navVisible}
+        setOpenModal={setOpenModal}
+      />
 
       <RegionCategories
         setCategoryVisible={setCategoryVisible}
         setSelectCategory={setSelectCategory}
         categoryVisible={categoryVisible}
       />
+
+      {openModal && (
+        <LoginModal openModal={openModal} setOpenModal={setOpenModal} />
+      )}
     </>
   )
 }
