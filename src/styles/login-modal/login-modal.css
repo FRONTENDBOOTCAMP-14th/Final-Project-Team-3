@@ -1,0 +1,15 @@
+.login-modal-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-modal {
+  background-color: var(--color-bg-primary);
+  padding: var(--space-ml);
+  border-radius: var(--radius-xs);
+}

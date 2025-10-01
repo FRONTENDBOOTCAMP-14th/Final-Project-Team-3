@@ -8,11 +8,12 @@ import Icons from '../icons'
 
 interface Props {
   setNavVisible: (value: React.SetStateAction<boolean>) => void
+  setOpenModal: (value: React.SetStateAction<boolean>) => void
 
   navVisible: boolean
 }
 
-function NavBar({ setNavVisible, navVisible }: Props) {
+function NavBar({ setNavVisible, setOpenModal, navVisible }: Props) {
   const navRef = useRef<HTMLElement | null>(null)
 
   useFocusTrap(navRef, navVisible)
@@ -43,7 +44,16 @@ function NavBar({ setNavVisible, navVisible }: Props) {
             <div className="user-icon">
               <Icons name="user" aria-hidden />
             </div>
-            <span>로그인 또는 회원가입</span>
+            <button
+              type="button"
+              className="modal-open-btn"
+              onClick={() => {
+                setOpenModal(true)
+                setNavVisible(false)
+              }}
+            >
+              로그인 또는 회원가입
+            </button>
           </div>
           <Icons name="arrow-right" aria-hidden />
         </div>

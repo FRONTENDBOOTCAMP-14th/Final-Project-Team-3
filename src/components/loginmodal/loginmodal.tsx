@@ -1,10 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { useActionState, useFormStatus, useRef, useState } from 'react'
+import { useActionState, useRef } from 'react'
+import { useFormStatus } from 'react-dom'
 
+import '@/styles/login-modal/login-modal.css'
 import useFocusTrap from '../../hooks/useFocusTrap'
-import supabase from '../libs/supabase'
+import supabase from '../../libs/supabase'
+import Icons from '../icons'
 
 async function loginAction(
   prevState: { error?: string } | null,
@@ -24,6 +27,11 @@ async function loginAction(
   return { error: undefined }
 }
 
+interface Props {
+  openModal: boolean
+  setOpenModal: (value: React.SetStateAction<boolean>) => void
+}
+
 function SubmitButton() {
   const { pending } = useFormStatus()
   return (
@@ -33,13 +41,13 @@ function SubmitButton() {
   )
 }
 
-function LoginModal() {
-  const [isOpen, setIsOpen] = useState(false)
+function LoginModal({ openModal, setOpenModal }: Props) {
+  // const [isOpen, setIsOpen] = useState(false)
   const modalRef = useRef<HTMLDivElement | null>(null)
 
   useFocusTrap(modalRef)
 
-  const toggleModal = () => setIsOpen((prev) => !prev)
+  const toggleModal = () => setOpenModal((prev) => !prev)
 
   const [state, action, pending] = useActionState(loginAction, null)
 
@@ -53,11 +61,11 @@ function LoginModal() {
 
   return (
     <div>
-      <button className="open-modal-btn" onClick={toggleModal}>
+      {/* <button className="open-modal-btn" onClick={toggleModal}>
         로그인 열기
-      </button>
+      </button> */}
 
-      {isOpen && (
+      {openModal && (
         <div className="login-modal-overlay" onClick={toggleModal}>
           <div
             className="login-modal"
@@ -99,6 +107,7 @@ function LoginModal() {
               <p>간편 로그인</p>
               <div className="social-buttons">
                 <button onClick={signInKakao} className="social-btn kakao">
+                  <Icons name="kakao-icon" width={24} height={24} />
                   카카오
                 </button>
                 <button onClick={signInGoogle} className="social-btn google">
