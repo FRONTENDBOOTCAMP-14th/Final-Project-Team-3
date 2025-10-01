@@ -3,11 +3,10 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
+import LoginModal from '@/components/loginmodal/loginmodal'
 import NavBar from '@/components/navbar'
+import useScrollLock from '@/hooks/useScrollLock'
 import '@/styles/header/header.css'
-
-import useScrollLock from '../../hooks/useScrollLock'
-import LoginModal from '../loginmodal/loginmodal'
 
 import HeaderContent from './header-content'
 import HeaderSearch from './header-search'

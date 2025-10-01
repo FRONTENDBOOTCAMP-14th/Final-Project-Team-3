@@ -1,7 +1,8 @@
 :root {
   /* font-color */
   --color-text-primary: #1a1a1a;
-  --color-text-secondary: #888888;
+  --color-text-secondary: #333333;
+  --color-text-tertiary: #888888;
 
   /* bg-color */
   --color-bg-primary: #ffffff;
