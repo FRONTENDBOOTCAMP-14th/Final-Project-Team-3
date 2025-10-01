@@ -21,30 +21,37 @@ function StudyDetailCard() {
                 aria-hidden="true"
               />
             </div>
-            <h3>
-              <span>스터디 제목</span>
-              <span>
-                <Icons name="star" aria-hidden="true" width={24} height={24} />
-              </span>
-            </h3>
-            <p>내용</p>
-            <div role="group" className="etc-description">
-              <p>
-                <Icons name="category" aria-hidden="true" />
-                <span>카테고리</span>
-              </p>
-              <p>
-                <Icons name="map-pin" aria-hidden="true" />
-                <span>지역</span>
-              </p>
-              <p>
-                <Icons name="user" aria-hidden="true" />
-                <span>인원 수</span>
-              </p>
-              <p>
-                <Icons name="heart" aria-hidden="true" />
-                <span>좋아요 수</span>
-              </p>
+            <div className="description-wrapper">
+              <h3>
+                <span>스터디 제목</span>
+                <span>
+                  <Icons
+                    name="star"
+                    aria-hidden="true"
+                    width={24}
+                    height={24}
+                  />
+                </span>
+              </h3>
+              <p>내용</p>
+              <div role="group" className="etc-description">
+                <p>
+                  <Icons name="category" aria-hidden="true" />
+                  <span>카테고리</span>
+                </p>
+                <p>
+                  <Icons name="map-pin" aria-hidden="true" />
+                  <span>지역</span>
+                </p>
+                <p>
+                  <Icons name="user" aria-hidden="true" />
+                  <span>인원 수</span>
+                </p>
+                <p>
+                  <Icons name="heart" aria-hidden="true" />
+                  <span>좋아요 수</span>
+                </p>
+              </div>
             </div>
           </Link>
         </li>
