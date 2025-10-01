@@ -6,6 +6,8 @@ import { useFormStatus } from 'react-dom'
 
 import '@/styles/login-modal/login-modal.css'
 import useFocusTrap from '../../hooks/useFocusTrap'
+import useKeyEvent from '../../hooks/useKeyEvent' // ✅ 추가
+import useScrollLock from '../../hooks/useScrollLock' // ✅ 추가
 import supabase from '../../libs/supabase'
 import Icons from '../icons'
 
@@ -42,14 +44,24 @@ function SubmitButton() {
 }
 
 function LoginModal({ openModal, setOpenModal }: Props) {
-  // const [isOpen, setIsOpen] = useState(false)
   const modalRef = useRef<HTMLDivElement | null>(null)
 
   useFocusTrap(modalRef)
 
+  // 🔹 변경 1: 스크롤 막기 추가
+  useScrollLock(openModal, 'body') // ✅ 여기 추가됨
+
+  // 🔹 변경 2: ESC 키 훅으로 교체
+  useKeyEvent(
+    // ✅ 여기 추가됨
+    'Escape',
+    () => setOpenModal(false),
+    openModal // 모달 열렸을 때만 활성화
+  )
+
   const toggleModal = () => setOpenModal((prev) => !prev)
 
-  const [state, action, pending] = useActionState(loginAction, null)
+  const [state, action] = useActionState(loginAction, null)
 
   const signInKakao = async () => {
     await supabase.auth.signInWithOAuth({ provider: 'kakao' })
@@ -61,10 +73,6 @@ function LoginModal({ openModal, setOpenModal }: Props) {
 
   return (
     <div>
-      {/* <button className="open-modal-btn" onClick={toggleModal}>
-        로그인 열기
-      </button> */}
-
       {openModal && (
         <div className="login-modal-overlay" onClick={toggleModal}>
           <div
@@ -95,7 +103,6 @@ function LoginModal({ openModal, setOpenModal }: Props) {
               <SubmitButton />
             </form>
 
-            {/* 에러 메시지 표시 */}
             {state?.error && <p className="error-message">{state.error}</p>}
 
             <div className="login-links">
