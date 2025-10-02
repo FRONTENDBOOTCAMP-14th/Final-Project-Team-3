@@ -52,7 +52,7 @@
 
   .owner-member-wrapper {
     position: relative;
-    max-inline-size: 100px;
+    max-inline-size: 5rem;
     transition:
       transform 0.3s ease,
       margin-left 0.3s ease;
@@ -67,8 +67,8 @@
 
   & .owner-icon {
     position: absolute;
-    bottom: -0.0625rem;
-    right: 0.4375rem;
+    bottom: -0.25rem;
+    right: 0.3125rem;
   }
 }
 
