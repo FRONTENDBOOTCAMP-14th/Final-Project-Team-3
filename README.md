@@ -12,13 +12,13 @@
 
 ## 1. 프로젝트 개요
 
-# 📚 StudyHub – 스터디 모집 플랫폼
+# 📚 모이다(MOIDA) – 지역 기반 스터디&모집 플랫폼
 
 ## 1. 프로젝트 개요
 
 ### 1.1 주제
 
-스터디 모집 플랫폼 (지역 기반 추천 & 소셜 확장)
+지역을 기반으로한 스터지&모집 플랫폼
 
 ### 1.2 프로젝트 배경
 
@@ -69,15 +69,72 @@
 
 ---
 
-## 3. 기술 스택
+## 🧰 기술 스택
 
-- **언어**: [TypeScript](https://www.typescriptlang.org/)
-- **프레임워크**: [Next.js v15 (App Router)](https://nextjs.org/docs/app)
-- **상태 관리**
-  - 서버 상태(데이터 패칭): [SWR](https://swr.vercel.app/)
-  - 클라이언트 상태: [React Context](https://react.dev/reference/react/Context) + [useReducer](https://react.dev/reference/react/useReducer)
-- **배포**: [Vercel](https://vercel.com/)
-- **BaaS**: [Supabase](https://supabase.com/)
+<table>
+  <thead>
+    <tr>
+      <th>분류</th>
+      <th>기술</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- 언어 -->
+    <tr>
+      <td><strong>언어</strong></td>
+      <td>
+        <a href="https://www.typescriptlang.org/">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" width="40" alt="TypeScript" />
+        </a>
+      </td>
+    </tr>
+
+    <!-- 프레임워크 -->
+    <tr>
+      <td><strong>프레임워크</strong></td>
+      <td>
+        <a href="https://nextjs.org/docs/app">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" width="40" alt="Next.js" />
+        </a>
+      </td>
+    </tr>
+
+    <!-- 상태 관리 -->
+    <tr>
+      <td><strong>상태 관리</strong></td>
+      <td>
+        <a href="https://swr.vercel.app/">
+          <img src="https://raw.githubusercontent.com/vercel/swr/main/public/logo.svg" width="40" alt="SWR" />
+        </a>
+        &nbsp;
+        <a href="https://react.dev/reference/react/Context">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="40" alt="React Context" />
+        </a>
+      </td>
+    </tr>
+
+    <!-- 배포 -->
+    <tr>
+      <td><strong>배포</strong></td>
+      <td>
+        <a href="https://vercel.com/">
+          <img src="https://api.iconify.design/simple-icons:vercel.svg" width="40" alt="Vercel" />
+        </a>
+      </td>
+    </tr>
+
+    <!-- BaaS -->
+    <tr>
+      <td><strong>BaaS</strong></td>
+      <td>
+        <a href="https://supabase.com/">
+          <img src="https://seeklogo.com/images/S/supabase-logo-DCC676FFE2-seeklogo.com.png" width="40" alt="Supabase" />
+        </a>
+      </td>
+    </tr>
+
+  </tbody>
+</table>
 
 ---
 
