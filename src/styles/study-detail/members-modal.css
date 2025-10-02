@@ -62,7 +62,7 @@
 }
 .member-info {
   flex: 1;
-  max-inline-size: 8.75rem;
+  max-inline-size: 12.5rem;
   padding-inline-end: 0.9375rem;
 
   & .info-name {

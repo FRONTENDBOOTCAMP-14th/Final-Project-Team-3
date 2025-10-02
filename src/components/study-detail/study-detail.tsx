@@ -79,8 +79,8 @@ function StudyDetail({ studyId }: Props) {
               <Image
                 src={'/images/no-image.png'}
                 alt="no-image"
-                width={100}
-                height={100}
+                width={80}
+                height={80}
               />
               <Icons
                 className="owner-icon"
@@ -127,7 +127,9 @@ function StudyDetail({ studyId }: Props) {
           </ul>
         </div>
       </div>
-      {openModal && <MembersListModal />}
+      {openModal && (
+        <MembersListModal setOpenModal={setOpenModal} openModal={openModal} />
+      )}
     </div>
   )
 }

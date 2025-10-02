@@ -1,13 +1,42 @@
 import '@/styles/study-detail/members-modal.css'
 import Image from 'next/image'
+import { useRef } from 'react'
 
 import Icons from '@/components/icons'
 
-function MembersListModal() {
+import useFocusTrap from '../../hooks/useFocusTrap'
+import useKeyEvent from '../../hooks/useKeyEvent'
+import useScrollLock from '../../hooks/useScrollLock'
+
+interface Props {
+  setOpenModal: (value: React.SetStateAction<boolean>) => void
+  openModal: boolean
+}
+
+function MembersListModal({ setOpenModal, openModal }: Props) {
+  const memberModalRef = useRef<HTMLDivElement | null>(null)
+
+  useScrollLock(openModal, 'member-list-modal-container')
+  useFocusTrap(memberModalRef, openModal)
+  useKeyEvent(
+    'Escape',
+    () => {
+      setOpenModal(false)
+    },
+    openModal
+  )
+
   return (
-    <div className="member-list-modal-container">
-      <div className="member-list-modal-wrapper">
-        <div className="modal-scroll">
+    <div
+      className="member-list-modal-container"
+      ref={memberModalRef}
+      onClick={() => setOpenModal((prev) => !prev)}
+    >
+      <div
+        className="member-list-modal-wrapper"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="modal-scroll" tabIndex={0}>
           <h2 className="member-list-heading">모임장</h2>
           <div className="member-list-owner">
             <div className="owner-image">
