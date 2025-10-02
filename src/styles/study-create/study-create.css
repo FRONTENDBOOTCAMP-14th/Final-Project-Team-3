@@ -1,0 +1,185 @@
+.study-create {
+  /* 가운데 정렬 + 최대 너비 */
+  max-inline-size: 48rem;
+  margin-inline: auto;
+  padding-block: var(--space-lg);
+  padding-inline: var(--space-ml);
+}
+
+/* 페이지 타이틀 */
+.study-create__title {
+  font-size: var(--font-xl);
+  font-weight: 600;
+  margin-block-end: var(--space-lg);
+  color: var(--color-text-primary);
+}
+
+/* 풀 */
+.study-form {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+/* 각 필드 래퍼 */
+.form-field {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+/* 레이블 */
+.field-label {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+}
+
+/* 인풋/셀렉트/텍스트에어리어 공통 스타일 */
+.field-control {
+  inline-size: 100%;
+  block-size: 2.875rem;
+  padding-inline: var(--space-sm);
+  padding-block: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 8px);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-size: var(--font-md);
+}
+
+/* 텍스트 에어리어 높이 */
+.field-control--textarea {
+  block-size: auto;
+  min-block-size: 8rem;
+  padding-block: var(--space-sm);
+  line-height: 1.5;
+  resize: vertical;
+}
+
+/* 포커스 접근성 */
+.field-control:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--color-tertiary);
+  outline-offset: 2px;
+}
+
+/* 비활성화 */
+.field-control[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ========== 배너 업로드 ========== */
+.banner-fieldset {
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md, 8px);
+  padding-inline: var(--space-md);
+  padding-block: var(--space-md);
+}
+
+.banner-legend {
+  padding-inline: var(--space-2xs, 0.25rem);
+  color: var(--color-text-secondary);
+  font-size: var(--font-sm);
+}
+
+/* 파일 인풋 */
+.banner-input {
+  inline-size: 100%;
+}
+
+/* 미리보기 박스 */
+.banner-preview {
+  margin-block-start: var(--space-sm);
+  inline-size: 100%;
+  max-inline-size: 40rem;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg, 12px);
+  overflow: hidden;
+  background-color: var(--color-bg-secondary);
+}
+
+.banner-preview > img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* ========== 제출 버튼 ========== */
+.submit-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submit-button {
+  /* 프로젝트 공통 버튼 토큰 사용 */
+  padding-block: 0.75em;
+  padding-inline: 1.25em;
+  border: none;
+  border-radius: var(--radius-md, 8px);
+  background-color: var(--color-primary);
+  color: var(--color-bg-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+  box-shadow: 0 6px 18px rgba(0 0 0 / 18%);
+}
+
+.submit-button:hover,
+.submit-button:active {
+  background-color: var(--color-secondary);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(0 0 0 / 22%);
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ========== 반응형 ========== */
+/* 태블릿(≥768px) */
+@media (min-width: 48rem) {
+  .banner-preview {
+    margin-inline: auto; /* 가운데 정렬 */
+  }
+
+  .study-form {
+    /* 라벨/컨트롤 2열 배치에 쓰기 좋은 그리드 */
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--space-xl, 2rem);
+  }
+
+  /* 한 줄 전체를 차지해야 하는 행들 */
+  .form-field--full {
+    grid-column: 1 / -1;
+  }
+
+  /* 소개 textarea는 항상 전체 폭 */
+  .field-control--textarea {
+    grid-column: 1 / -1;
+  }
+
+  .submit-row {
+    grid-column: 1 / -1;
+  }
+}
+
+/* 데스크탑(≥1024px) */
+@media (min-width: 64rem) {
+  .study-create {
+    max-inline-size: 60rem; /* 960px */
+  }
+}
+
+/* ========== 모션 선호도 ========== */
+@media (prefers-reduced-motion: reduce) {
+  .submit-button {
+    transition: none;
+  }
+}
