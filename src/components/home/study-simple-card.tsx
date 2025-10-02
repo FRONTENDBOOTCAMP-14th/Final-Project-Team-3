@@ -11,7 +11,7 @@ function StudyRoomCard() {
     <ul className="latest-lists">
       {mockData.map((item) => (
         <li className="latest-lists-item" key={item.id}>
-          <Link href={'/'}>
+          <Link href={`/study-detail/${item.id}`}>
             <div className="image-wrapper">
               <Image
                 src={'/images/no-image.png'}

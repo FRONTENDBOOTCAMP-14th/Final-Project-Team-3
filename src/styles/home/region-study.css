@@ -84,24 +84,5 @@
       color: var(--color-text-secondary);
       margin-block: 0.3125rem;
     }
-
-    & .etc-description {
-      font-size: var(--font-sm);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-
-      & p {
-        color: var(--color-text-tertiary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.3125rem;
-        background-color: var(--color-bg-secondary);
-        padding-block: 0.1875rem;
-        padding-inline: 0.5rem;
-        border-radius: var(--radius-xs);
-      }
-    }
   }
 }
