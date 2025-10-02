@@ -1,0 +1,134 @@
+.main-wrapper {
+  inline-size: 100%;
+  block-size: auto;
+  padding: var(--space-lg);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+.user-profile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+}
+
+.user-info-section {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+  padding: var(--space-md);
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+}
+
+.user-avatar {
+  border-radius: 50%;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.user-name {
+  font-size: var(--font-xl);
+  font-weight: 600;
+}
+
+.user-email {
+  font-size: var(--font-md);
+  color: var(--color-text-secondary);
+}
+
+.user-study-section,
+.user-favorites-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.section-title {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-s);
+}
+
+.study-list,
+.favorites-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+@media screen and (min-width: 48rem) {
+  .study-list,
+  .favorites-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (min-width: 64rem) {
+  .study-list,
+  .favorites-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.study-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.study-card:hover {
+  transform: translateY(-0.25rem);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.image-wrapper {
+  inline-size: 100%;
+  block-size: auto;
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.studybanner-img {
+  inline-size: 100%;
+  block-size: auto;
+  display: block;
+}
+
+.description-wrapper {
+  padding: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.study-title {
+  font-size: var(--font-md);
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+}
+
+.study-role {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+}
+
+.etc-description p {
+  font-size: var(--font-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}

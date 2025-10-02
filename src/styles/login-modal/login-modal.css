@@ -204,3 +204,10 @@
   background-color: #4285f4;
   color: #fff;
 }
+
+.error-message {
+  color: #ff4d4f; /* 빨간색 */
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
