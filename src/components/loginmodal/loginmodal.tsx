@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useActionState, useRef } from 'react'
+import { useActionState, useRef, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 
 import '@/styles/login-modal/login-modal.css'
@@ -45,10 +45,10 @@ function SubmitButton() {
 
 function LoginModal({ openModal, setOpenModal }: Props) {
   const modalRef = useRef<HTMLDivElement | null>(null)
+  const [socialError, setSocialError] = useState<string | null>(null)
 
-  useFocusTrap(modalRef)
+  useFocusTrap(modalRef, openModal)
   useScrollLock(openModal, 'body')
-
   useKeyEvent('Escape', () => setOpenModal(false), openModal)
 
   const toggleModal = () => setOpenModal((prev) => !prev)
@@ -56,11 +56,17 @@ function LoginModal({ openModal, setOpenModal }: Props) {
   const [state, action] = useActionState(loginAction, null)
 
   const signInKakao = async () => {
-    await supabase.auth.signInWithOAuth({ provider: 'kakao' })
+    setSocialError(null)
+    const { error } = await supabase.auth.signInWithOAuth({ provider: 'kakao' })
+    if (error) setSocialError(error.message)
   }
 
   const signInGoogle = async () => {
-    await supabase.auth.signInWithOAuth({ provider: 'google' })
+    setSocialError(null)
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    })
+    if (error) setSocialError(error.message)
   }
 
   return (
@@ -72,10 +78,6 @@ function LoginModal({ openModal, setOpenModal }: Props) {
             ref={modalRef}
             onClick={(e) => e.stopPropagation()}
           >
-            <button className="modal-close-btn" onClick={toggleModal}>
-              ✕
-            </button>
-
             <h2 className="login-title">로그인</h2>
 
             <form className="login-form" action={action}>
@@ -95,7 +97,9 @@ function LoginModal({ openModal, setOpenModal }: Props) {
               <SubmitButton />
             </form>
 
-            {state?.error && <p className="error-message">{state.error}</p>}
+            {(state?.error ?? socialError) && (
+              <p className="error-message">{state?.error ?? socialError}</p>
+            )}
 
             <div className="login-links">
               <Link href="/">비밀번호 찾기</Link> |{' '}
@@ -115,6 +119,11 @@ function LoginModal({ openModal, setOpenModal }: Props) {
                 </button>
               </div>
             </div>
+
+            {/* 닫기 버튼을 소셜 로그인 아래로 이동 */}
+            <button className="modal-close-btn" onClick={toggleModal}>
+              ✕
+            </button>
           </div>
         </div>
       )}
