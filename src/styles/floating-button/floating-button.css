@@ -1,0 +1,36 @@
+/* 플로팅 액션 버튼 */
+.fab-create {
+  position: fixed;
+  inset-block-end: var(--space-lg);      /* 아래 여백 */
+  inset-inline-end: var(--space-lg);     /* 오른쪽 여백 */
+  inline-size: 3.5rem;
+  block-size: 3.5rem;
+  border-radius: var(--radius-full);
+  display: grid;
+  place-items: center;
+  font-size: var(--font-2xl);
+  line-height: 1;
+  text-decoration: none;
+
+  /* 브랜드/버튼 토큰 */
+  background-color: var(--color-primary);
+  color: var(--color-bg-primary);
+  box-shadow: 0 6px 18px rgba(0 0 0 / 18%);
+  z-index: 50;
+  transition: transform .15s ease, box-shadow .15s ease,
+              background-color .15s ease;
+}
+
+.fab-create:hover,
+.fab-create:active {
+  background-color: var(--color-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0 0 0 / 22%);
+}
+
+/* 접근성 포커스 */
+.fab-create:focus-visible {
+  outline: 3px solid var(--color-tertiary);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(0 0 0 / 12%);
+}
