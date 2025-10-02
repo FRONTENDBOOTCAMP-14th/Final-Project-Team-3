@@ -88,7 +88,6 @@
         </a>
       </td>
     </tr>
-
     <!-- 프레임워크 -->
     <tr>
       <td><strong>프레임워크</strong></td>
@@ -98,7 +97,6 @@
         </a>
       </td>
     </tr>
-
     <!-- 상태 관리 -->
     <tr>
       <td><strong>상태 관리</strong></td>
@@ -112,7 +110,6 @@
         </a>
       </td>
     </tr>
-
     <!-- 배포 -->
     <tr>
       <td><strong>배포</strong></td>
@@ -122,7 +119,6 @@
         </a>
       </td>
     </tr>
-
     <!-- BaaS -->
     <tr>
       <td><strong>BaaS</strong></td>
