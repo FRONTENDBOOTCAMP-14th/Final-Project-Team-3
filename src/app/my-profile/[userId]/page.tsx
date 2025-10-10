@@ -1,13 +1,11 @@
 import ProfilePageClient from '@/components/ProfilePageClient/ProfilePageClient'
 
 interface PageProps {
-  params: {
-    userId: string
-  }
+  params: Promise<{ userId: string }>
 }
 
 export default async function MyProfilePage({ params }: PageProps) {
-  const { userId } = params
+  const { userId } = await params
 
   const user = {
     name: `사용자 ${userId}`,

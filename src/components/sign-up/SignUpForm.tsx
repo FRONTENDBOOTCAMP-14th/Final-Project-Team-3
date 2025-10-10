@@ -4,6 +4,10 @@ import '@/styles/sign-up/sign-up.css'
 import type { ChangeEvent, FormEvent } from 'react'
 import { useState } from 'react'
 
+import Button from '@/components/ui/button'
+
+import { validatePassword } from '@/utils/validatePassword'
+
 interface PasswordHintProps {
   isValid: boolean
 }
@@ -17,26 +21,6 @@ function PasswordHint({ isValid }: PasswordHintProps) {
     </ul>
   )
 }
-
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  text: string
-}
-
-const Button: React.FC<ButtonProps> = ({ text, ...props }) => (
-  <button
-    {...props}
-    style={{
-      padding: '8px 16px',
-      backgroundColor: '#0070f3',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-    }}
-  >
-    {text}
-  </button>
-)
 
 interface InputFieldProps {
   label?: string
@@ -71,16 +55,6 @@ const InputField: React.FC<InputFieldProps> = ({
     />
   </div>
 )
-
-const validatePassword = (password: string): boolean => {
-  if (password.length < 8) return false
-  if (/(\w)\1\1/.test(password)) return false
-  const count = [/[a-zA-Z]/, /\d/, /[!@#$%^&*]/].reduce(
-    (acc, regex) => acc + Number(regex.test(password)),
-    0
-  )
-  return count >= 2
-}
 
 export default function SignUpForm() {
   const [email, setEmail] = useState('')
