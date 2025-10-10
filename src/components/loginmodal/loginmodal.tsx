@@ -31,7 +31,7 @@ async function loginAction(
 
 interface Props {
   openModal: boolean
-  setOpenModal: (value: React.SetStateAction<boolean>) => void
+  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 function SubmitButton() {
@@ -43,17 +43,16 @@ function SubmitButton() {
   )
 }
 
-function LoginModal({ openModal, setOpenModal }: Props) {
+export default function LoginModal({ openModal, setOpenModal }: Props) {
   const modalRef = useRef<HTMLDivElement | null>(null)
   const [socialError, setSocialError] = useState<string | null>(null)
+  const [state, action] = useActionState(loginAction, null)
 
   useFocusTrap(modalRef, openModal)
   useScrollLock(openModal, 'body')
   useKeyEvent('Escape', () => setOpenModal(false), openModal)
 
   const toggleModal = () => setOpenModal((prev) => !prev)
-
-  const [state, action] = useActionState(loginAction, null)
 
   const signInKakao = async () => {
     setSocialError(null)
@@ -103,7 +102,10 @@ function LoginModal({ openModal, setOpenModal }: Props) {
 
             <div className="login-links">
               <Link href="/">비밀번호 찾기</Link> |{' '}
-              <Link href="/">회원가입</Link> | <Link href="/">아이디 찾기</Link>
+              <Link href="/sign-up" onClick={() => setOpenModal(false)}>
+                회원가입
+              </Link>{' '}
+              | <Link href="/">아이디 찾기</Link>
             </div>
 
             <div className="social-login">
@@ -120,7 +122,6 @@ function LoginModal({ openModal, setOpenModal }: Props) {
               </div>
             </div>
 
-            {/* 닫기 버튼을 소셜 로그인 아래로 이동 */}
             <button className="modal-close-btn" onClick={toggleModal}>
               ✕
             </button>
@@ -130,5 +131,3 @@ function LoginModal({ openModal, setOpenModal }: Props) {
     </div>
   )
 }
-
-export default LoginModal
