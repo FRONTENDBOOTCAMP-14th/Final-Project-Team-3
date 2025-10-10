@@ -6,65 +6,40 @@ import Icons from '@/components/icons'
 import CategoryUI from '@/components/ui/category-ui'
 
 import '@/styles/study-detail/study-detail.css'
+import type { StudyRoom } from '../../libs/supabase'
+
 import MembersListModal from './members-modal'
 
 interface Props {
-  studyId: string
+  studyRoomData: StudyRoom
 }
 
-function StudyDetail({ studyId }: Props) {
+function StudyDetail({ studyRoomData }: Props) {
   const [openModal, setOpenModal] = useState<boolean>(false)
 
   return (
     <div className="detail-container">
       <div className="detail-banner">
-        <Image
-          src={'/images/no-image.png'}
-          alt="no-image"
-          fill
-          className="studybanner-img"
-          aria-hidden="true"
-          priority
-        />
-      </div>
-
-      <div className="detail-header">
-        {/* <div className="detail-header-img">
+        {studyRoomData.banner_image ?? (
           <Image
             src={'/images/no-image.png'}
             alt="no-image"
-            width={120}
-            height={120}
+            fill
             className="studybanner-img"
             aria-hidden="true"
+            priority
           />
-        </div> */}
+        )}
+      </div>
+
+      <div className="detail-header">
         <div className="detail-description">
-          <h3>스터디 타이틀</h3>
-          <CategoryUI />
+          <h3>{studyRoomData.title}</h3>
+          <CategoryUI studyData={studyRoomData} />
         </div>
 
         <div className="detail-contents">
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet
-            perspiciatis dolorum excepturi vero maiores ex, ea eum itaque natus
-            sit quod exercitationem minima expedita voluptates. Molestiae iusto
-            officia explicabo eligendi. Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Eveniet perspiciatis dolorum excepturi vero
-            maiores ex, ea eum itaque natus sit quod exercitationem minima
-            expedita voluptates. Molestiae iusto officia explicabo eligendi.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet
-            perspiciatis dolorum excepturi vero maiores ex, ea eum itaque natus
-            sit quod exercitationem minima expedita voluptates. Molestiae iusto
-            officia explicabo eligendi. Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Eveniet perspiciatis dolorum excepturi vero
-            maiores ex, ea eum itaque natus sit quod exercitationem minima
-            expedita voluptates. Molestiae iusto officia explicabo eligendi.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet
-            perspiciatis dolorum excepturi vero maiores ex, ea eum itaque natus
-            sit quod exercitationem minima expedita voluptates. Molestiae iusto
-            officia explicabo eligendi.
-          </p>
+          <p>{studyRoomData.description}</p>
         </div>
 
         <div className="study-members">

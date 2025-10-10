@@ -1,15 +1,21 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-function StudyRoomCard() {
-  const mockData = Array.from({ length: 10 }, (_, i) => ({
-    id: i + 1,
-    title: `스터디 제목 ${i + 1}`,
-  }))
+import type { StudyRoom } from '../../libs/supabase'
+
+interface Props {
+  studyData: StudyRoom[]
+}
+
+function StudyRoomCard({ studyData }: Props) {
+  // const mockData = Array.from({ length: 10 }, (_, i) => ({
+  //   id: i + 1,
+  //   title: `스터디 제목 ${i + 1}`,
+  // }))
 
   return (
     <ul className="latest-lists">
-      {mockData.map((item) => (
+      {studyData.map((item) => (
         <li className="latest-lists-item" key={item.id}>
           <Link href={`/study-detail/${item.id}`}>
             <div className="image-wrapper">

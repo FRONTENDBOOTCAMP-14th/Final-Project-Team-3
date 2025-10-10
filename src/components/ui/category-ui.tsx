@@ -1,18 +1,23 @@
+import type { StudyRoom } from '../../libs/supabase'
 import Icons from '../icons'
 
 import '@/styles/ui/category-ui.css'
 
-function CategoryUI() {
+interface Props {
+  studyData: StudyRoom
+}
+
+function CategoryUI({ studyData }: Props) {
   return (
     <div role="group" className="category-wrapper">
       <p>
         <Icons name="category" aria-hidden="true" />
-        <span>카테고리</span>
+        <span>{studyData.category}</span>
       </p>
       ∙
       <p>
         <Icons name="map-pin" aria-hidden="true" />
-        <span>지역</span>
+        <span>{studyData.region_depth}</span>
       </p>
       ∙
       <p>

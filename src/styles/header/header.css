@@ -215,12 +215,54 @@
   font-size: var(--font-lg);
 }
 
+.region-entire {
+  inline-size: 100%;
+  margin-block: 0.625rem;
+  padding-inline-start: 0.625rem;
+
+  & .region-entire-btn {
+    inline-size: 100%;
+    border: 0;
+    padding-block: 0.9375rem;
+    padding-inline: 3.125rem;
+    border-radius: 0.3125rem;
+    font-size: var(--font-lg);
+    color: #fff;
+    background-color: var(--color-secondary);
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &:focus-within {
+    & .region-entire-btn {
+      border-radius: 0.3125rem;
+      box-shadow: 0 0 0 2px #000;
+    }
+  }
+
+  @media screen and (width >= 64rem) {
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-inline-start: 0;
+    }
+
+    & .region-entire-btn {
+      max-inline-size: 30%;
+    }
+  }
+}
+
 .categories-wrapper {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
   gap: 1.875rem;
   inline-size: 100%;
+
   @media screen and (width >= 64rem) {
     inline-size: 100%;
     justify-content: center;

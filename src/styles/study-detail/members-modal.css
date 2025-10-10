@@ -17,6 +17,10 @@
   max-inline-size: 80%;
   padding: var(--space-md);
   border-radius: var(--radius-xs);
+
+  @media screen and (width >= 64rem) {
+    max-inline-size: 31.25rem;
+  }
 }
 
 .modal-scroll {
@@ -84,5 +88,6 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
   }
 }
