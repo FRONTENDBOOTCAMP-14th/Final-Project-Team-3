@@ -23,6 +23,7 @@
 
 .user-avatar {
   border-radius: 50%;
+  object-fit: cover;
 }
 
 .user-details {
@@ -57,26 +58,13 @@
 
 .study-list,
 .favorites-list {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--space-md);
 }
 
-@media screen and (min-width: 48rem) {
-  .study-list,
-  .favorites-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media screen and (min-width: 64rem) {
-  .study-list,
-  .favorites-list {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
 .study-card {
+  width: 200px;
   display: flex;
   flex-direction: column;
   background-color: var(--color-bg-secondary);
