@@ -3,7 +3,9 @@ import type { PropsWithChildren } from 'react'
 
 import SiteFooter from '@/components/footer/footer'
 import Header from '@/components/header'
+
 import '@/styles/common/index.css'
+import { AuthProvider } from '../context/autnContext'
 // --------------------------------------------------------------------------
 // 메타데이터
 
@@ -19,9 +21,11 @@ export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="ko-KR">
       <body>
-        <Header />
-        <main className="web-main">{children}</main>
-        <SiteFooter />
+        <AuthProvider>
+          <Header />
+          <main className="web-main">{children}</main>
+          <SiteFooter />
+        </AuthProvider>
       </body>
     </html>
   )
