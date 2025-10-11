@@ -1,24 +1,32 @@
 /* 플로팅 액션 버튼 */
 .fab-create {
   position: fixed;
-  inset-block-end: var(--space-lg);      /* 아래 여백 */
-  inset-inline-end: var(--space-lg);     /* 오른쪽 여백 */
+  inset-block-end: var(--space-lg);
+  inset-inline-end: var(--space-lg);
   inline-size: 3.5rem;
   block-size: 3.5rem;
   border-radius: var(--radius-full);
-  display: grid;
-  place-items: center;
-  font-size: var(--font-2xl);
-  line-height: 1;
-  text-decoration: none;
-
-  /* 브랜드/버튼 토큰 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: var(--color-primary);
   color: var(--color-bg-primary);
   box-shadow: 0 6px 18px rgba(0 0 0 / 18%);
+  text-decoration: none;
   z-index: 50;
-  transition: transform .15s ease, box-shadow .15s ease,
-              background-color .15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+/* + 기호를 살짝 위로 올리기 */
+.fab-icon {
+  position: relative;
+  top: -0.2rem;
+  font-weight: 900;
+  font-size: 2.4rem;
+  line-height: 1;
 }
 
 .fab-create:hover,
