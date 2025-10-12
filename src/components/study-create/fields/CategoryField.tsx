@@ -1,15 +1,16 @@
 'use client'
+
+import { STUDY_CATEGORIES } from '../../../types/categories'
 import InlineSelect from '../ui/InlineSelect'
 
 interface Props {
   value: string
   onChange: (v: string) => void
-  baseOptions: string[]
 }
 
-export default function CategoryField({ value, onChange, baseOptions }: Props) {
+export default function CategoryField({ value, onChange }: Props) {
   const options = [
-    ...baseOptions.map((c) => ({ label: c, value: c })),
+    ...STUDY_CATEGORIES.map((c) => ({ label: c, value: c })),
     { label: '기타(직접 입력)', value: 'other' },
   ]
 
