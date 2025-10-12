@@ -12,6 +12,7 @@ import { AuthProvider } from '../context/autnContext'
 export const metadata: Metadata = {
   title: '멋사 14기 파이널 프로젝트 팀3',
   description: '멋사 14기 파이널 프로젝트 팀3',
+  icons: { icon: '/images/moida-icon.svg' },
 }
 
 // --------------------------------------------------------------------------

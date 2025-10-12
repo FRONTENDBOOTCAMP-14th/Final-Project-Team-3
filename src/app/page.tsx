@@ -20,7 +20,7 @@ export default async function HomePage({ searchParams }: Props) {
         className="fab-create"
         aria-label="스터디·모집 생성 페이지로 이동"
       >
-        +
+        <span className="fab-icon">+</span>
       </Link>
     </section>
   )
