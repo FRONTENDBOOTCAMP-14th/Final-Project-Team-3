@@ -6,6 +6,15 @@ interface Opt {
   value: string
 }
 
+interface Props {
+  name: string
+  value: string
+  onChange: (v: string) => void
+  options: Opt[]
+  placeholder?: string
+  disabled?: boolean
+}
+
 export default function InlineSelect({
   name,
   value,
@@ -13,14 +22,7 @@ export default function InlineSelect({
   options,
   placeholder = '선택해주세요',
   disabled = false,
-}: {
-  name: string
-  value: string
-  onChange: (v: string) => void
-  options: Opt[]
-  placeholder?: string
-  disabled?: boolean
-}) {
+}: Props) {
   const [open, setOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement | null>(null)
   const listRef = useRef<HTMLUListElement | null>(null)
@@ -118,7 +120,9 @@ export default function InlineSelect({
             return (
               <li
                 key={opt.value}
-                ref={(el) => (optionRefs.current[i] = el)}
+                ref={(el) => {
+                  optionRefs.current[i] = el
+                }}
                 role="option"
                 aria-selected={active}
                 tabIndex={0}

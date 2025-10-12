@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import LoginModal from '@/components/loginmodal/loginmodal'
@@ -13,10 +14,14 @@ import HeaderSearch from './header-search'
 import RegionCategories from './region-categories'
 
 function Header() {
+  const searchParmas = useSearchParams()
+
   const [searchVisible, setSearchVisible] = useState<boolean>(false)
   const [navVisible, setNavVisible] = useState<boolean>(false)
   const [categoryVisible, setCategoryVisible] = useState<boolean>(false)
-  const [selectCategory, setSelectCategory] = useState<string>('강남구')
+  const [selectCategory, setSelectCategory] = useState<string>(
+    searchParmas.get('depth') ?? '전체'
+  )
   const [isDesktop, setIsDesktop] = useState<boolean>(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
 
@@ -81,6 +86,7 @@ function Header() {
         setCategoryVisible={setCategoryVisible}
         setSelectCategory={setSelectCategory}
         categoryVisible={categoryVisible}
+        selectCategory={selectCategory}
       />
 
       {openModal && (

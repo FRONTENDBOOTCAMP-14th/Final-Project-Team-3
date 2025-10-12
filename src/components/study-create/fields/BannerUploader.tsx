@@ -1,13 +1,12 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 
-export default function BannerUploader({
-  value,
-  onChange,
-}: {
+interface Props {
   value: File | null
   onChange: (f: File | null) => void
-}) {
+}
+
+export default function BannerUploader({ value, onChange }: Props) {
   const [isDragging, setIsDragging] = useState(false)
   const [previewUrl, setPreviewUrl] = useState<string>('')
   const inputRef = useRef<HTMLInputElement | null>(null)

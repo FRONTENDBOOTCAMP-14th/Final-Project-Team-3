@@ -6,71 +6,83 @@ import Icons from '@/components/icons'
 import CategoryUI from '@/components/ui/category-ui'
 
 import '@/styles/study-detail/study-detail.css'
-import MembersListModal from './members-modal'
+import { useAuth } from '../../hooks/useAuth'
+import type { StudyRoom } from '../../libs/supabase'
+
+import DetailModal from './detail-modal'
 
 interface Props {
-  studyId: string
+  studyRoomData: StudyRoom
 }
 
-function StudyDetail({ studyId }: Props) {
+function StudyDetail({ studyRoomData }: Props) {
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const [modalType, setModalType] = useState<'member' | 'applicant' | null>(
+    null
+  )
+  const { user } = useAuth()
+
+  const isOwner = user?.id === studyRoomData.owner_id
 
   return (
     <div className="detail-container">
       <div className="detail-banner">
-        <Image
-          src={'/images/no-image.png'}
-          alt="no-image"
-          fill
-          className="studybanner-img"
-          aria-hidden="true"
-          priority
-        />
-      </div>
-
-      <div className="detail-header">
-        {/* <div className="detail-header-img">
+        {studyRoomData.banner_image ? (
+          <Image
+            src={studyRoomData.banner_image}
+            alt={`${studyRoomData.title} 이미지`}
+            fill
+            className="studybanner-img"
+            aria-hidden="true"
+            priority
+          />
+        ) : (
           <Image
             src={'/images/no-image.png'}
             alt="no-image"
-            width={120}
-            height={120}
+            fill
             className="studybanner-img"
             aria-hidden="true"
+            priority
           />
-        </div> */}
-        <div className="detail-description">
-          <h3>스터디 타이틀</h3>
-          <CategoryUI />
+        )}
+      </div>
+
+      <div className="detail-description">
+        <div className="detail-heading">
+          <div className="detail-header">
+            <h3>{studyRoomData.title}</h3>
+            {studyRoomData.owner_id !== user?.id ? (
+              <button type="button">참가 신청</button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setOpenModal(true)
+                  setModalType('applicant')
+                }}
+              >
+                신청 목록
+              </button>
+            )}
+          </div>
+          <CategoryUI studyData={studyRoomData} />
         </div>
 
         <div className="detail-contents">
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet
-            perspiciatis dolorum excepturi vero maiores ex, ea eum itaque natus
-            sit quod exercitationem minima expedita voluptates. Molestiae iusto
-            officia explicabo eligendi. Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Eveniet perspiciatis dolorum excepturi vero
-            maiores ex, ea eum itaque natus sit quod exercitationem minima
-            expedita voluptates. Molestiae iusto officia explicabo eligendi.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet
-            perspiciatis dolorum excepturi vero maiores ex, ea eum itaque natus
-            sit quod exercitationem minima expedita voluptates. Molestiae iusto
-            officia explicabo eligendi. Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Eveniet perspiciatis dolorum excepturi vero
-            maiores ex, ea eum itaque natus sit quod exercitationem minima
-            expedita voluptates. Molestiae iusto officia explicabo eligendi.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet
-            perspiciatis dolorum excepturi vero maiores ex, ea eum itaque natus
-            sit quod exercitationem minima expedita voluptates. Molestiae iusto
-            officia explicabo eligendi.
-          </p>
+          <p>{studyRoomData.description}</p>
         </div>
 
         <div className="study-members">
           <h3 className="study-members-heading">
             <span>멤버</span>
-            <button type="button" onClick={() => setOpenModal(true)}>
+            <button
+              type="button"
+              onClick={() => {
+                setOpenModal(true)
+                setModalType('member')
+              }}
+            >
               전체 보기 ↓
             </button>
           </h3>
@@ -128,7 +140,13 @@ function StudyDetail({ studyId }: Props) {
         </div>
       </div>
       {openModal && (
-        <MembersListModal setOpenModal={setOpenModal} openModal={openModal} />
+        <DetailModal
+          setOpenModa={setOpenModal}
+          openModal={openModal}
+          setModalType={setModalType}
+          modalType={modalType}
+          isOwner={isOwner}
+        />
       )}
     </div>
   )

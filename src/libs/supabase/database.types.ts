@@ -20,6 +20,7 @@ export interface Database {
           created_at: string
           email: string | null
           id: string
+          nickname: string | null
           phone: string | null
           profile_url: string | null
         }
@@ -28,6 +29,7 @@ export interface Database {
           created_at?: string
           email?: string | null
           id?: string
+          nickname?: string | null
           phone?: string | null
           profile_url?: string | null
         }
@@ -36,6 +38,7 @@ export interface Database {
           created_at?: string
           email?: string | null
           id?: string
+          nickname?: string | null
           phone?: string | null
           profile_url?: string | null
         }
@@ -108,6 +111,7 @@ export interface Database {
       study_room: {
         Row: {
           banner_image: string | null
+          category: string | null
           created_at: string
           description: string
           id: string
@@ -118,6 +122,7 @@ export interface Database {
         }
         Insert: {
           banner_image?: string | null
+          category?: string | null
           created_at?: string
           description: string
           id?: string
@@ -128,6 +133,7 @@ export interface Database {
         }
         Update: {
           banner_image?: string | null
+          category?: string | null
           created_at?: string
           description?: string
           id?: string

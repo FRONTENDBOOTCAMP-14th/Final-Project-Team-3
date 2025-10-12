@@ -1,4 +1,5 @@
 import StudyDetail from '../../../components/study-detail/study-detail'
+import { getStudyRoomDetail } from '../../../libs/supabase/api/study-room'
 
 interface Props {
   params: Promise<{ studyId: string }>
@@ -7,9 +8,11 @@ interface Props {
 async function StudyDetailPage({ params }: Props) {
   const { studyId } = await params
 
+  const data = await getStudyRoomDetail(studyId)
+
   return (
     <section>
-      <StudyDetail studyId={studyId} />
+      <StudyDetail studyRoomData={data} />
     </section>
   )
 }

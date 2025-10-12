@@ -4,6 +4,7 @@ import React, { useRef } from 'react'
 import Icons from '@/components/icons'
 import useFocusTrap from '@/hooks/useFocusTrap'
 import useKeyEvent from '@/hooks/useKeyEvent'
+
 import '@/styles/navbar/navbar.css'
 
 interface Props {

@@ -3,10 +3,16 @@ import Link from 'next/link'
 import HomeComponents from '@/components/home'
 import '@/styles/floating-button/floating-button.css'
 
-export default function HomePage() {
+interface Props {
+  searchParams: Promise<{ region?: string; depth?: string; search?: string }>
+}
+
+export default async function HomePage({ searchParams }: Props) {
+  const { region, depth, search } = await searchParams
+
   return (
     <section>
-      <HomeComponents />
+      <HomeComponents region={region} depth={depth} search={search} />
 
       {/* 플로팅 버튼 */}
       <Link

@@ -1,9 +1,9 @@
 .category-wrapper {
   font-size: var(--font-sm);
-  display: flex;
-  align-items: center;
-  flex-flow: row nowrap;
-  gap: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  justify-content: start;
 
   & p {
     color: var(--color-text-tertiary);
@@ -15,5 +15,9 @@
     padding-block: 0.1875rem;
     padding-inline: 0.5rem;
     border-radius: var(--radius-xs);
+  }
+
+  @media screen and (width >= 48rem) {
+    grid-template-columns: repeat(4, minmax(100px, 120px));
   }
 }
