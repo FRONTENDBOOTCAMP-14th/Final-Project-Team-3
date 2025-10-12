@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import supabase from '@/libs/supabase'
-import { STUDY_CATEGORIES } from '@/types/categories'
-import REGION_DATA from '@/types/region'
 
 import BannerUploader from './fields/BannerUploader'
 import CategoryField from './fields/CategoryField'
@@ -95,18 +93,10 @@ export default function StudyCreateForm() {
       </div>
 
       {/* 배너 */}
-      <BannerUploader
-        value={bannerFile}
-        onChange={setBannerFile}
-        defaultSrc={DEFAULT_BANNER}
-      />
+      <BannerUploader value={bannerFile} onChange={setBannerFile} />
 
       {/* 카테고리 */}
-      <CategoryField
-        value={category}
-        onChange={setCategory}
-        baseOptions={STUDY_CATEGORIES}
-      />
+      <CategoryField value={category} onChange={setCategory} />
 
       {/* 지역/세부지역 */}
       <RegionField
@@ -114,7 +104,6 @@ export default function StudyCreateForm() {
         setRegion={setRegion}
         regionDepth={regionDepth}
         setRegionDepth={setRegionDepth}
-        regionData={REGION_DATA}
       />
 
       {/* 소개 */}
