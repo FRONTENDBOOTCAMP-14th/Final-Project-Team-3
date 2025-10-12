@@ -1,5 +1,14 @@
 'use client'
+
 import InlineSelect from '../ui/InlineSelect'
+
+interface Props {
+  region: string
+  setRegion: (v: string) => void
+  regionDepth: string
+  setRegionDepth: (v: string) => void
+  regionData: Record<string, string[]>
+}
 
 export default function RegionField({
   region,
@@ -7,13 +16,7 @@ export default function RegionField({
   regionDepth,
   setRegionDepth,
   regionData,
-}: {
-  region: string
-  setRegion: (v: string) => void
-  regionDepth: string
-  setRegionDepth: (v: string) => void
-  regionData: Record<string, string[]>
-}) {
+}: Props) {
   const regionOptions = Object.keys(regionData).map((r) => ({
     label: r,
     value: r,

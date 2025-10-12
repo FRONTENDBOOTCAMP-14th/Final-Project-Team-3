@@ -1,4 +1,4 @@
-import StudyCreateForm from './studycreateform'
+import StudyCreateForm from '@/components/study-create/studycreateform'
 
 export default function StudyCreatePage() {
   return (
