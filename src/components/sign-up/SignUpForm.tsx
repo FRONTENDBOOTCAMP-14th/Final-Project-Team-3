@@ -5,6 +5,7 @@ import type { ChangeEvent, FormEvent } from 'react'
 import { useState } from 'react'
 
 import Button from '@/components/ui/button'
+import { supabase } from '@/lib/supabaseClient'
 
 import { validatePassword } from '@/utils/validatePassword'
 
@@ -60,14 +61,53 @@ export default function SignUpForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [nickname, setNickname] = useState('')
   const [isPasswordValid, setIsPasswordValid] = useState(true)
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
+
     const valid = validatePassword(password)
     setIsPasswordValid(valid)
-    if (valid && password === confirmPassword) {
-      alert('가입 완료!')
+    if (!valid) return alert('비밀번호 규칙을 확인해주세요.')
+    if (password !== confirmPassword)
+      return alert('비밀번호가 일치하지 않습니다.')
+
+    try {
+      setLoading(true)
+
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+      })
+
+      if (authError) throw authError
+      const user = authData.user
+      if (!user)
+        throw new Error('회원가입 후 사용자 정보를 불러올 수 없습니다.')
+
+      const { error: profileError } = await supabase.from('profile').insert([
+        {
+          id: user.id,
+          email: user.email,
+          nickname: nickname || '새 유저',
+          avatar_url: '/avatar-default.png',
+        },
+      ])
+
+      if (profileError) throw profileError
+
+      alert('회원가입 성공! 이메일을 확인해주세요 📧')
+      setEmail('')
+      setPassword('')
+      setConfirmPassword('')
+      setNickname('')
+    } catch (err: any) {
+      console.error(err)
+      alert(`회원가입 실패: ${err.message}`)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -81,6 +121,13 @@ export default function SignUpForm() {
         placeholder="example@inflab.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+      />
+
+      <InputField
+        label="닉네임"
+        placeholder="닉네임을 입력하세요"
+        value={nickname}
+        onChange={(e) => setNickname(e.target.value)}
       />
 
       <InputField
@@ -101,7 +148,7 @@ export default function SignUpForm() {
 
       <PasswordHint isValid={isPasswordValid} />
 
-      <Button text="가입하기" type="submit" />
+      <Button text={loading ? '가입 중...' : '가입하기'} type="submit" />
     </form>
   )
 }
