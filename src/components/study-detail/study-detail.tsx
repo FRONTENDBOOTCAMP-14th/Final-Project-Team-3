@@ -6,9 +6,10 @@ import Icons from '@/components/icons'
 import CategoryUI from '@/components/ui/category-ui'
 
 import '@/styles/study-detail/study-detail.css'
+import { useAuth } from '../../hooks/useAuth'
 import type { StudyRoom } from '../../libs/supabase'
 
-import MembersListModal from './members-modal'
+import DetailModal from './detail-modal'
 
 interface Props {
   studyRoomData: StudyRoom
@@ -16,6 +17,12 @@ interface Props {
 
 function StudyDetail({ studyRoomData }: Props) {
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const [modalType, setModalType] = useState<'member' | 'applicant' | null>(
+    null
+  )
+  const { user } = useAuth()
+
+  const isOwner = user?.id === studyRoomData.owner_id
 
   return (
     <div className="detail-container">
@@ -41,9 +48,24 @@ function StudyDetail({ studyRoomData }: Props) {
         )}
       </div>
 
-      <div className="detail-header">
-        <div className="detail-description">
-          <h3>{studyRoomData.title}</h3>
+      <div className="detail-description">
+        <div className="detail-heading">
+          <div className="detail-header">
+            <h3>{studyRoomData.title}</h3>
+            {studyRoomData.owner_id !== user?.id ? (
+              <button type="button">참가 신청</button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setOpenModal(true)
+                  setModalType('applicant')
+                }}
+              >
+                신청 목록
+              </button>
+            )}
+          </div>
           <CategoryUI studyData={studyRoomData} />
         </div>
 
@@ -54,7 +76,13 @@ function StudyDetail({ studyRoomData }: Props) {
         <div className="study-members">
           <h3 className="study-members-heading">
             <span>멤버</span>
-            <button type="button" onClick={() => setOpenModal(true)}>
+            <button
+              type="button"
+              onClick={() => {
+                setOpenModal(true)
+                setModalType('member')
+              }}
+            >
               전체 보기 ↓
             </button>
           </h3>
@@ -112,7 +140,13 @@ function StudyDetail({ studyRoomData }: Props) {
         </div>
       </div>
       {openModal && (
-        <MembersListModal setOpenModal={setOpenModal} openModal={openModal} />
+        <DetailModal
+          setOpenModa={setOpenModal}
+          openModal={openModal}
+          setModalType={setModalType}
+          modalType={modalType}
+          isOwner={isOwner}
+        />
       )}
     </div>
   )

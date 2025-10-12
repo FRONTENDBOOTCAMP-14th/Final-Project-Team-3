@@ -20,6 +20,7 @@ export interface Database {
           created_at: string
           email: string | null
           id: string
+          nickname: string | null
           phone: string | null
           profile_url: string | null
         }
@@ -28,6 +29,7 @@ export interface Database {
           created_at?: string
           email?: string | null
           id?: string
+          nickname?: string | null
           phone?: string | null
           profile_url?: string | null
         }
@@ -36,6 +38,7 @@ export interface Database {
           created_at?: string
           email?: string | null
           id?: string
+          nickname?: string | null
           phone?: string | null
           profile_url?: string | null
         }

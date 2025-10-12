@@ -9,8 +9,6 @@ import NavBar from '@/components/navbar'
 import useScrollLock from '@/hooks/useScrollLock'
 import '@/styles/header/header.css'
 
-import { useAuth } from '../../hooks/useAuth'
-
 import HeaderContent from './header-content'
 import HeaderSearch from './header-search'
 import RegionCategories from './region-categories'
@@ -26,10 +24,6 @@ function Header() {
   )
   const [isDesktop, setIsDesktop] = useState<boolean>(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
-
-  const { user } = useAuth()
-
-  console.log(user)
 
   useEffect(() => {
     const media = window.matchMedia('(min-width: 64rem)')

@@ -14,17 +14,17 @@ function CategoryUI({ studyData }: Props) {
         <Icons name="category" aria-hidden="true" />
         <span>{studyData.category}</span>
       </p>
-      ∙
+
       <p>
         <Icons name="map-pin" aria-hidden="true" />
         <span>{studyData.region_depth}</span>
       </p>
-      ∙
+
       <p>
         <Icons name="user" aria-hidden="true" />
-        <span>인원 수</span>
+        <span>멤버 수</span>
       </p>
-      ∙
+
       <p>
         <Icons name="heart" aria-hidden="true" />
         <span>좋아요 수</span>
