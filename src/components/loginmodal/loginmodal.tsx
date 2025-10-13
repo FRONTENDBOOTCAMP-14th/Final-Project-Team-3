@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useActionState, useRef, useState } from 'react'
+import { useActionState, useEffect, useRef, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 
 import '@/styles/login-modal/login-modal.css'
@@ -76,6 +76,12 @@ export default function LoginModal({ openModal, setOpenModal }: Props) {
       setSocialError(error instanceof Error ? error.message : String(error))
     }
   }
+
+  useEffect(() => {
+    if (state && state.error === undefined) {
+      setOpenModal(false)
+    }
+  }, [state, setOpenModal])
 
   return (
     <div>
