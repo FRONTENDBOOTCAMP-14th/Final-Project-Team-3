@@ -5,8 +5,7 @@ import type { ChangeEvent, FormEvent } from 'react'
 import { useState } from 'react'
 
 import Button from '@/components/ui/button'
-import { supabase } from '@/lib/supabaseClient'
-
+import supabase from '@/libs/supabase/client'
 import { validatePassword } from '@/utils/validatePassword'
 
 interface PasswordHintProps {
@@ -92,7 +91,7 @@ export default function SignUpForm() {
           id: user.id,
           email: user.email,
           nickname: nickname || '새 유저',
-          avatar_url: '/avatar-default.png',
+          profile_url: '/avatar-default.png',
         },
       ])
 

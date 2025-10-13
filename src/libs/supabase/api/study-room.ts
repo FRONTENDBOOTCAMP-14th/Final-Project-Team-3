@@ -1,5 +1,5 @@
 import type { StudyRoom } from '..'
-import supabase from '..'
+import supabase from '../client'
 
 export const readStudyRoom = async (): Promise<StudyRoom[]> => {
   const { data: studyRoomData, error } = await supabase
