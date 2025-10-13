@@ -5,7 +5,10 @@ import SiteFooter from '@/components/footer/footer'
 import Header from '@/components/header'
 
 import '@/styles/common/index.css'
+import FloatingButton from '../components/ui/floating-button'
 import { AuthProvider } from '../context/autnContext'
+import { createClient } from '../libs/supabase/server'
+
 // --------------------------------------------------------------------------
 // 메타데이터
 
@@ -18,14 +21,21 @@ export const metadata: Metadata = {
 // --------------------------------------------------------------------------
 // 루트 레이아웃 컴포넌트
 
-export default function RootLayout({ children }: PropsWithChildren) {
+export default async function RootLayout({ children }: PropsWithChildren) {
+  const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
   return (
     <html lang="ko-KR">
       <body>
-        <AuthProvider>
+        <AuthProvider user={user}>
           <Header />
           <main className="web-main">{children}</main>
           <SiteFooter />
+          <FloatingButton />
         </AuthProvider>
       </body>
     </html>

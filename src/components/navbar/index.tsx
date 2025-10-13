@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 
 import Icons from '@/components/icons'
 import { useAuth } from '@/hooks/useAuth'
@@ -20,8 +20,9 @@ interface Props {
 function NavBar({ setNavVisible, setOpenModal, navVisible }: Props) {
   const navRef = useRef<HTMLElement | null>(null)
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
 
-  const { user, setUser } = useAuth()
+  const { user, setUser, setProfile } = useAuth()
 
   useFocusTrap(navRef, navVisible)
 
@@ -42,20 +43,26 @@ function NavBar({ setNavVisible, setOpenModal, navVisible }: Props) {
   }
 
   const signOut = () => {
+    if (isLoading) return
+
+    setIsLoading(true)
     fetch('/auth/logout', {
       method: 'POST',
     })
       .then(async (res) => {
         if (res.ok) {
           setUser(null)
+          setProfile(null)
           router.refresh()
 
           alert('로그아웃에 성공 하였습니다.')
         }
       })
       .catch((e: Error) => alert(`로그아웃에 실패 하였습니다. ${e.message}`))
+      .finally(() => {
+        setIsLoading(false)
+      })
   }
-
   return (
     <>
       <nav
@@ -64,25 +71,30 @@ function NavBar({ setNavVisible, setOpenModal, navVisible }: Props) {
         aria-label="메인 네비게이션"
         inert={!navVisible ? true : undefined}
       >
-        <div
-          className="navbar-user"
-          role="button"
-          tabIndex={navVisible ? 0 : -1}
-          aria-disabled={!navVisible}
-          onClick={() => {
-            setOpenModal(true)
-            setNavVisible(false)
-          }}
-          onKeyDown={keyDownEventHandler}
-        >
+        <div className="navbar-user">
           <div className="navbar-user-group">
             <div className="user-icon">
               <Icons name="user" aria-hidden />
             </div>
             {!user ? (
-              <span className="modal-open-btn">로그인 또는 회원가입</span>
+              <button
+                className="modal-open-btn"
+                onKeyDown={keyDownEventHandler}
+                onClick={() => {
+                  setOpenModal(true)
+                  setNavVisible(false)
+                }}
+                aria-disabled={!navVisible}
+              >
+                로그인 또는 회원가입
+              </button>
             ) : (
-              <button className="modal-open-btn" onClick={signOut}>
+              <button
+                className="modal-open-btn"
+                onClick={signOut}
+                aria-disabled={!navVisible || isLoading}
+                disabled={isLoading}
+              >
                 로그 아웃
               </button>
             )}
@@ -103,16 +115,29 @@ function NavBar({ setNavVisible, setOpenModal, navVisible }: Props) {
               </Link>
             </li>
             {user && (
-              <li className="lists-item">
-                <Icons name="user-check" width={24} height={24} aria-hidden />
-                <Link
-                  href={`/my-profile/${user?.id}`}
-                  tabIndex={navVisible ? 0 : -1}
-                  onClick={() => setNavVisible(false)}
-                >
-                  내정보
-                </Link>
-              </li>
+              <>
+                <li className="lists-item">
+                  <Icons name="user-check" width={24} height={24} aria-hidden />
+                  <Link
+                    href={`/my-profile/${user?.id}`}
+                    tabIndex={navVisible ? 0 : -1}
+                    onClick={() => setNavVisible(false)}
+                  >
+                    내정보
+                  </Link>
+                </li>
+
+                <li className="lists-item">
+                  <Icons name="book" width={24} height={24} aria-hidden />
+                  <Link
+                    href={'/study-create'}
+                    tabIndex={navVisible ? 0 : -1}
+                    onClick={() => setNavVisible(false)}
+                  >
+                    스터디 생성
+                  </Link>
+                </li>
+              </>
             )}
           </ul>
         </div>

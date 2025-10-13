@@ -1,12 +1,13 @@
 'use client'
 
 import '@/styles/sign-up/sign-up.css'
-import type { ChangeEvent, FormEvent } from 'react'
-import { useState } from 'react'
+import type { ChangeEvent } from 'react'
+import { useActionState, useEffect, useState } from 'react'
 
 import Button from '@/components/ui/button'
-import supabase from '@/libs/supabase/client'
-import { validatePassword } from '@/utils/validatePassword'
+
+import { signUpAndCreateProfile } from '../../libs/supabase/api/user'
+import { validatePassword } from '../../utils/validatePassword'
 
 interface PasswordHintProps {
   isValid: boolean
@@ -28,6 +29,7 @@ interface InputFieldProps {
   value: string
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
   placeholder?: string
+  name: string
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -36,6 +38,7 @@ const InputField: React.FC<InputFieldProps> = ({
   value,
   onChange,
   placeholder,
+  name,
 }) => (
   <div style={{ marginBottom: '12px' }}>
     {label && (
@@ -52,9 +55,55 @@ const InputField: React.FC<InputFieldProps> = ({
         border: '1px solid #ccc',
         borderRadius: '4px',
       }}
+      name={name}
     />
   </div>
 )
+
+interface FormState {
+  message: string | null
+  success: boolean
+}
+
+const initialFormState: FormState = {
+  message: null,
+  success: false,
+}
+
+async function signUpAction(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+  const confirmPassword = formData.get('confirmPassword') as string
+  const nickname = formData.get('nickname') as string
+
+  const valid = validatePassword(password)
+
+  if (!valid) {
+    return { message: '비밀번호 규칙을 확인해주세요.', success: false }
+  }
+
+  if (password !== confirmPassword) {
+    return { message: '비밀번호가 일치하지 않습니다.', success: false }
+  }
+
+  try {
+    await signUpAndCreateProfile({ email, password, nickname })
+
+    return {
+      message: '회원가입 성공! 이메일을 확인해주세요 📧',
+      success: true,
+    }
+  } catch (error: any) {
+    console.error(error)
+    return {
+      message: `회원가입 실패: ${error.message ?? '알 수 없는 오류'}`,
+      success: false,
+    }
+  }
+}
 
 export default function SignUpForm() {
   const [email, setEmail] = useState('')
@@ -62,56 +111,21 @@ export default function SignUpForm() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [nickname, setNickname] = useState('')
   const [isPasswordValid, setIsPasswordValid] = useState(true)
-  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
+  const [state, formAction] = useActionState(signUpAction, initialFormState)
 
-    const valid = validatePassword(password)
-    setIsPasswordValid(valid)
-    if (!valid) return alert('비밀번호 규칙을 확인해주세요.')
-    if (password !== confirmPassword)
-      return alert('비밀번호가 일치하지 않습니다.')
-
-    try {
-      setLoading(true)
-
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-      })
-
-      if (authError) throw authError
-      const user = authData.user
-      if (!user)
-        throw new Error('회원가입 후 사용자 정보를 불러올 수 없습니다.')
-
-      const { error: profileError } = await supabase.from('profile').insert([
-        {
-          id: user.id,
-          email: user.email,
-          nickname: nickname || '새 유저',
-          profile_url: '/avatar-default.png',
-        },
-      ])
-
-      if (profileError) throw profileError
-
-      alert('회원가입 성공! 이메일을 확인해주세요 📧')
+  useEffect(() => {
+    if (state.success) {
+      alert(state.message)
       setEmail('')
       setPassword('')
-      setConfirmPassword('')
       setNickname('')
-    } catch (err: any) {
-      console.error(err)
-      alert(`회원가입 실패: ${err.message}`)
-    } finally {
-      setLoading(false)
+      setConfirmPassword('')
     }
-  }
+  }, [state.message, state.success])
 
   return (
-    <form className="sign-up-form" onSubmit={handleSubmit}>
+    <form className="sign-up-form" action={formAction}>
       <h1 className="form-title">회원가입</h1>
 
       <InputField
@@ -119,6 +133,7 @@ export default function SignUpForm() {
         type="email"
         placeholder="example@inflab.com"
         value={email}
+        name="email"
         onChange={(e) => setEmail(e.target.value)}
       />
 
@@ -126,6 +141,7 @@ export default function SignUpForm() {
         label="닉네임"
         placeholder="닉네임을 입력하세요"
         value={nickname}
+        name="nickname"
         onChange={(e) => setNickname(e.target.value)}
       />
 
@@ -134,6 +150,7 @@ export default function SignUpForm() {
         type="password"
         placeholder="********"
         value={password}
+        name="password"
         onChange={(e) => setPassword(e.target.value)}
       />
 
@@ -142,12 +159,13 @@ export default function SignUpForm() {
         type="password"
         placeholder="********"
         value={confirmPassword}
+        name="confirmPassword"
         onChange={(e) => setConfirmPassword(e.target.value)}
       />
 
       <PasswordHint isValid={isPasswordValid} />
 
-      <Button text={loading ? '가입 중...' : '가입하기'} type="submit" />
+      <Button type="submit" />
     </form>
   )
 }

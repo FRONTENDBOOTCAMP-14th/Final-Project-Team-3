@@ -6,10 +6,9 @@ import { useEffect, useState } from 'react'
 
 import LoginModal from '@/components/loginmodal/loginmodal'
 import NavBar from '@/components/navbar'
+import { useAuth } from '@/hooks/useAuth'
 import useScrollLock from '@/hooks/useScrollLock'
 import '@/styles/header/header.css'
-
-import { useAuth } from '../../hooks/useAuth'
 
 import HeaderContent from './header-content'
 import HeaderSearch from './header-search'
@@ -17,7 +16,7 @@ import RegionCategories from './region-categories'
 
 function Header() {
   const searchParmas = useSearchParams()
-  const { user } = useAuth()
+  const { profile } = useAuth()
 
   const [searchVisible, setSearchVisible] = useState<boolean>(false)
   const [navVisible, setNavVisible] = useState<boolean>(false)
@@ -49,8 +48,6 @@ function Header() {
     '.region-container',
   ])
 
-  console.log(user)
-
   return (
     <>
       <header className="main-header">
@@ -78,6 +75,7 @@ function Header() {
           setCategoryVisible={setCategoryVisible}
           selectCategory={selectCategory}
           hidden={searchVisible ? true : false}
+          profile={profile}
         />
       </header>
 
