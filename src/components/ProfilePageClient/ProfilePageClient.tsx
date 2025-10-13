@@ -1,6 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import '@/styles/page-profile/profile-page.css'
+import { useEffect, useState } from 'react'
+
+import BannerUploader from '../study-create/fields/BannerUploader'
 
 interface Study {
   id: number
@@ -28,31 +31,30 @@ export default function ProfilePageClient({
   studies,
   favorites,
 }: ProfilePageClientProps) {
-  const [avatar, setAvatar] = useState<string>(user.avatarUrl)
-  const [isLocal, setIsLocal] = useState(false)
+  const [avatarFile, setAvatarFile] = useState<File | null>(null)
+  const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl)
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      const fileUrl = URL.createObjectURL(e.target.files[0])
-      setAvatar(fileUrl)
-      setIsLocal(true)
+  useEffect(() => {
+    if (avatarFile) {
+      const url = URL.createObjectURL(avatarFile)
+      setAvatarUrl(url)
+      return () => URL.revokeObjectURL(url)
+    } else {
+      setAvatarUrl(user.avatarUrl)
     }
-  }
+  }, [avatarFile, user.avatarUrl])
 
   return (
     <div className="main-wrapper">
       <div className="user-info-section">
-        <img
-          src={avatar}
-          alt={`${user.name}의 아바타`}
-          className="user-avatar"
-          width={100}
-          height={100}
-        />
+        <div className="avatar-uploader">
+          <BannerUploader value={avatarFile} onChange={setAvatarFile} />
+          <img src={avatarUrl} alt="User avatar" className="avatar-preview" />
+        </div>
+
         <div className="user-details">
           <h2 className="user-name">{user.name}</h2>
           <p className="user-email">{user.email}</p>
-          <input type="file" accept="image/*" onChange={handleAvatarChange} />
         </div>
       </div>
 
@@ -66,20 +68,16 @@ export default function ProfilePageClient({
                   src={study.imageUrl}
                   alt={study.title}
                   className="studybanner-img"
-                  width={300}
-                  height={150}
                 />
               </div>
               <div className="description-wrapper">
                 <div className="study-title">{study.title}</div>
                 {study.role && <div className="study-role">{study.role}</div>}
                 <div className="etc-description">
-                  {study.category && <p>카테고리: {study.category}</p>}
-                  {study.location && <p>위치: {study.location}</p>}
-                  {study.members !== undefined && (
-                    <p>멤버: {study.members}명</p>
-                  )}
-                  {study.likes !== undefined && <p>좋아요: {study.likes}</p>}
+                  <p>카테고리: {study.category}</p>
+                  <p>위치: {study.location}</p>
+                  <p>멤버: {study.members}명</p>
+                  <p>좋아요: {study.likes}</p>
                 </div>
               </div>
             </li>
@@ -97,17 +95,15 @@ export default function ProfilePageClient({
                   src={fav.imageUrl}
                   alt={fav.title}
                   className="studybanner-img"
-                  width={300}
-                  height={150}
                 />
               </div>
               <div className="description-wrapper">
                 <div className="study-title">{fav.title}</div>
                 <div className="etc-description">
-                  {fav.category && <p>카테고리: {fav.category}</p>}
-                  {fav.location && <p>위치: {fav.location}</p>}
-                  {fav.members !== undefined && <p>멤버: {fav.members}명</p>}
-                  {fav.likes !== undefined && <p>좋아요: {fav.likes}</p>}
+                  <p>카테고리: {fav.category}</p>
+                  <p>위치: {fav.location}</p>
+                  <p>멤버: {fav.members}명</p>
+                  <p>좋아요: {fav.likes}</p>
                 </div>
               </div>
             </li>
