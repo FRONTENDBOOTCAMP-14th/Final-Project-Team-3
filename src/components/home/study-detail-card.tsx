@@ -10,9 +10,6 @@ interface Props {
 }
 
 function StudyDetailCard({ studyData }: Props) {
-  // const mockData = Array.from({ length: 11 }, (_, i) => ({
-  //   id: i + 100,
-  // }))
   return (
     <ul className="region-study-lists">
       {studyData.map((item) => (

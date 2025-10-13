@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
       'img1.kakaocdn.net',
       'lh3.googleusercontent.com',
       'k.kakaocdn.net',
+      'zpnvibbualdrxjsrjnpc.supabase.co',
     ],
   },
 }

@@ -40,6 +40,16 @@
       &:hover {
         opacity: 0.8;
       }
+
+      &:disabled {
+        cursor: not-allowed;
+        background-color: var(--color-bg-tertiary);
+        color: var(--color-cancel);
+      }
+
+      &.cancel-btn {
+        background-color: var(--color-cancel);
+      }
     }
   }
 }

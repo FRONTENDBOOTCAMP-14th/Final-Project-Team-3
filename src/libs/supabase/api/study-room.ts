@@ -1,5 +1,5 @@
 'use server'
-import type { Profile, StudyRoom } from '..'
+import type { Profile, StudyRoom, StudyRoomRequests } from '..'
 import { createClient } from '../server'
 
 export const readStudyRoom = async (): Promise<StudyRoom[]> => {
@@ -93,4 +93,69 @@ export const getOwnerProfile = async (
   }
 
   return profileData as Profile
+}
+
+export const getStudyRoomRequests = async (
+  studyId: string
+): Promise<StudyRoomRequests[] | null> => {
+  if (!studyId) return null
+
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('study_requests')
+    .select('*')
+    .eq('room_id', studyId)
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return data ?? []
+}
+
+export const StudyRoomRequestsFn = async (
+  studyId: string,
+  userId: string
+): Promise<StudyRoomRequests | null> => {
+  if (!studyId || !userId) return null
+
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('study_requests')
+    .insert([
+      {
+        room_id: studyId,
+        user_id: userId,
+        status: 'PENDING',
+      },
+    ])
+    .select('*')
+    .single()
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return data
+}
+
+export const studyRoomRequestCancel = async (
+  studyId: string,
+  userId: string
+): Promise<void | null> => {
+  if (!studyId || !userId) return null
+
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('study_requests')
+    .delete()
+    .eq('room_id', studyId)
+    .eq('user_id', userId)
+
+  if (error) {
+    throw new Error(error.message)
+  }
 }
