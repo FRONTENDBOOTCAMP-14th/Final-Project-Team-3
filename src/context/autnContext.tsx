@@ -1,15 +1,16 @@
 'use client'
 import type { Session, User } from '@supabase/supabase-js'
-import type { PropsWithChildren } from 'react'
-import { createContext, useEffect, useMemo, useState } from 'react'
+import type { PropsWithChildren, SetStateAction } from 'react'
+import React, { createContext, useEffect, useMemo, useState } from 'react'
 
-import supabase from '../libs/supabase'
+import supabase from '../libs/supabase/client'
 
 export interface AuthContextValue {
   user: User | null
   session: Session | null
   isLoading: boolean
   isAuthenticated: boolean
+  setUser: React.Dispatch<SetStateAction<User | null>>
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null)
@@ -53,6 +54,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const contextState: AuthContextValue = useMemo(
     () => ({
       user,
+      setUser,
       session,
       isLoading,
       isAuthenticated: !isLoading && !!user,

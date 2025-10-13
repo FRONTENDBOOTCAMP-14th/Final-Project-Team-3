@@ -9,12 +9,15 @@ import NavBar from '@/components/navbar'
 import useScrollLock from '@/hooks/useScrollLock'
 import '@/styles/header/header.css'
 
+import { useAuth } from '../../hooks/useAuth'
+
 import HeaderContent from './header-content'
 import HeaderSearch from './header-search'
 import RegionCategories from './region-categories'
 
 function Header() {
   const searchParmas = useSearchParams()
+  const { user } = useAuth()
 
   const [searchVisible, setSearchVisible] = useState<boolean>(false)
   const [navVisible, setNavVisible] = useState<boolean>(false)
@@ -45,6 +48,8 @@ function Header() {
     '.main-header',
     '.region-container',
   ])
+
+  console.log(user)
 
   return (
     <>

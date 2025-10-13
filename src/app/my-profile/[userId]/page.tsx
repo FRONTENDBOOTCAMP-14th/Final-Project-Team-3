@@ -1,4 +1,8 @@
+import { redirect } from 'next/navigation'
+
 import ProfilePageClient from '@/components/ProfilePageClient/ProfilePageClient'
+
+import { createClient } from '../../../libs/supabase/server'
 
 interface PageProps {
   params: Promise<{ userId: string }>
@@ -6,6 +10,17 @@ interface PageProps {
 
 export default async function MyProfilePage({ params }: PageProps) {
   const { userId } = await params
+  const supabase = await createClient()
+
+  const {
+    data: { user: userData },
+  } = await supabase.auth.getUser()
+
+  console.log(userData)
+
+  if (!userData) {
+    redirect('/')
+  }
 
   const user = {
     name: `사용자 ${userId}`,

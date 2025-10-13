@@ -1,18 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
-
-import type {
-  Database,
-  Tables,
-  TablesInsert,
-  TablesUpdate,
-} from './database.types'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string
-const supabaseAPIKey = process.env.NEXT_PUBLIC_SUPABASE_API_KEY as string
-
-const supabase = createClient<Database>(supabaseUrl, supabaseAPIKey)
-
-export default supabase
+import type { Tables, TablesInsert, TablesUpdate } from './database.types'
 
 // 프로필 타입
 export type Profile = Tables<'profile'>

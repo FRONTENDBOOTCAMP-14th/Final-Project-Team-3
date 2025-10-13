@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useActionState, useRef, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 
@@ -8,7 +9,8 @@ import '@/styles/login-modal/login-modal.css'
 import useFocusTrap from '../../hooks/useFocusTrap'
 import useKeyEvent from '../../hooks/useKeyEvent'
 import useScrollLock from '../../hooks/useScrollLock'
-import supabase from '../../libs/supabase'
+import { socialLogin } from '../../libs/supabase/api/auth'
+import supabase from '../../libs/supabase/client'
 import Icons from '../icons'
 
 async function loginAction(
@@ -47,6 +49,7 @@ export default function LoginModal({ openModal, setOpenModal }: Props) {
   const modalRef = useRef<HTMLDivElement | null>(null)
   const [socialError, setSocialError] = useState<string | null>(null)
   const [state, action] = useActionState(loginAction, null)
+  const pathname = usePathname()
 
   useFocusTrap(modalRef, openModal)
   useScrollLock(openModal, 'body')
@@ -56,16 +59,22 @@ export default function LoginModal({ openModal, setOpenModal }: Props) {
 
   const signInKakao = async () => {
     setSocialError(null)
-    const { error } = await supabase.auth.signInWithOAuth({ provider: 'kakao' })
-    if (error) setSocialError(error.message)
+    try {
+      await socialLogin('kakao', pathname)
+      setOpenModal((prev) => !prev)
+    } catch (error) {
+      setSocialError(error instanceof Error ? error.message : String(error))
+    }
   }
 
   const signInGoogle = async () => {
     setSocialError(null)
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-    })
-    if (error) setSocialError(error.message)
+    try {
+      await socialLogin('google', pathname)
+      setOpenModal((prev) => !prev)
+    } catch (error) {
+      setSocialError(error instanceof Error ? error.message : String(error))
+    }
   }
 
   return (
