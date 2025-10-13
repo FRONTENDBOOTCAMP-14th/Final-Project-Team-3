@@ -1,6 +1,7 @@
 // actions/auth.ts (변경 없음)
 'use server'
 
+import type { Profile } from '..'
 import { createClient } from '../server'
 
 interface SignUpData {
@@ -26,9 +27,27 @@ export async function signUpAndCreateProfile(data: SignUpData): Promise<void> {
       id: user.id,
       email: user.email,
       nickname: data.nickname || '새 유저',
-      profile_url: '/avatar-default.png',
+      profile_url: '/images/default-avatar.png',
     },
   ])
 
   if (profileError) throw profileError
+}
+
+export async function getUserProfile(userId: string): Promise<Profile | null> {
+  const supabase = await createClient()
+
+  if (!userId) return null
+
+  const { data: profileData, error: profileError } = await supabase
+    .from('profile')
+    .select('*')
+    .eq('id', userId)
+    .single()
+
+  if (profileError) {
+    throw new Error(profileError.message)
+  }
+
+  return profileData
 }

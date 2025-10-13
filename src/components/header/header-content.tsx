@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import type { Dispatch, SetStateAction } from 'react'
 import React from 'react'
 
 import Icons from '@/components/icons'
@@ -10,6 +11,7 @@ interface Props {
   setSearchVisible: (value: React.SetStateAction<boolean>) => void
   setNavVisible: (value: React.SetStateAction<boolean>) => void
   setCategoryVisible: (value: React.SetStateAction<boolean>) => void
+  setUserProfile: Dispatch<SetStateAction<Profile | null>>
   selectCategory: string
   hidden: boolean
   profile: Profile | null

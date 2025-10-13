@@ -1,28 +1,35 @@
 'use client'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import type { Dispatch, SetStateAction } from 'react'
 import React, { useRef, useState } from 'react'
 
 import Icons from '@/components/icons'
 import { useAuth } from '@/hooks/useAuth'
 import useFocusTrap from '@/hooks/useFocusTrap'
 import useKeyEvent from '@/hooks/useKeyEvent'
+import type { Profile } from '@/libs/supabase'
 
 import '@/styles/navbar/navbar.css'
 
 interface Props {
   setNavVisible: (value: React.SetStateAction<boolean>) => void
   setOpenModal: (value: React.SetStateAction<boolean>) => void
-
+  setUserProfile: Dispatch<SetStateAction<Profile | null>>
   navVisible: boolean
 }
 
-function NavBar({ setNavVisible, setOpenModal, navVisible }: Props) {
+function NavBar({
+  setNavVisible,
+  setOpenModal,
+  navVisible,
+  setUserProfile,
+}: Props) {
   const navRef = useRef<HTMLElement | null>(null)
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
 
-  const { user, setUser, setProfile } = useAuth()
+  const { user, setUser } = useAuth()
 
   useFocusTrap(navRef, navVisible)
 
@@ -52,7 +59,7 @@ function NavBar({ setNavVisible, setOpenModal, navVisible }: Props) {
       .then(async (res) => {
         if (res.ok) {
           setUser(null)
-          setProfile(null)
+          setUserProfile(null)
           router.refresh()
 
           alert('로그아웃에 성공 하였습니다.')

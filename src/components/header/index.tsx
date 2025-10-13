@@ -10,13 +10,16 @@ import { useAuth } from '@/hooks/useAuth'
 import useScrollLock from '@/hooks/useScrollLock'
 import '@/styles/header/header.css'
 
+import type { Profile } from '../../libs/supabase'
+import { getUserProfile } from '../../libs/supabase/api/user'
+
 import HeaderContent from './header-content'
 import HeaderSearch from './header-search'
 import RegionCategories from './region-categories'
 
 function Header() {
   const searchParmas = useSearchParams()
-  const { profile } = useAuth()
+  const { user } = useAuth()
 
   const [searchVisible, setSearchVisible] = useState<boolean>(false)
   const [navVisible, setNavVisible] = useState<boolean>(false)
@@ -26,6 +29,7 @@ function Header() {
   )
   const [isDesktop, setIsDesktop] = useState<boolean>(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const [userProfile, setUserProfile] = useState<Profile | null>(null)
 
   useEffect(() => {
     const media = window.matchMedia('(min-width: 64rem)')
@@ -42,6 +46,17 @@ function Header() {
       media.removeEventListener('change', resizeHandler)
     }
   }, [])
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (user) {
+        const profileData = await getUserProfile(user.id)
+        setUserProfile(profileData)
+      }
+    }
+
+    fetchProfile()
+  }, [user])
 
   useScrollLock(navVisible || categoryVisible, [
     '.main-header',
@@ -75,7 +90,8 @@ function Header() {
           setCategoryVisible={setCategoryVisible}
           selectCategory={selectCategory}
           hidden={searchVisible ? true : false}
-          profile={profile}
+          profile={userProfile}
+          setUserProfile={setUserProfile}
         />
       </header>
 
@@ -83,6 +99,7 @@ function Header() {
         setNavVisible={setNavVisible}
         navVisible={navVisible}
         setOpenModal={setOpenModal}
+        setUserProfile={setUserProfile}
       />
 
       <RegionCategories

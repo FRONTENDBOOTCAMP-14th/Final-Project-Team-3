@@ -39,7 +39,7 @@ export async function GET(request: Request) {
                 user.user_metadata?.name ??
                 user.email?.split('@')[0],
               profile_url:
-                user.user_metadata?.avatar_url ?? '/default-avatar.png',
+                user.user_metadata?.avatar_url ?? '/images/default-avatar.png',
             },
           ],
           {

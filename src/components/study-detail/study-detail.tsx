@@ -28,25 +28,14 @@ function StudyDetail({ studyRoomData, ownerProfile }: Props) {
   return (
     <div className="detail-container">
       <div className="detail-banner">
-        {studyRoomData.banner_image ? (
-          <Image
-            src={studyRoomData.banner_image}
-            alt={`${studyRoomData.title} 이미지`}
-            fill
-            className="studybanner-img"
-            aria-hidden="true"
-            priority
-          />
-        ) : (
-          <Image
-            src={'/images/no-image.png'}
-            alt="no-image"
-            fill
-            className="studybanner-img"
-            aria-hidden="true"
-            priority
-          />
-        )}
+        <Image
+          src={studyRoomData.banner_image ?? '/images/no-image.png'}
+          alt={`${studyRoomData.title} 이미지`}
+          fill
+          className="studybanner-img"
+          aria-hidden="true"
+          priority
+        />
       </div>
 
       <div className="detail-description">

@@ -22,7 +22,7 @@ export default async function MyProfilePage({ params }: PageProps) {
   const user = {
     name: `사용자 ${userId}`,
     email: `user${userId}@example.com`,
-    avatarUrl: '/avatar-default.png',
+    avatarUrl: '/images/default-avatar.png',
   }
 
   const studies = [
