@@ -71,6 +71,7 @@
 
   & .info-name {
     font-size: var(--font-sm);
+    font-weight: 600;
     color: var(--color-text-primary);
 
     overflow: hidden;

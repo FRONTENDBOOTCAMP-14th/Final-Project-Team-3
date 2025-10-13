@@ -19,12 +19,14 @@ interface Props {
   studyRoomData: StudyRoom
   ownerProfile: Profile
   studyRoomRequestsData: StudyRoomRequests[] | null
+  requestsListsData: Profile[] | null
 }
 
 function StudyDetail({
   studyRoomData,
   ownerProfile,
   studyRoomRequestsData,
+  requestsListsData,
 }: Props) {
   const { user } = useAuth()
 
@@ -45,9 +47,14 @@ function StudyDetail({
       try {
         if (!studyRoomData.id || !user?.id) return
 
-        const data = await StudyRoomRequestsFn(studyRoomData.id, user?.id)
+        const data = await StudyRoomRequestsFn(
+          studyRoomData.id,
+          user?.id,
+          'PENDING'
+        )
 
         setRequestData(data)
+        alert('신청이 완료 되었습니다.')
       } catch (e) {
         alert(`신청 에러 ${e.message}`)
       }
@@ -62,7 +69,7 @@ function StudyDetail({
         await studyRoomRequestCancel(studyRoomData.id, user?.id)
         setRequestData(null)
       } catch (e) {
-        alert(`신청 에러 ${e.message}`)
+        alert(`취소 에러 ${e.message}`)
       }
     })
   }
@@ -104,6 +111,22 @@ function StudyDetail({
                     disabled={isPending}
                   >
                     신청 취소
+                  </button>
+                ) : requestData?.user_id === user?.id &&
+                  requestData?.status === 'REJECTED' ? (
+                  <button
+                    type="button"
+                    disabled={requestData?.status === 'REJECTED'}
+                  >
+                    신청 불가
+                  </button>
+                ) : requestData?.user_id === user?.id &&
+                  requestData?.status === 'APPROVED' ? (
+                  <button
+                    type="button"
+                    disabled={requestData?.status === 'APPROVED'}
+                  >
+                    참여 중
                   </button>
                 ) : (
                   <button
@@ -209,6 +232,7 @@ function StudyDetail({
           isOwner={isOwner}
           user={user}
           ownerProfile={ownerProfile}
+          requestsListsData={requestsListsData}
         />
       )}
     </div>

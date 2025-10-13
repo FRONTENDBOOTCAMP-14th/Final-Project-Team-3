@@ -114,33 +114,6 @@ export const getStudyRoomRequests = async (
   return data ?? []
 }
 
-export const StudyRoomRequestsFn = async (
-  studyId: string,
-  userId: string
-): Promise<StudyRoomRequests | null> => {
-  if (!studyId || !userId) return null
-
-  const supabase = await createClient()
-
-  const { data, error } = await supabase
-    .from('study_requests')
-    .insert([
-      {
-        room_id: studyId,
-        user_id: userId,
-        status: 'PENDING',
-      },
-    ])
-    .select('*')
-    .single()
-
-  if (error) {
-    throw new Error(error.message)
-  }
-
-  return data
-}
-
 export const studyRoomRequestCancel = async (
   studyId: string,
   userId: string
@@ -158,4 +131,82 @@ export const studyRoomRequestCancel = async (
   if (error) {
     throw new Error(error.message)
   }
+}
+
+export const StudyRoomRequestsFn = async (
+  studyId: string,
+  userId: string,
+  status: 'PENDING' | 'REJECTED' | 'APPROVED'
+): Promise<StudyRoomRequests | null> => {
+  if (!studyId || !userId) return null
+
+  const supabase = await createClient()
+
+  switch (status) {
+    case 'PENDING': {
+      const { data, error } = await supabase
+        .from('study_requests')
+        .insert([
+          {
+            room_id: studyId,
+            user_id: userId,
+            status: 'PENDING',
+            request_message: '승인 대기중 입니다.',
+          },
+        ])
+        .select('*')
+        .single()
+
+      if (error) {
+        throw new Error(error.message)
+      }
+
+      return data
+    }
+
+    case 'REJECTED':
+    case 'APPROVED': {
+      const newStatus = status
+      const newMessage =
+        status === 'REJECTED' ? '승인 거절 되었습니다.' : '승인 되었습니다.'
+
+      const { data, error } = await supabase
+        .from('study_requests')
+        .update({
+          status: newStatus,
+          request_message: newMessage,
+        })
+        .eq('room_id', studyId)
+        .eq('user_id', userId)
+        .select('*')
+        .single()
+
+      if (error) {
+        throw new Error(error.message)
+      }
+
+      return data
+    }
+
+    default:
+      return null
+  }
+}
+
+export const studyRoomRequestsLists = async (
+  studyId: string
+): Promise<Profile[] | null> => {
+  const supabase = await createClient()
+
+  const { data } = await supabase
+    .from('study_requests')
+    .select('profile(*)')
+    .eq('room_id', studyId)
+    .eq('status', 'PENDING')
+
+  if (!data) return null
+
+  const profileLists = data.map((item) => item.profile)
+
+  return profileLists
 }

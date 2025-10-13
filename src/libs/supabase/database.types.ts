@@ -106,6 +106,13 @@ export interface Database {
             referencedRelation: 'study_room'
             referencedColumns: ['id']
           },
+          {
+            foreignKeyName: 'study_requests_user_id_fkey1'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profile'
+            referencedColumns: ['id']
+          },
         ]
       }
       study_room: {

@@ -3,6 +3,7 @@ import {
   getOwnerProfile,
   getStudyRoomDetail,
   getStudyRoomRequests,
+  studyRoomRequestsLists,
 } from '@/libs/supabase/api/study-room'
 
 interface Props {
@@ -13,16 +14,18 @@ async function StudyDetailPage({ params }: Props) {
   const { studyId } = await params
 
   // promise.all 사용 예정
-  const data = await getStudyRoomDetail(studyId)
+  const studyRoomData = await getStudyRoomDetail(studyId)
   const ownerProfileData = await getOwnerProfile(studyId)
   const studyRoomRequestsData = await getStudyRoomRequests(studyId)
+  const requestsListsData = await studyRoomRequestsLists(studyId)
 
   return (
     <section>
       <StudyDetail
-        studyRoomData={data}
+        studyRoomData={studyRoomData}
         ownerProfile={ownerProfileData}
         studyRoomRequestsData={studyRoomRequestsData}
+        requestsListsData={requestsListsData}
       />
     </section>
   )
