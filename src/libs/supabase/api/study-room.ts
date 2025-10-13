@@ -1,7 +1,9 @@
-import type { StudyRoom } from '..'
-import supabase from '../client'
+'use server'
+import type { Profile, StudyRoom } from '..'
+import { createClient } from '../server'
 
 export const readStudyRoom = async (): Promise<StudyRoom[]> => {
+  const supabase = await createClient()
   const { data: studyRoomData, error } = await supabase
     .from('study_room')
     .select('*')
@@ -17,6 +19,7 @@ export const readStudyRoom = async (): Promise<StudyRoom[]> => {
 export const getStudyRoomDetail = async (
   studyRoomId: string
 ): Promise<StudyRoom> => {
+  const supabase = await createClient()
   const { data: studyRoomDetailData, error } = await supabase
     .from('study_room')
     .select('*')
@@ -35,6 +38,7 @@ export const filterStudyRoom = async (
   depth?: string,
   search?: string
 ): Promise<StudyRoom[]> => {
+  const supabase = await createClient()
   let query = supabase.from('study_room').select('*')
 
   if (region && depth && search) {
@@ -58,4 +62,35 @@ export const filterStudyRoom = async (
     throw new Error(error.message)
   }
   return queryData
+}
+
+export const getOwnerProfile = async (
+  studyRoomId: string
+): Promise<Profile> => {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('study_room')
+    .select('owner_id')
+    .eq('id', studyRoomId)
+    .single()
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  if (!data.owner_id) {
+    throw new Error('모임장의 정보가 없습니다.')
+  }
+
+  const { data: profileData, error: profileError } = await supabase
+    .from('profile')
+    .select('*')
+    .eq('id', data.owner_id)
+    .single()
+
+  if (profileError) {
+    throw new Error(profileError.message)
+  }
+
+  return profileData as Profile
 }

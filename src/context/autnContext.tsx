@@ -8,7 +8,6 @@ import supabase from '../libs/supabase/client'
 export interface AuthContextValue {
   user: User | null
   session: Session | null
-  isLoading: boolean
   isAuthenticated: boolean
   setUser: React.Dispatch<SetStateAction<User | null>>
 }
@@ -16,29 +15,14 @@ export interface AuthContextValue {
 export const AuthContext = createContext<AuthContextValue | null>(null)
 AuthContext.displayName = 'AuthContext'
 
-export function AuthProvider({ children }: PropsWithChildren) {
-  const [user, setUser] = useState<User | null>(null)
+export function AuthProvider({
+  children,
+  user: initialUser,
+}: PropsWithChildren<Pick<AuthContextValue, 'user'>>) {
+  const [user, setUser] = useState<User | null>(initialUser)
   const [session, setSession] = useState<Session | null>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    const getSession = async () => {
-      try {
-        setIsLoading(true)
-
-        const { data } = await supabase.auth.getSession()
-
-        setSession(data.session)
-        setUser(data.session?.user ?? null)
-      } catch (error) {
-        throw new Error(error.message)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    getSession()
-
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         setSession(session)
@@ -56,10 +40,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
       user,
       setUser,
       session,
-      isLoading,
-      isAuthenticated: !isLoading && !!user,
+      isAuthenticated: !!user,
     }),
-    [isLoading, session, user]
+    [session, user]
   )
 
   return (

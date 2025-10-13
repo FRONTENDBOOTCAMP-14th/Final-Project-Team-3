@@ -4,18 +4,19 @@ import { useState } from 'react'
 
 import Icons from '@/components/icons'
 import CategoryUI from '@/components/ui/category-ui'
+import { useAuth } from '@/hooks/useAuth'
+import type { Profile, StudyRoom } from '@/libs/supabase'
 
 import '@/styles/study-detail/study-detail.css'
-import { useAuth } from '../../hooks/useAuth'
-import type { StudyRoom } from '../../libs/supabase'
 
 import DetailModal from './detail-modal'
 
 interface Props {
   studyRoomData: StudyRoom
+  ownerProfile: Profile
 }
 
-function StudyDetail({ studyRoomData }: Props) {
+function StudyDetail({ studyRoomData, ownerProfile }: Props) {
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [modalType, setModalType] = useState<'member' | 'applicant' | null>(
     null
@@ -27,25 +28,14 @@ function StudyDetail({ studyRoomData }: Props) {
   return (
     <div className="detail-container">
       <div className="detail-banner">
-        {studyRoomData.banner_image ? (
-          <Image
-            src={studyRoomData.banner_image}
-            alt={`${studyRoomData.title} 이미지`}
-            fill
-            className="studybanner-img"
-            aria-hidden="true"
-            priority
-          />
-        ) : (
-          <Image
-            src={'/images/no-image.png'}
-            alt="no-image"
-            fill
-            className="studybanner-img"
-            aria-hidden="true"
-            priority
-          />
-        )}
+        <Image
+          src={studyRoomData.banner_image ?? '/images/no-image.png'}
+          alt={`${studyRoomData.title} 이미지`}
+          fill
+          className="studybanner-img"
+          aria-hidden="true"
+          priority
+        />
       </div>
 
       <div className="detail-description">
@@ -89,7 +79,7 @@ function StudyDetail({ studyRoomData }: Props) {
           <div className="owner-member">
             <div className="owner-member-wrapper">
               <Image
-                src={'/images/no-image.png'}
+                src={ownerProfile.profile_url ?? '/images/no-image.png'}
                 alt="no-image"
                 width={80}
                 height={80}
@@ -146,6 +136,8 @@ function StudyDetail({ studyRoomData }: Props) {
           setModalType={setModalType}
           modalType={modalType}
           isOwner={isOwner}
+          user={user}
+          ownerProfile={ownerProfile}
         />
       )}
     </div>

@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
     // ignoreBuildErrors: true,
   },
   turbopack: {},
+  images: {
+    domains: [
+      'img1.kakaocdn.net',
+      'lh3.googleusercontent.com',
+      'k.kakaocdn.net',
+    ],
+  },
 }
 
 export default nextConfig

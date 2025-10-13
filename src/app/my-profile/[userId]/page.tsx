@@ -1,8 +1,7 @@
 import { redirect } from 'next/navigation'
 
 import ProfilePageClient from '@/components/ProfilePageClient/ProfilePageClient'
-
-import { createClient } from '../../../libs/supabase/server'
+import { createClient } from '@/libs/supabase/server'
 
 interface PageProps {
   params: Promise<{ userId: string }>
@@ -16,8 +15,6 @@ export default async function MyProfilePage({ params }: PageProps) {
     data: { user: userData },
   } = await supabase.auth.getUser()
 
-  console.log(userData)
-
   if (!userData) {
     redirect('/')
   }
@@ -25,7 +22,7 @@ export default async function MyProfilePage({ params }: PageProps) {
   const user = {
     name: `사용자 ${userId}`,
     email: `user${userId}@example.com`,
-    avatarUrl: '/avatar-default.png',
+    avatarUrl: '/images/default-avatar.png',
   }
 
   const studies = [

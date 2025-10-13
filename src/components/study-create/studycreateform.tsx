@@ -4,7 +4,7 @@ import '@/styles/study-create/study-create.css'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-import supabase from '@/libs/supabase'
+import supabase from '../../libs/supabase/client'
 
 import BannerUploader from './fields/BannerUploader'
 import CategoryField from './fields/CategoryField'

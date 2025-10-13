@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 import { createClient } from '@/libs/supabase/server'
@@ -28,18 +29,24 @@ export async function GET(request: Request) {
         .single()
 
       if (!existingProfile) {
-        const { error } = await supabase.from('profile').insert([
+        const { error } = await supabase.from('profile').upsert(
+          [
+            {
+              id: user.id,
+              email: user.email,
+              nickname:
+                user.user_metadata?.full_name ??
+                user.user_metadata?.name ??
+                user.email?.split('@')[0],
+              profile_url:
+                user.user_metadata?.avatar_url ?? '/images/default-avatar.png',
+            },
+          ],
           {
-            id: user.id,
-            email: user.email,
-            nickname:
-              user.user_metadata?.full_name ??
-              user.user_metadata?.name ??
-              user.email?.split('@')[0],
-            profile_url:
-              user.user_metadata?.avatar_url ?? '/default-avatar.png',
-          },
-        ])
+            onConflict: 'id',
+            ignoreDuplicates: false,
+          }
+        )
 
         if (error) {
           return NextResponse.redirect(
@@ -48,9 +55,9 @@ export async function GET(request: Request) {
         }
       }
     }
-
+    revalidatePath('/', 'layout')
     return NextResponse.redirect(`${origin}${next}`)
   }
-
+  revalidatePath('/', 'layout')
   return NextResponse.redirect('/')
 }

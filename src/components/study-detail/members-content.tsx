@@ -1,20 +1,23 @@
 import '@/styles/study-detail/members-modal.css'
+
 import Image from 'next/image'
 
 import Icons from '@/components/icons'
+import type { Profile } from '@/libs/supabase'
 
 interface Props {
   isOwner: boolean
+  ownerProfile: Profile
 }
 
-function MembersContent({ isOwner }: Props) {
+function MembersContent({ isOwner, ownerProfile }: Props) {
   return (
     <>
       <h2 className="member-list-heading">모임장</h2>
       <div className="member-list-owner">
         <div className="owner-image">
           <Image
-            src={'/images/no-image.png'}
+            src={ownerProfile.profile_url ?? '/images/no-image.png'}
             alt="no-image"
             width={80}
             height={80}
@@ -27,12 +30,9 @@ function MembersContent({ isOwner }: Props) {
           />
         </div>
         <div className="member-info">
-          <span className="info-name">이름</span>
+          <span className="info-name">{ownerProfile.nickname}</span>
           <p className="info-bio">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam
-            consequuntur dignissimos tempora eius quia dolores voluptate porro
-            debitis tenetur culpa ipsa facilis fuga, ut commodi rerum error
-            magni fugiat natus.
+            {ownerProfile.bio ?? '자기소개 글이 없습니다..'}
           </p>
         </div>
       </div>
