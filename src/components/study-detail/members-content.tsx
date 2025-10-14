@@ -90,7 +90,9 @@ function MembersContent({ isOwner, ownerProfile, participantsMembers }: Props) {
                         disabled={isPending && userId.includes(member.id)}
                         onClick={() => deportationMember(member.id)}
                       >
-                        {isPending ? '추방 중...' : '추방'}
+                        {isPending && userId.includes(member.id)
+                          ? '추방 중...'
+                          : '추방'}
                       </button>
                     </div>
                   )}

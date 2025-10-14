@@ -1,7 +1,8 @@
 import {
   filterStudyRoom,
-  readStudyRoom,
-} from '../../libs/supabase/api/study-room'
+  getAllStudyRoom,
+  getLatestStudyRoom,
+} from '@/libs/supabase/api/study-room'
 
 import LatestStudy from './latest-study'
 import RegionStudy from './region-study'
@@ -13,16 +14,16 @@ interface Props {
 }
 
 async function HomeComponents({ region, depth, search }: Props) {
-  const allData = await readStudyRoom()
+  const latestData = await getLatestStudyRoom()
 
   const filterData =
     !region && !depth && !search
-      ? await readStudyRoom()
+      ? await getAllStudyRoom()
       : await filterStudyRoom(region, depth, search)
 
   return (
     <>
-      <LatestStudy studyData={allData} />
+      <LatestStudy studyData={latestData} />
       <RegionStudy studyData={filterData} />
     </>
   )

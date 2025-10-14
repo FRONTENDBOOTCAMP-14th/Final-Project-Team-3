@@ -1,8 +1,8 @@
 import useSWR from 'swr'
 
-import type { StudyRoom } from '../../libs/supabase'
-import { getStudyRoomParticipants } from '../../libs/supabase/api/study-room'
-import Icons from '../icons'
+import Icons from '@/components/icons'
+import type { StudyRoom } from '@/libs/supabase'
+import { getStudyRoomParticipants } from '@/libs/supabase/api/study-room'
 
 import '@/styles/ui/category-ui.css'
 
@@ -10,11 +10,16 @@ interface Props {
   studyData: StudyRoom
 }
 
-const fetcher = (studyId) => getStudyRoomParticipants(studyId)
+const fetcher = (studyId: string) => getStudyRoomParticipants(studyId)
 
 function CategoryUI({ studyData }: Props) {
-  const { data } = useSWR(['participants', studyData.id], () =>
-    fetcher(studyData.id)
+  const { data } = useSWR(
+    ['participants', studyData.id],
+    () => fetcher(studyData.id),
+    {
+      dedupingInterval: 5000,
+      revalidateOnFocus: false,
+    }
   )
 
   return (

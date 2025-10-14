@@ -2,12 +2,26 @@
 import type { Profile, StudyRoom, StudyRoomRequests } from '..'
 import { createClient } from '../server'
 
-export const readStudyRoom = async (): Promise<StudyRoom[]> => {
+export const getLatestStudyRoom = async (): Promise<StudyRoom[]> => {
   const supabase = await createClient()
   const { data: studyRoomData, error } = await supabase
     .from('study_room')
     .select('*')
     .order('created_at', { ascending: false })
+    .limit(15)
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return studyRoomData ?? []
+}
+
+export const getAllStudyRoom = async (): Promise<StudyRoom[]> => {
+  const supabase = await createClient()
+  const { data: studyRoomData, error } = await supabase
+    .from('study_room')
+    .select('*')
 
   if (error) {
     throw new Error(error.message)
@@ -246,7 +260,7 @@ export const studyRoomRequestsLists = async (
 
   const profileLists = data.map((item) => item.profile)
 
-  return profileLists
+  return profileLists ?? []
 }
 
 export const getStudyRoomParticipants = async (
@@ -267,7 +281,7 @@ export const getStudyRoomParticipants = async (
 
   const profileLists = data.map((item) => item.profile)
 
-  return profileLists
+  return profileLists ?? []
 }
 
 export const studyRoomDeportation = async (
