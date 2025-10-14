@@ -48,7 +48,7 @@ function ApplicantContent({ requestsListsData }: Props) {
 
   return (
     <div>
-      <h2 className="member-list-heading">신청 멤버</h2>
+      <h2 className="member-list-heading">신청 멤버 ({userLists?.length})</h2>
       <ul className="member-lists">
         {userLists?.length !== 0 ? (
           userLists?.map((user) => (

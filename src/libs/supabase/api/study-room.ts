@@ -161,20 +161,15 @@ export const StudyRoomRequestsFn = async (
         throw new Error(error.message)
       }
 
-      return data
+      return data as StudyRoomRequests
     }
 
-    case 'REJECTED':
-    case 'APPROVED': {
-      const newStatus = status
-      const newMessage =
-        status === 'REJECTED' ? '승인 거절 되었습니다.' : '승인 되었습니다.'
-
+    case 'REJECTED': {
       const { data, error } = await supabase
         .from('study_requests')
         .update({
-          status: newStatus,
-          request_message: newMessage,
+          status: 'REJECTED',
+          request_message: '승인이 거절 되었습니다.',
         })
         .eq('room_id', studyId)
         .eq('user_id', userId)
@@ -185,7 +180,50 @@ export const StudyRoomRequestsFn = async (
         throw new Error(error.message)
       }
 
-      return data
+      return data as StudyRoomRequests
+    }
+
+    case 'APPROVED': {
+      const { data: requestsData, error: requestsError } = await supabase
+        .from('study_requests')
+        .update({
+          status: 'APPROVED',
+          request_message: '승인 되었습니다.',
+        })
+        .eq('room_id', studyId)
+        .eq('user_id', userId)
+        .select('*')
+        .single()
+
+      if (requestsError) {
+        throw new Error(requestsError.message)
+      }
+
+      if (!requestsData) {
+        return null
+      }
+
+      if (requestsData.status !== 'APPROVED') {
+        return requestsData as StudyRoomRequests
+      }
+
+      const { error: participantError } = await supabase
+        .from('study_participants')
+        .insert([
+          {
+            room_id: studyId,
+            user_id: userId,
+          },
+        ])
+        .select('*')
+        .single()
+
+      if (participantError) {
+        new Error(participantError.message)
+        return requestsData
+      }
+
+      return requestsData
     }
 
     default:
@@ -209,4 +247,56 @@ export const studyRoomRequestsLists = async (
   const profileLists = data.map((item) => item.profile)
 
   return profileLists
+}
+
+export const getStudyRoomParticipants = async (
+  studyId: string
+): Promise<Profile[] | null> => {
+  const supabase = await createClient()
+
+  const { data, error: participantsError } = await supabase
+    .from('study_participants')
+    .select('profile(*)')
+    .eq('room_id', studyId)
+
+  if (participantsError) {
+    throw new Error(participantsError.message)
+  }
+
+  if (!data) return null
+
+  const profileLists = data.map((item) => item.profile)
+
+  return profileLists
+}
+
+export const studyRoomDeportation = async (
+  userId: string,
+  status: 'DEPORTATION'
+) => {
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('study_participants')
+    .delete()
+    .eq('user_id', userId)
+    .single()
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  const { error: requestsError } = await supabase
+    .from('study_requests')
+    .update({
+      status,
+      request_message: '추방 되었습니다.',
+    })
+    .eq('user_id', userId)
+    .select('*')
+    .single()
+
+  if (requestsError) {
+    throw new Error(requestsError.message)
+  }
 }

@@ -2,6 +2,7 @@ import StudyDetail from '@/components/study-detail/study-detail'
 import {
   getOwnerProfile,
   getStudyRoomDetail,
+  getStudyRoomParticipants,
   getStudyRoomRequests,
   studyRoomRequestsLists,
 } from '@/libs/supabase/api/study-room'
@@ -18,6 +19,7 @@ async function StudyDetailPage({ params }: Props) {
   const ownerProfileData = await getOwnerProfile(studyId)
   const studyRoomRequestsData = await getStudyRoomRequests(studyId)
   const requestsListsData = await studyRoomRequestsLists(studyId)
+  const participantsMembers = await getStudyRoomParticipants(studyId)
 
   return (
     <section>
@@ -26,6 +28,7 @@ async function StudyDetailPage({ params }: Props) {
         ownerProfile={ownerProfileData}
         studyRoomRequestsData={studyRoomRequestsData}
         requestsListsData={requestsListsData}
+        participantsMembers={participantsMembers}
       />
     </section>
   )

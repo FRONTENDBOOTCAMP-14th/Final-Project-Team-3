@@ -21,6 +21,7 @@ interface ModalProps {
   user: User | null
   ownerProfile: Profile
   requestsListsData: Profile[] | null
+  participantsMembers: Profile[] | null
 }
 
 function DetailModal({
@@ -31,6 +32,7 @@ function DetailModal({
   setModalType,
   ownerProfile,
   requestsListsData,
+  participantsMembers,
 }: ModalProps) {
   const requestModalRef = useRef<HTMLDivElement | null>(null)
 
@@ -63,7 +65,8 @@ function DetailModal({
             { modalType },
             isOwner,
             ownerProfile,
-            requestsListsData
+            requestsListsData,
+            participantsMembers
           )}
         </div>
       </div>
@@ -77,11 +80,18 @@ function ModalContentType(
   { modalType }: Pick<ModalProps, 'modalType'>,
   isOwner: boolean = false,
   ownerProfile: Profile,
-  requestsListsData: Profile[] | null
+  requestsListsData: Profile[] | null,
+  participantsMembers: Profile[] | null
 ) {
   switch (modalType) {
     case 'member':
-      return <MembersContent isOwner={isOwner} ownerProfile={ownerProfile} />
+      return (
+        <MembersContent
+          isOwner={isOwner}
+          ownerProfile={ownerProfile}
+          participantsMembers={participantsMembers}
+        />
+      )
 
     case 'applicant':
       return <ApplicantContent requestsListsData={requestsListsData} />

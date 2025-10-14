@@ -20,6 +20,7 @@ interface Props {
   ownerProfile: Profile
   studyRoomRequestsData: StudyRoomRequests[] | null
   requestsListsData: Profile[] | null
+  participantsMembers: Profile[] | null
 }
 
 function StudyDetail({
@@ -27,6 +28,7 @@ function StudyDetail({
   ownerProfile,
   studyRoomRequestsData,
   requestsListsData,
+  participantsMembers,
 }: Props) {
   const { user } = useAuth()
 
@@ -76,6 +78,8 @@ function StudyDetail({
 
   const isOwner = user?.id === studyRoomData.owner_id
 
+  console.log(requestData)
+
   return (
     <div className="detail-container">
       <div className="detail-banner">
@@ -86,6 +90,8 @@ function StudyDetail({
           className="studybanner-img"
           aria-hidden="true"
           priority
+          sizes="100vw"
+          quality={90}
         />
       </div>
 
@@ -113,10 +119,14 @@ function StudyDetail({
                     신청 취소
                   </button>
                 ) : requestData?.user_id === user?.id &&
-                  requestData?.status === 'REJECTED' ? (
+                  (requestData?.status === 'REJECTED' ||
+                    requestData?.status === 'DEPORTATION') ? (
                   <button
                     type="button"
-                    disabled={requestData?.status === 'REJECTED'}
+                    disabled={
+                      requestData?.status === 'REJECTED' ||
+                      requestData?.status === 'DEPORTATION'
+                    }
                   >
                     신청 불가
                   </button>
@@ -187,39 +197,16 @@ function StudyDetail({
             </div>
           </div>
           <ul className="member-image-wrapper">
-            <li className="member-image">
-              <Image
-                src={'/images/no-image.png'}
-                alt="no-image"
-                width={80}
-                height={80}
-              />
-            </li>
-
-            <li className="member-image">
-              <Image
-                src={'/images/no-image.png'}
-                alt="no-image"
-                width={80}
-                height={80}
-              />
-            </li>
-            <li className="member-image">
-              <Image
-                src={'/images/no-image.png'}
-                alt="no-image"
-                width={80}
-                height={80}
-              />
-            </li>
-            <li className="member-image">
-              <Image
-                src={'/images/no-image.png'}
-                alt="no-image"
-                width={80}
-                height={80}
-              />
-            </li>
+            {participantsMembers?.map((member) => (
+              <li className="member-image" key={member.id}>
+                <Image
+                  src={member.profile_url ?? '/images/no-image.png'}
+                  alt="no-image"
+                  width={80}
+                  height={80}
+                />
+              </li>
+            ))}
           </ul>
         </div>
       </div>
@@ -233,6 +220,7 @@ function StudyDetail({
           user={user}
           ownerProfile={ownerProfile}
           requestsListsData={requestsListsData}
+          participantsMembers={participantsMembers}
         />
       )}
     </div>
