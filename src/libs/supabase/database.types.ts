@@ -14,6 +14,42 @@ export interface Database {
   }
   public: {
     Tables: {
+      bookmark: {
+        Row: {
+          created_at: string
+          id: string
+          room_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          room_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          room_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'bookmark_room_id_fkey'
+            columns: ['room_id']
+            isOneToOne: false
+            referencedRelation: 'study_room'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'bookmark_user_id_fkey1'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profile'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       profile: {
         Row: {
           bio: string | null

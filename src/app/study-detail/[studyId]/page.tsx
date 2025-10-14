@@ -1,4 +1,4 @@
-import StudyDetail from '@/components/study-detail/study-detail'
+import StudyDetail from '@/components/study-detail'
 import {
   getOwnerProfile,
   getStudyRoomDetail,

@@ -88,5 +88,15 @@
       color: var(--color-text-secondary);
       margin-block: 0.3125rem;
     }
+
+    & .study-bookmark-btn {
+      padding: 0;
+      border: 0;
+      transition: scale 0.2s ease-in-out;
+
+      &:hover {
+        scale: 1.2;
+      }
+    }
   }
 }

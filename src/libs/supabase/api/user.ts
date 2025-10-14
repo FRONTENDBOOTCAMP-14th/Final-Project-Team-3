@@ -51,3 +51,23 @@ export async function getUserProfile(userId: string): Promise<Profile | null> {
 
   return profileData
 }
+
+export async function setBookMarkStudyRoom(
+  studyId: string,
+  userId: string
+): Promise<void> {
+  const supabase = await createClient()
+
+  const { error } = await supabase.from('bookmark').insert({
+    room_id: studyId,
+    user_id: userId,
+  })
+
+  if (error) {
+    if (error.code === '23505') {
+      throw new Error('이미 즐겨찾기에 추가 되었습니다.')
+    } else {
+      throw new Error(error.message)
+    }
+  }
+}
