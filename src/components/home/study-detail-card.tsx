@@ -1,9 +1,9 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import type { StudyRoom } from '../../libs/supabase'
-import Icons from '../icons'
-import CategoryUI from '../ui/category-ui'
+import Icons from '@/components/icons'
+import CategoryUI from '@/components/ui/category-ui'
+import type { StudyRoom } from '@/libs/supabase'
 
 interface Props {
   studyData: StudyRoom[]

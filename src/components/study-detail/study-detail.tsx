@@ -78,8 +78,6 @@ function StudyDetail({
 
   const isOwner = user?.id === studyRoomData.owner_id
 
-  console.log(requestData)
-
   return (
     <div className="detail-container">
       <div className="detail-banner">
