@@ -67,7 +67,7 @@
   }
 
   @media screen and (width >= 64rem) {
-    .header-btn-icon.header-search-btn-icon {
+    .header-btn-icon.header-search-btn-icon:not(.header-user-icon) {
       display: none;
     }
   }

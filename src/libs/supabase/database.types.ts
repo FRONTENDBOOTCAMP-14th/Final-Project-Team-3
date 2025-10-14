@@ -48,20 +48,20 @@ export interface Database {
         Row: {
           id: string
           joined_at: string
-          room_id: string | null
-          user_id: string | null
+          room_id: string
+          user_id: string
         }
         Insert: {
           id?: string
           joined_at?: string
-          room_id?: string | null
-          user_id?: string | null
+          room_id: string
+          user_id: string
         }
         Update: {
           id?: string
           joined_at?: string
-          room_id?: string | null
-          user_id?: string | null
+          room_id?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -69,6 +69,13 @@ export interface Database {
             columns: ['room_id']
             isOneToOne: false
             referencedRelation: 'study_room'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'study_participants_user_id_fkey1'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profile'
             referencedColumns: ['id']
           },
         ]
@@ -104,6 +111,13 @@ export interface Database {
             columns: ['room_id']
             isOneToOne: false
             referencedRelation: 'study_room'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'study_requests_user_id_fkey1'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profile'
             referencedColumns: ['id']
           },
         ]

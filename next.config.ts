@@ -17,12 +17,6 @@ const nextConfig: NextConfig = {
       'k.kakaocdn.net',
       'zpnvibbualdrxjsrjnpc.supabase.co',
     ],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**.supabase.co',
-      },
-    ],
   },
 }
 

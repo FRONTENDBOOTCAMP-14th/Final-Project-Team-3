@@ -4,8 +4,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import React from 'react'
 
 import Icons from '@/components/icons'
-
-import type { Profile } from '../../libs/supabase'
+import type { Profile } from '@/libs/supabase'
 
 interface Props {
   setSearchVisible: (value: React.SetStateAction<boolean>) => void
@@ -48,7 +47,7 @@ function HeaderContent({
       </button>
       {profile && (
         <button
-          className="header-btn-icon header-search-btn-icon"
+          className="header-btn-icon header-search-btn-icon header-user-icon"
           aria-label="프로필 페이지로 이동"
           onClick={() => {
             router.push(`/my-profile/${profile.id}`)

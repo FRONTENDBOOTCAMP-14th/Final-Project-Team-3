@@ -9,3 +9,13 @@ export type ProfileUpdate = TablesUpdate<'profile'>
 export type StudyRoom = Tables<'study_room'>
 export type StudyRoomInsert = TablesInsert<'study_room'>
 export type StudyRoomUpdate = TablesUpdate<'study_room'>
+
+// 스터디 룸 신청 타입
+export type StudyRoomRequests = Tables<'study_requests'>
+export type StudyRoomRequestsInsert = TablesInsert<'study_requests'>
+export type StudyRoomRequestsUpdate = TablesUpdate<'study_requests'>
+
+// 스터디 룸 참가 정보 타입
+export type StudyRoomParticipants = Tables<'study_participants'>
+export type StudyRoomParticipantsInsert = TablesInsert<'study_participants'>
+export type StudyRoomParticipantsUpdate = TablesUpdate<'study_participants'>

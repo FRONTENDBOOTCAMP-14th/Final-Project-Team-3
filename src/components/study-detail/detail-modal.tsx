@@ -20,6 +20,8 @@ interface ModalProps {
   ) => void
   user: User | null
   ownerProfile: Profile
+  requestsListsData: Profile[] | null
+  participantsMembers: Profile[] | null
 }
 
 function DetailModal({
@@ -29,6 +31,8 @@ function DetailModal({
   isOwner,
   setModalType,
   ownerProfile,
+  requestsListsData,
+  participantsMembers,
 }: ModalProps) {
   const requestModalRef = useRef<HTMLDivElement | null>(null)
 
@@ -57,7 +61,13 @@ function DetailModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-scroll" tabIndex={0}>
-          {ModalContentType({ modalType }, isOwner, ownerProfile)}
+          {ModalContentType(
+            { modalType },
+            isOwner,
+            ownerProfile,
+            requestsListsData,
+            participantsMembers
+          )}
         </div>
       </div>
     </div>
@@ -69,14 +79,22 @@ export default DetailModal
 function ModalContentType(
   { modalType }: Pick<ModalProps, 'modalType'>,
   isOwner: boolean = false,
-  ownerProfile: Profile
+  ownerProfile: Profile,
+  requestsListsData: Profile[] | null,
+  participantsMembers: Profile[] | null
 ) {
   switch (modalType) {
     case 'member':
-      return <MembersContent isOwner={isOwner} ownerProfile={ownerProfile} />
+      return (
+        <MembersContent
+          isOwner={isOwner}
+          ownerProfile={ownerProfile}
+          participantsMembers={participantsMembers}
+        />
+      )
 
     case 'applicant':
-      return <ApplicantContent />
+      return <ApplicantContent requestsListsData={requestsListsData} />
 
     default:
       return null
