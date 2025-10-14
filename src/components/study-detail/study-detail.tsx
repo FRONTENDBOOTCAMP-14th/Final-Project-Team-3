@@ -1,11 +1,15 @@
 'use client'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 
 import Icons from '@/components/icons'
 import CategoryUI from '@/components/ui/category-ui'
 import { useAuth } from '@/hooks/useAuth'
-import type { Profile, StudyRoom } from '@/libs/supabase'
+import type { Profile, StudyRoom, StudyRoomRequests } from '@/libs/supabase'
+import {
+  studyRoomRequestCancel,
+  StudyRoomRequestsFn,
+} from '@/libs/supabase/api/study-room'
 
 import '@/styles/study-detail/study-detail.css'
 
@@ -14,14 +18,63 @@ import DetailModal from './detail-modal'
 interface Props {
   studyRoomData: StudyRoom
   ownerProfile: Profile
+  studyRoomRequestsData: StudyRoomRequests[] | null
+  requestsListsData: Profile[] | null
+  participantsMembers: Profile[] | null
 }
 
-function StudyDetail({ studyRoomData, ownerProfile }: Props) {
+function StudyDetail({
+  studyRoomData,
+  ownerProfile,
+  studyRoomRequestsData,
+  requestsListsData,
+  participantsMembers,
+}: Props) {
+  const { user } = useAuth()
+
+  const filterRequestsData = studyRoomRequestsData?.find(
+    (item) => item.user_id === user?.id
+  )
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [modalType, setModalType] = useState<'member' | 'applicant' | null>(
     null
   )
-  const { user } = useAuth()
+  const [requestData, setRequestData] = useState<
+    StudyRoomRequests | null | undefined
+  >(filterRequestsData)
+  const [isPending, startTransition] = useTransition()
+
+  const handleRequestClick = () => {
+    startTransition(async () => {
+      try {
+        if (!studyRoomData.id || !user?.id) return
+
+        const data = await StudyRoomRequestsFn(
+          studyRoomData.id,
+          user?.id,
+          'PENDING'
+        )
+
+        setRequestData(data)
+        alert('신청이 완료 되었습니다.')
+      } catch (e) {
+        alert(`신청 에러 ${e.message}`)
+      }
+    })
+  }
+
+  const handleRequestCancelClick = () => {
+    startTransition(async () => {
+      try {
+        if (!studyRoomData.id || !user?.id) return
+
+        await studyRoomRequestCancel(studyRoomData.id, user?.id)
+        setRequestData(null)
+      } catch (e) {
+        alert(`취소 에러 ${e.message}`)
+      }
+    })
+  }
 
   const isOwner = user?.id === studyRoomData.owner_id
 
@@ -35,6 +88,8 @@ function StudyDetail({ studyRoomData, ownerProfile }: Props) {
           className="studybanner-img"
           aria-hidden="true"
           priority
+          sizes="100vw"
+          quality={90}
         />
       </div>
 
@@ -43,7 +98,54 @@ function StudyDetail({ studyRoomData, ownerProfile }: Props) {
           <div className="detail-header">
             <h3>{studyRoomData.title}</h3>
             {studyRoomData.owner_id !== user?.id ? (
-              <button type="button">참가 신청</button>
+              <>
+                {isPending ? (
+                  <button type="button" disabled>
+                    {requestData?.user_id === user?.id &&
+                    requestData?.status === 'PENDING'
+                      ? '취소 중...'
+                      : '신청 중...'}
+                  </button>
+                ) : requestData?.user_id === user?.id &&
+                  requestData?.status === 'PENDING' ? (
+                  <button
+                    type="button"
+                    className="cancel-btn"
+                    onClick={handleRequestCancelClick}
+                    disabled={isPending}
+                  >
+                    신청 취소
+                  </button>
+                ) : requestData?.user_id === user?.id &&
+                  (requestData?.status === 'REJECTED' ||
+                    requestData?.status === 'DEPORTATION') ? (
+                  <button
+                    type="button"
+                    disabled={
+                      requestData?.status === 'REJECTED' ||
+                      requestData?.status === 'DEPORTATION'
+                    }
+                  >
+                    신청 불가
+                  </button>
+                ) : requestData?.user_id === user?.id &&
+                  requestData?.status === 'APPROVED' ? (
+                  <button
+                    type="button"
+                    disabled={requestData?.status === 'APPROVED'}
+                  >
+                    참여 중
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleRequestClick}
+                    disabled={isPending}
+                  >
+                    신청 하기
+                  </button>
+                )}
+              </>
             ) : (
               <button
                 type="button"
@@ -93,39 +195,16 @@ function StudyDetail({ studyRoomData, ownerProfile }: Props) {
             </div>
           </div>
           <ul className="member-image-wrapper">
-            <li className="member-image">
-              <Image
-                src={'/images/no-image.png'}
-                alt="no-image"
-                width={80}
-                height={80}
-              />
-            </li>
-
-            <li className="member-image">
-              <Image
-                src={'/images/no-image.png'}
-                alt="no-image"
-                width={80}
-                height={80}
-              />
-            </li>
-            <li className="member-image">
-              <Image
-                src={'/images/no-image.png'}
-                alt="no-image"
-                width={80}
-                height={80}
-              />
-            </li>
-            <li className="member-image">
-              <Image
-                src={'/images/no-image.png'}
-                alt="no-image"
-                width={80}
-                height={80}
-              />
-            </li>
+            {participantsMembers?.map((member) => (
+              <li className="member-image" key={member.id}>
+                <Image
+                  src={member.profile_url ?? '/images/no-image.png'}
+                  alt="no-image"
+                  width={80}
+                  height={80}
+                />
+              </li>
+            ))}
           </ul>
         </div>
       </div>
@@ -138,6 +217,8 @@ function StudyDetail({ studyRoomData, ownerProfile }: Props) {
           isOwner={isOwner}
           user={user}
           ownerProfile={ownerProfile}
+          requestsListsData={requestsListsData}
+          participantsMembers={participantsMembers}
         />
       )}
     </div>

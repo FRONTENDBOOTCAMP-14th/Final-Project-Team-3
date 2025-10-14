@@ -1,18 +1,15 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import type { StudyRoom } from '../../libs/supabase'
-import Icons from '../icons'
-import CategoryUI from '../ui/category-ui'
+import Icons from '@/components/icons'
+import CategoryUI from '@/components/ui/category-ui'
+import type { StudyRoom } from '@/libs/supabase'
 
 interface Props {
   studyData: StudyRoom[]
 }
 
 function StudyDetailCard({ studyData }: Props) {
-  // const mockData = Array.from({ length: 11 }, (_, i) => ({
-  //   id: i + 100,
-  // }))
   return (
     <ul className="region-study-lists">
       {studyData.map((item) => (

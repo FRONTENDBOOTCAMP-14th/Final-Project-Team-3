@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { readStudyRoom } from '../../../libs/supabase/api/study-room'
+import { readStudyRoom } from '@/libs/supabase/api/study-room'
 
 export async function GET() {
   return readStudyRoom()

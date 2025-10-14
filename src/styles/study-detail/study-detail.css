@@ -1,5 +1,7 @@
 .detail-container {
   padding-block: 3rem;
+  max-inline-size: 53.125rem;
+  margin: 0 auto;
 }
 
 .detail-banner {
@@ -39,6 +41,17 @@
 
       &:hover {
         opacity: 0.8;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        background-color: var(--color-bg-tertiary);
+        color: var(--color-cancel);
+        opacity: 1;
+      }
+
+      &.cancel-btn {
+        background-color: var(--color-cancel);
       }
     }
   }
