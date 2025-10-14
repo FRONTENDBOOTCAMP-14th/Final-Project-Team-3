@@ -2,10 +2,10 @@
 import '@/styles/home/region-study.css'
 import { useSearchParams } from 'next/navigation'
 
-import type { StudyRoom } from '../../libs/supabase'
-import Icons from '../icons'
+import Icons from '@/components/icons'
+import type { StudyRoom } from '@/libs/supabase'
 
-import StudyDetailCard from './study-detail-card'
+import StudyCardLists from './study-card-lists'
 
 interface Props {
   studyData: StudyRoom[]
@@ -39,7 +39,7 @@ function RegionStudy({ studyData }: Props) {
         {studyData.length === 0 ? (
           <p>{studyHeading} 검색 결과가 없습니다.</p>
         ) : (
-          <StudyDetailCard studyData={studyData} />
+          <StudyCardLists studyData={studyData} />
         )}
       </div>
     </div>

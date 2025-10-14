@@ -1,7 +1,7 @@
 // actions/auth.ts (변경 없음)
 'use server'
 
-import type { Profile } from '..'
+import type { Bookmark, Profile } from '..'
 import { createClient } from '../server'
 
 interface SignUpData {
@@ -52,6 +52,23 @@ export async function getUserProfile(userId: string): Promise<Profile | null> {
   return profileData
 }
 
+export async function getMyBookMarkStudyRoom(
+  userId: string
+): Promise<Bookmark[]> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('bookmark')
+    .select('*')
+    .eq('user_id', userId)
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return data ?? []
+}
+
 export async function setBookMarkStudyRoom(
   studyId: string,
   userId: string
@@ -70,4 +87,18 @@ export async function setBookMarkStudyRoom(
       throw new Error(error.message)
     }
   }
+}
+
+export async function removeBookMarkStudyRoom(
+  studyId: string,
+  userId: string
+): Promise<void> {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('bookmark')
+    .delete()
+    .eq('room_id', studyId)
+    .eq('user_id', userId)
+
+  if (error) throw new Error(error.message)
 }
