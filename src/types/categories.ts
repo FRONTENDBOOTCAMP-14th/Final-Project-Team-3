@@ -14,6 +14,5 @@ export const STUDY_CATEGORIES = [
   '자기개발',
   '반려동물',
   '게임',
-  '기타',
 ] as const
 export type StudyCategory = (typeof STUDY_CATEGORIES)[number]

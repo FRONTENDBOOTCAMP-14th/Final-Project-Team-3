@@ -28,7 +28,8 @@
 
 /* 레이블 */
 .field-label {
-  font-size: var(--font-sm);
+  font-size: var(--font-md);
+  font-weight: 600;
   color: var(--color-text-secondary);
 }
 
@@ -80,7 +81,8 @@ textarea:focus-visible {
 .banner-legend {
   padding-inline: var(--space-2xs, 0.25rem);
   color: var(--color-text-secondary);
-  font-size: var(--font-sm);
+  font-size: var(--font-md);
+  font-weight: 600;
 }
 
 /* 파일 인풋 */
@@ -227,12 +229,15 @@ textarea:focus-visible {
 }
 
 .submit-button {
-  padding-block: 0.75em;
-  padding-inline: 1.25em;
+  display: block;
+  inline-size: 100%;
+  padding-block: 1rem;
+  padding-inline: 1.25rem;
   border: none;
   border-radius: var(--radius-md, 8px);
   background-color: var(--color-primary);
   color: var(--color-bg-primary);
+  font-size:1rem;
   font-weight: 600;
   cursor: pointer;
   transition:
@@ -334,6 +339,30 @@ textarea:focus-visible {
   font-size: var(--font-xs);
   color: var(--color-text-secondary);
 }
+
+/* 폼 알람 */
+.form-alert {
+  margin-block-end: 2rem;
+  padding: 0.75rem 0.875rem;
+  border-radius: 8px;
+  font-size: 0.875rem; /* 14px 정도 */
+  line-height: 1.4;
+}
+
+/* 에러 메시지 */
+.form-alert--error {
+  color: #b42318; /* 진한 레드 텍스트 */
+  background-color: #fee4e2; /* 옅은 레드 배경 */
+  border: 1px solid #f3b0aa; /* 테두리 톤 다운 */
+}
+
+/* (선택) 성공 메시지 */
+.form-alert--success {
+  color: #067647;
+  background-color: #d1fadf;
+  border: 1px solid #9ae6b4;
+}
+
 /* ========== 반응형 ========== */
 /* 태블릿(≥768px) */
 @media (min-width: 48rem) {
