@@ -3,6 +3,8 @@
 import '@/styles/page-profile/profile-page.css'
 import { useEffect, useState } from 'react'
 
+import PaginationList from '@/components/ui/PaginationList'
+
 import BannerUploader from '../study-create/fields/BannerUploader'
 
 interface Study {
@@ -87,9 +89,11 @@ export default function ProfilePageClient({
 
       <section className="user-favorites-section">
         <h3 className="section-title">즐겨찾기</h3>
-        <ul className="favorites-list">
-          {favorites.map((fav) => (
-            <li key={fav.id} className="study-card">
+        <PaginationList
+          items={favorites}
+          itemsPerPage={10}
+          renderItem={(fav) => (
+            <div className="study-card favorite-item">
               <div className="image-wrapper">
                 <img
                   src={fav.imageUrl}
@@ -106,9 +110,9 @@ export default function ProfilePageClient({
                   <p>좋아요: {fav.likes}</p>
                 </div>
               </div>
-            </li>
-          ))}
-        </ul>
+            </div>
+          )}
+        />
       </section>
     </div>
   )

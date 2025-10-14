@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation'
 
-import ProfilePageClient from '@/components/ProfilePageClient/ProfilePageClient'
 import { createClient } from '@/libs/supabase/server'
+
+import ProfilePageClient from '@/components/ProfilePageClient/ProfilePageClient'
 
 interface PageProps {
   params: Promise<{ userId: string }>
@@ -58,8 +59,99 @@ export default async function MyProfilePage({ params }: PageProps) {
       members: 10,
       likes: 5,
     },
+
     {
       id: 4,
+      title: 'GraphQL 스터디',
+      imageUrl: '/images/no-image.png',
+      category: '백엔드',
+      location: '온라인',
+      members: 7,
+      likes: 7,
+    },
+
+    {
+      id: 5,
+      title: 'GraphQL 스터디',
+      imageUrl: '/images/no-image.png',
+      category: '백엔드',
+      location: '온라인',
+      members: 7,
+      likes: 7,
+    },
+
+    {
+      id: 6,
+      title: 'GraphQL 스터디',
+      imageUrl: '/images/no-image.png',
+      category: '백엔드',
+      location: '온라인',
+      members: 7,
+      likes: 7,
+    },
+
+    {
+      id: 7,
+      title: 'GraphQL 스터디',
+      imageUrl: '/images/no-image.png',
+      category: '백엔드',
+      location: '온라인',
+      members: 7,
+      likes: 7,
+    },
+
+    {
+      id: 8,
+      title: 'GraphQL 스터디',
+      imageUrl: '/images/no-image.png',
+      category: '백엔드',
+      location: '온라인',
+      members: 7,
+      likes: 7,
+    },
+
+    {
+      id: 9,
+      title: 'GraphQL 스터디',
+      imageUrl: '/images/no-image.png',
+      category: '백엔드',
+      location: '온라인',
+      members: 7,
+      likes: 7,
+    },
+
+    {
+      id: 10,
+      title: 'GraphQL 스터디',
+      imageUrl: '/images/no-image.png',
+      category: '백엔드',
+      location: '온라인',
+      members: 7,
+      likes: 7,
+    },
+
+    {
+      id: 11,
+      title: 'GraphQL 스터디',
+      imageUrl: '/images/no-image.png',
+      category: '백엔드',
+      location: '온라인',
+      members: 7,
+      likes: 7,
+    },
+
+    {
+      id: 12,
+      title: 'GraphQL 스터디',
+      imageUrl: '/images/no-image.png',
+      category: '백엔드',
+      location: '온라인',
+      members: 7,
+      likes: 7,
+    },
+
+    {
+      id: 13,
       title: 'GraphQL 스터디',
       imageUrl: '/images/no-image.png',
       category: '백엔드',
