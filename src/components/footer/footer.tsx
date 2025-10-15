@@ -13,13 +13,13 @@ interface FooterLink {
 const linksCompany = [
   { label: '소개', href: '/about' },
   { label: '문의', href: '/contact' },
-] as const
+] as const satisfies ReadonlyArray<FooterLink>
 
 const linksSupport = [
   { label: '이용약관', href: '/terms' },
   { label: '개인정보처리방침', href: '/privacy' },
   { label: '위치기반 서비스 이용약관', href: '/location-terms' },
-] as const
+] as const satisfies ReadonlyArray<FooterLink>
 
 const linksSocial = [
   {
@@ -32,7 +32,7 @@ const linksSocial = [
     href: 'https://github.com/FRONTENDBOOTCAMP-14th/Final-Project-Team-3',
     external: true,
   },
-] as const
+] as const satisfies ReadonlyArray<FooterLink>
 
 // ✅ 외부/내부 분기 + sr-only만 사용 (aria-label 제거)
 function A11yLink({
