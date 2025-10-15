@@ -50,6 +50,42 @@ export interface Database {
           },
         ]
       }
+      likes: {
+        Row: {
+          created_at: string
+          id: string
+          room_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          room_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          room_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'likes_room_id_fkey'
+            columns: ['room_id']
+            isOneToOne: false
+            referencedRelation: 'study_room'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'likes_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profile'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       profile: {
         Row: {
           bio: string | null
@@ -165,6 +201,7 @@ export interface Database {
           created_at: string
           description: string
           id: string
+          likes_count: number
           member_count: number
           owner_id: string
           region: string
@@ -177,6 +214,7 @@ export interface Database {
           created_at?: string
           description: string
           id?: string
+          likes_count?: number
           member_count?: number
           owner_id?: string
           region: string
@@ -189,6 +227,7 @@ export interface Database {
           created_at?: string
           description?: string
           id?: string
+          likes_count?: number
           member_count?: number
           owner_id?: string
           region?: string

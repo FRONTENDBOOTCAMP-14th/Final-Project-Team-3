@@ -68,25 +68,29 @@
     padding-inline: 0.9375rem;
     padding-block: 0.9375rem;
 
-    & h3,
-    & p {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-
     & h3 {
       font-size: var(--font-lg);
       color: var(--color-text-primary);
       display: flex;
       align-items: center;
       justify-content: space-between;
+
+      & span {
+        display: inline-block;
+        inline-size: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
 
     & p {
       font-size: var(--font-sm);
       color: var(--color-text-secondary);
       margin-block: 0.3125rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
     & .study-bookmark-btn {

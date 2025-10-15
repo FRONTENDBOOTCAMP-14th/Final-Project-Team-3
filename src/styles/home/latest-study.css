@@ -27,6 +27,7 @@
 .latest-lists-item {
   padding: var(--space-s);
   transition: transform 0.2s ease-in-out;
+  max-inline-size: 15rem;
 
   &:hover {
     transform: translateY(-5px);
@@ -58,8 +59,8 @@
     inline-size: 100%;
     text-align: center;
     font-size: var(--font-sm);
-    overflow: hidden;
     white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
   }
 
