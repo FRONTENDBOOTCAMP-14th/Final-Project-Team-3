@@ -28,6 +28,7 @@
 
 /* 레이블 */
 .field-label {
+  margin-top: 1rem;
   font-size: var(--font-md);
   font-weight: 600;
   color: var(--color-text-secondary);
@@ -237,7 +238,7 @@ textarea:focus-visible {
   border-radius: var(--radius-md, 8px);
   background-color: var(--color-primary);
   color: var(--color-bg-primary);
-  font-size:1rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition:

@@ -110,7 +110,6 @@
   .footer-nav {
     grid-template-columns: repeat(3, 1fr);
   }
-
 }
 
 /* ≥1024px: 내부 여백 확대 */

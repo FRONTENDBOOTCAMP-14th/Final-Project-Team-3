@@ -6,7 +6,6 @@
 
 @import './_theme.css' layer(theme);
 
-
 .web-main {
   padding-block-start: 5.3125rem;
   padding-inline: var(--space-ml);
