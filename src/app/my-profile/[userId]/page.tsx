@@ -1,29 +1,38 @@
 import { redirect } from 'next/navigation'
 
+import ProfilePageClient from '@/components/ProfilePageClient'
+import { getUserProfile } from '@/libs/supabase/api/user'
 import { createClient } from '@/libs/supabase/server'
 
-import ProfilePageClient from '@/components/ProfilePageClient/ProfilePageClient'
-
 interface PageProps {
-  params: Promise<{ userId: string }>
+  params: { userId: string }
 }
 
 export default async function MyProfilePage({ params }: PageProps) {
-  const { userId } = await params
+  const { userId } = params
   const supabase = await createClient()
 
   const {
-    data: { user: userData },
+    data: { user: loggedInUser },
   } = await supabase.auth.getUser()
 
-  if (!userData) {
+  if (!loggedInUser) {
     redirect('/')
   }
 
+  if (userId === 'sign-up') {
+    redirect('/')
+  }
+
+  const profile = await getUserProfile(userId)
+  if (!profile) {
+    throw new Error('유저 프로필 정보를 불러올 수 없습니다.')
+  }
+
   const user = {
-    name: `사용자 ${userId}`,
-    email: `user${userId}@example.com`,
-    avatarUrl: '/images/default-avatar.png',
+    name: profile.nickname ?? '이름 없음',
+    email: profile.email ?? '이메일 없음',
+    avatarUrl: profile.profile_url ?? '/images/default-avatar.png',
   }
 
   const studies = [
@@ -59,99 +68,8 @@ export default async function MyProfilePage({ params }: PageProps) {
       members: 10,
       likes: 5,
     },
-
     {
       id: 4,
-      title: 'GraphQL 스터디',
-      imageUrl: '/images/no-image.png',
-      category: '백엔드',
-      location: '온라인',
-      members: 7,
-      likes: 7,
-    },
-
-    {
-      id: 5,
-      title: 'GraphQL 스터디',
-      imageUrl: '/images/no-image.png',
-      category: '백엔드',
-      location: '온라인',
-      members: 7,
-      likes: 7,
-    },
-
-    {
-      id: 6,
-      title: 'GraphQL 스터디',
-      imageUrl: '/images/no-image.png',
-      category: '백엔드',
-      location: '온라인',
-      members: 7,
-      likes: 7,
-    },
-
-    {
-      id: 7,
-      title: 'GraphQL 스터디',
-      imageUrl: '/images/no-image.png',
-      category: '백엔드',
-      location: '온라인',
-      members: 7,
-      likes: 7,
-    },
-
-    {
-      id: 8,
-      title: 'GraphQL 스터디',
-      imageUrl: '/images/no-image.png',
-      category: '백엔드',
-      location: '온라인',
-      members: 7,
-      likes: 7,
-    },
-
-    {
-      id: 9,
-      title: 'GraphQL 스터디',
-      imageUrl: '/images/no-image.png',
-      category: '백엔드',
-      location: '온라인',
-      members: 7,
-      likes: 7,
-    },
-
-    {
-      id: 10,
-      title: 'GraphQL 스터디',
-      imageUrl: '/images/no-image.png',
-      category: '백엔드',
-      location: '온라인',
-      members: 7,
-      likes: 7,
-    },
-
-    {
-      id: 11,
-      title: 'GraphQL 스터디',
-      imageUrl: '/images/no-image.png',
-      category: '백엔드',
-      location: '온라인',
-      members: 7,
-      likes: 7,
-    },
-
-    {
-      id: 12,
-      title: 'GraphQL 스터디',
-      imageUrl: '/images/no-image.png',
-      category: '백엔드',
-      location: '온라인',
-      members: 7,
-      likes: 7,
-    },
-
-    {
-      id: 13,
       title: 'GraphQL 스터디',
       imageUrl: '/images/no-image.png',
       category: '백엔드',
