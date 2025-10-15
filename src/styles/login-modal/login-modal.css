@@ -10,7 +10,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-
   padding: var(--space-lg);
 }
 
@@ -23,10 +22,10 @@
   max-inline-size: 25rem;
   padding: var(--space-lg);
   position: relative;
-
   outline: none;
 }
-@media screen and (width >= 48rem) {
+
+@media screen and (min-width: 48rem) {
   .login-modal {
     max-inline-size: 30rem;
     padding: var(--space-xl);
@@ -95,7 +94,6 @@
   inline-size: 100%;
   padding: var(--space-sm) var(--space-lg);
   margin-block-start: var(--space-sm);
-
   background-color: var(--color-inflearn-blue);
   color: #fff;
   font-size: var(--font-md);
@@ -189,6 +187,12 @@
   font-weight: 500;
   cursor: pointer;
   transition: opacity 0.2s;
+  line-height: 1;
+}
+
+.social-btn svg {
+  display: block;
+  flex-shrink: 0;
 }
 
 .social-btn:hover {
@@ -205,9 +209,8 @@
   color: #fff;
 }
 
-.error-message {
-  color: #ff4d4f; /* 빨간색 */
-  font-size: 0.875rem;
-  margin-top: 0.5rem;
-  text-align: center;
+@media screen and (min-width: 1024px) {
+  .social-btn svg {
+    transform: translateY(1px);
+  }
 }
