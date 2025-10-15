@@ -94,7 +94,12 @@ function ModalContentType(
       )
 
     case 'applicant':
-      return <ApplicantContent requestsListsData={requestsListsData} />
+      return (
+        <ApplicantContent
+          requestsListsData={requestsListsData}
+          isOwner={isOwner}
+        />
+      )
 
     default:
       return null

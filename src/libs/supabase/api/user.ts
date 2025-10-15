@@ -1,4 +1,3 @@
-// actions/auth.ts (변경 없음)
 'use server'
 
 import type { Bookmark, Profile } from '..'

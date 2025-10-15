@@ -53,7 +53,7 @@
     text-decoration: none;
   }
 
-  .image-wrapper {
+  & .image-wrapper {
     inline-size: 100%;
     block-size: 12.5rem;
     position: relative;

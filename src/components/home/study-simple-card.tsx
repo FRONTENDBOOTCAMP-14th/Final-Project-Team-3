@@ -8,11 +8,6 @@ interface Props {
 }
 
 function StudyRoomCard({ studyData }: Props) {
-  // const mockData = Array.from({ length: 10 }, (_, i) => ({
-  //   id: i + 1,
-  //   title: `스터디 제목 ${i + 1}`,
-  // }))
-
   return (
     <ul className="latest-lists">
       {studyData.map((item) => (
