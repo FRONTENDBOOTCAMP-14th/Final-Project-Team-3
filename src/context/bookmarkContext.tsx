@@ -4,7 +4,11 @@ import { createContext, useCallback, useMemo } from 'react'
 import useSWR from 'swr'
 
 import type { Bookmark } from '@/libs/supabase'
-import { getMyBookMarkStudyRoom } from '@/libs/supabase/api/user'
+import {
+  getMyBookMarkStudyRoom,
+  removeBookMarkStudyRoom,
+  setBookMarkStudyRoom,
+} from '@/libs/supabase/api/user'
 
 import { useAuth } from '../hooks/useAuth'
 
@@ -12,12 +16,7 @@ export interface BookMarkContextValue {
   isLoading: boolean
   bookmarkData: Bookmark[] | null
   isRoomBookmarked: (roomId: string) => boolean
-  bookmarkMutation: (
-    updater?: (
-      prev: Bookmark[] | null | undefined
-    ) => Bookmark[] | null | undefined,
-    option?: { revalidate?: boolean }
-  ) => Promise<Bookmark[] | null | undefined>
+  bookmarkHandler: (studyId: string, userId: string) => Promise<void>
 }
 
 export const BookMarkContext = createContext<BookMarkContextValue | null>(null)
@@ -35,7 +34,11 @@ export function BookMarkProvider({ children }: PropsWithChildren) {
   const { user, isAuthenticated } = useAuth()
   const userId = user?.id
   const swrKey = isAuthenticated && userId ? ['bookmark', userId] : null
-  const { data, isLoading, mutate } = useSWR(
+  const {
+    data,
+    isLoading,
+    mutate: bookmarkMutation,
+  } = useSWR(
     swrKey,
     ([_key, userId]) => fetcher(userId, getMyBookMarkStudyRoom),
     {
@@ -53,14 +56,56 @@ export function BookMarkProvider({ children }: PropsWithChildren) {
     [data]
   )
 
+  const bookmarkHandler = useCallback(
+    async (studyId: string, userId: string) => {
+      const isCurrentBookmark = isRoomBookmarked(studyId)
+
+      const optimisticUpdate = (data: Bookmark[] | undefined | null) => {
+        const list = data ?? []
+
+        if (!isCurrentBookmark) {
+          return [
+            ...list,
+            {
+              id: crypto.randomUUID(),
+              user_id: userId,
+              room_id: studyId,
+              created_at: new Date().toISOString(),
+            },
+          ]
+        } else {
+          return list.filter((item) => item.room_id !== studyId)
+        }
+      }
+
+      const prevData = await bookmarkMutation(optimisticUpdate, {
+        revalidate: false,
+      })
+
+      try {
+        if (!isCurrentBookmark) {
+          await setBookMarkStudyRoom(studyId, userId)
+          alert('즐겨찾기에 추가 되었습니다.!')
+        } else {
+          await removeBookMarkStudyRoom(studyId, userId)
+          alert('즐겨찾기에서 삭제 되었습니다.!')
+        }
+      } catch (error) {
+        await bookmarkMutation(() => prevData, { revalidate: false })
+        alert(`즐겨찾기 추가 실패 : ${error.message}`)
+      }
+    },
+    [bookmarkMutation, isRoomBookmarked]
+  )
+
   const contextState: BookMarkContextValue = useMemo(
     () => ({
       bookmarkData: data ?? [],
       isRoomBookmarked,
       isLoading,
-      bookmarkMutation: mutate,
+      bookmarkHandler,
     }),
-    [data, isLoading, isRoomBookmarked, mutate]
+    [bookmarkHandler, data, isLoading, isRoomBookmarked]
   )
 
   return (

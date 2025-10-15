@@ -1,16 +1,12 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useTransition } from 'react'
+import React, { useState } from 'react'
 
 import Icons from '@/components/icons'
 import CategoryUI from '@/components/ui/category-ui'
 import { useBookMark } from '@/hooks/useBookmark'
-import type { Bookmark, StudyRoom } from '@/libs/supabase'
-import {
-  removeBookMarkStudyRoom,
-  setBookMarkStudyRoom,
-} from '@/libs/supabase/api/user'
+import type { StudyRoom } from '@/libs/supabase'
 
 interface Props {
   item: StudyRoom
@@ -18,51 +14,23 @@ interface Props {
 }
 
 function StudyCard({ item, userId }: Props) {
-  const [isPending, startTransition] = useTransition()
-  const { isRoomBookmarked, bookmarkMutation } = useBookMark()
+  const { bookmarkHandler, isRoomBookmarked } = useBookMark()
+  const [isDisabled, setIsDisabled] = useState(false)
 
   const isBookmark = isRoomBookmarked(item.id)
 
-  const bookmarkHandler = (studyId: string) => {
-    if (!userId) return alert('로그인이 필요합니다.')
-
-    const isCurrentBookmark = isRoomBookmarked(studyId)
-
-    const optimisticUpdate = (data: Bookmark[] | undefined | null) => {
-      const list = data ?? []
-
-      if (!isCurrentBookmark) {
-        return [
-          ...list,
-          {
-            id: crypto.randomUUID(),
-            user_id: userId,
-            room_id: studyId,
-            created_at: new Date().toISOString(),
-          },
-        ]
-      } else {
-        return list.filter((item) => item.room_id !== studyId)
-      }
+  const bookmarkToggle = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!userId) {
+      alert('로그인이 필요합니다.')
+      return
     }
+    setIsDisabled(true)
 
-    startTransition(async () => {
-      const prevData = await bookmarkMutation(optimisticUpdate, {
-        revalidate: false,
-      })
-      try {
-        if (!isCurrentBookmark) {
-          await setBookMarkStudyRoom(studyId, userId)
-          alert('즐겨찾기에 추가 되었습니다.!')
-        } else {
-          await removeBookMarkStudyRoom(studyId, userId)
-          alert('즐겨찾기에서 삭제 되었습니다.!')
-        }
-      } catch (error) {
-        await bookmarkMutation(() => prevData, { revalidate: false })
-        alert(`즐겨찾기 추가 실패 : ${error.message}`)
-      }
-    })
+    await bookmarkHandler(item.id, userId)
+
+    setIsDisabled(false)
   }
 
   return (
@@ -82,19 +50,15 @@ function StudyCard({ item, userId }: Props) {
             <span>{item.title}</span>
             <button
               type="button"
-              disabled={isPending}
+              disabled={isDisabled}
               className="study-bookmark-btn"
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                bookmarkHandler(item.id)
-              }}
+              onClick={bookmarkToggle}
             >
               <Icons
                 name={isBookmark ? 'star-yellow-fill' : 'star'}
                 aria-hidden="true"
-                width={24}
-                height={24}
+                width={32}
+                height={32}
               />
             </button>
           </h3>
