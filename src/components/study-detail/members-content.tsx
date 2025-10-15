@@ -1,5 +1,6 @@
 import '@/styles/study-detail/members-modal.css'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 
 import Icons from '@/components/icons'
 import type { Profile } from '@/libs/supabase'
@@ -13,6 +14,10 @@ interface Props {
 }
 
 function MembersContent({ isOwner, ownerProfile, participantsMembers }: Props) {
+  const pathName = usePathname()
+
+  const pathArray = pathName.split('/')
+  const studyId = pathArray[pathArray.length - 1]
   return (
     <>
       <h2 className="member-list-heading">모임장</h2>
@@ -43,6 +48,7 @@ function MembersContent({ isOwner, ownerProfile, participantsMembers }: Props) {
           isOwner={isOwner}
           participantsMembers={participantsMembers}
           type={'MEMBER'}
+          studyId={studyId}
         />
       </div>
     </>

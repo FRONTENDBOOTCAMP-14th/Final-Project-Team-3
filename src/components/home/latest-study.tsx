@@ -1,6 +1,6 @@
 import '@/styles/home/latest-study.css'
 
-import type { StudyRoom } from '../../libs/supabase'
+import type { StudyRoom } from '@/libs/supabase'
 
 import StudyRoomCard from './study-simple-card'
 

@@ -1,8 +1,9 @@
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
+import { mutate } from 'swr'
 
-import type { Profile } from '@/libs/supabase'
+import type { Profile, StudyRoom } from '@/libs/supabase'
 import {
   studyRoomDeportation,
   StudyRoomRequestsFn,
@@ -30,23 +31,42 @@ function MemberLists({
   )
   const [status, setStatus] = useState<'REJECTED' | 'APPROVED' | ''>('')
   const [isPending, startTransition] = useTransition()
+  const swrKey = ['study_room_data', studyId]
 
   const deportationMember = (
     userId: string,
     status: 'DEPORTATION' = 'DEPORTATION'
   ) => {
     setUserId((prev) => [...prev, userId])
+    mutate(
+      swrKey,
+      (cacheData: StudyRoom) => {
+        if (!cacheData) return
+
+        return {
+          ...cacheData,
+          member_count: Math.max(0, cacheData.member_count - 1),
+        }
+      },
+      {
+        revalidate: false,
+      }
+    )
+
     startTransition(async () => {
       try {
-        await studyRoomDeportation(userId, status)
+        if (!studyId) return
+        await studyRoomDeportation(studyId, userId, status)
 
         setUserLists((prev) =>
           prev ? prev.filter((user) => user.id !== userId) : null
         )
 
         alert('추방 되었습니다.')
+        mutate(swrKey)
         router.refresh()
       } catch (error) {
+        mutate(swrKey)
         alert(error.message)
       } finally {
         setUserId([])
@@ -57,6 +77,21 @@ function MemberLists({
   const requestHandler = (userId: string, status: 'REJECTED' | 'APPROVED') => {
     setStatus(status)
     setUserId((prev) => [...prev, userId])
+    mutate(
+      swrKey,
+      (cacheData: StudyRoom) => {
+        if (!cacheData) return
+
+        return {
+          ...cacheData,
+          member_count: Math.max(0, cacheData.member_count + 1),
+        }
+      },
+      {
+        revalidate: false,
+      }
+    )
+
     startTransition(async () => {
       try {
         if (!studyId) return
@@ -68,8 +103,10 @@ function MemberLists({
           )
         }
         alert(data?.request_message)
+        mutate(swrKey)
         router.refresh()
       } catch (error) {
+        mutate(swrKey)
         alert(error.message)
       } finally {
         setStatus('')

@@ -1,11 +1,12 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState, useTransition } from 'react'
+import { useTransition } from 'react'
 
 import Icons from '@/components/icons'
 import CategoryUI from '@/components/ui/category-ui'
-import type { StudyRoom } from '@/libs/supabase'
+import { useBookMark } from '@/hooks/useBookmark'
+import type { Bookmark, StudyRoom } from '@/libs/supabase'
 import {
   removeBookMarkStudyRoom,
   setBookMarkStudyRoom,
@@ -13,26 +14,44 @@ import {
 
 interface Props {
   item: StudyRoom
-  initialIsBookmarked: boolean
   userId: string | null | undefined
 }
 
-function StudyCard({ item, initialIsBookmarked, userId }: Props) {
+function StudyCard({ item, userId }: Props) {
   const [isPending, startTransition] = useTransition()
-  const [isBookmark, setIsBookmark] = useState(initialIsBookmarked)
+  const { isRoomBookmarked, bookmarkMutation } = useBookMark()
 
-  useEffect(() => {
-    setIsBookmark(initialIsBookmarked)
-  }, [initialIsBookmarked])
+  const isBookmark = isRoomBookmarked(item.id)
 
   const bookmarkHandler = (studyId: string) => {
     if (!userId) return alert('로그인이 필요합니다.')
 
-    setIsBookmark((prev) => !prev)
+    const isCurrentBookmark = isRoomBookmarked(studyId)
+
+    const optimisticUpdate = (data: Bookmark[] | undefined | null) => {
+      const list = data ?? []
+
+      if (!isCurrentBookmark) {
+        return [
+          ...list,
+          {
+            id: crypto.randomUUID(),
+            user_id: userId,
+            room_id: studyId,
+            created_at: new Date().toISOString(),
+          },
+        ]
+      } else {
+        return list.filter((item) => item.room_id !== studyId)
+      }
+    }
 
     startTransition(async () => {
+      const prevData = await bookmarkMutation(optimisticUpdate, {
+        revalidate: false,
+      })
       try {
-        if (!isBookmark) {
+        if (!isCurrentBookmark) {
           await setBookMarkStudyRoom(studyId, userId)
           alert('즐겨찾기에 추가 되었습니다.!')
         } else {
@@ -40,7 +59,7 @@ function StudyCard({ item, initialIsBookmarked, userId }: Props) {
           alert('즐겨찾기에서 삭제 되었습니다.!')
         }
       } catch (error) {
-        setIsBookmark((prev) => !prev)
+        await bookmarkMutation(() => prevData, { revalidate: false })
         alert(`즐겨찾기 추가 실패 : ${error.message}`)
       }
     })

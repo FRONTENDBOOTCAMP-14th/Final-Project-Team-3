@@ -285,6 +285,7 @@ export const getStudyRoomParticipants = async (
 }
 
 export const studyRoomDeportation = async (
+  studyId: string,
   userId: string,
   status: 'DEPORTATION'
 ) => {
@@ -293,6 +294,7 @@ export const studyRoomDeportation = async (
   const { error } = await supabase
     .from('study_participants')
     .delete()
+    .eq('room_id', studyId)
     .eq('user_id', userId)
     .single()
 
@@ -306,6 +308,7 @@ export const studyRoomDeportation = async (
       status,
       request_message: '추방 되었습니다.',
     })
+    .eq('room_id', studyId)
     .eq('user_id', userId)
     .select('*')
     .single()

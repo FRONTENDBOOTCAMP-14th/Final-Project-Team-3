@@ -165,6 +165,7 @@ export interface Database {
           created_at: string
           description: string
           id: string
+          member_count: number
           owner_id: string
           region: string
           region_depth: string | null
@@ -176,6 +177,7 @@ export interface Database {
           created_at?: string
           description: string
           id?: string
+          member_count?: number
           owner_id?: string
           region: string
           region_depth?: string | null
@@ -187,6 +189,7 @@ export interface Database {
           created_at?: string
           description?: string
           id?: string
+          member_count?: number
           owner_id?: string
           region?: string
           region_depth?: string | null
