@@ -1,7 +1,9 @@
 import { redirect } from 'next/navigation'
 
+
 import ProfilePageClient from '@/components/ProfilePageClient'
 import { getUserProfile } from '@/libs/supabase/api/user'
+
 import { createClient } from '@/libs/supabase/server'
 
 interface PageProps {

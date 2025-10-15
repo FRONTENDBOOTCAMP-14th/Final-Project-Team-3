@@ -2,14 +2,13 @@
 'use client'
 
 import supabase from '@/libs/supabase/client'
-const DEFAULT_BANNER = '/images/no-image.png'
 
 export type StudyActionResult =
   | { ok: true; id: string }
   | { ok: false; message: string }
 
-const ALLOWED_MIME = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'] as const
-const MAX_SIZE = 10 * 1024 * 1024
+const DEFAULT_BANNER = '/images/no-image.png'
+const ALLOWED_MIME = ['image/png', 'image/jpeg', 'image/gif'] as const
 
 export async function createStudyAction(
   _prev: StudyActionResult | null,
@@ -25,29 +24,37 @@ export async function createStudyAction(
   const region = String(formData.get('region') ?? '').trim()
   const regionDepth = String(formData.get('regionDepth') ?? '').trim()
   const description = String(formData.get('description') ?? '').trim()
-  const banner = formData.get('banner') as File | null
+  const bannerEntry = formData.get('banner')
+  const banner =
+    bannerEntry instanceof File && bannerEntry.size > 0 ? bannerEntry : null
 
-  const finalCategory = rawCategory === 'other' ? otherCategory : rawCategory
-  if (!finalCategory) return { ok: false, message: '카테고리를 입력하거나 선택해 주세요.' }
+  const category = rawCategory === 'other' ? otherCategory : rawCategory
+  if (!category)
+    return { ok: false, message: '카테고리를 입력하거나 선택해 주세요.' }
 
+  // 파일 검사
   if (banner) {
-    if (!ALLOWED_MIME.includes(banner.type as any)) {
-      return { ok: false, message: 'JPG, PNG, GIF 파일만 업로드할 수 있습니다.' }
-    }
-    if (banner.size > MAX_SIZE) {
-      return { ok: false, message: '파일 용량은 최대 10MB까지 가능합니다.' }
+    if (!ALLOWED_MIME.includes(banner.type as (typeof ALLOWED_MIME)[number])) {
+      return {
+        ok: false,
+        message: 'jpeg, png, gif 파일만 업로드할 수 있습니다.',
+      }
     }
   }
 
+  // 업로드
   let bannerPublicUrl: string | null = null
   if (banner && banner.size > 0) {
-    const ext = banner.name.split('.').pop()?.toLowerCase() ?? 'jpg'
-    const path = `${user.id}/banners/${crypto.randomUUID()}.${ext}`
+    const ext = banner.name.split('.').pop()?.toLowerCase() ?? 'png'
+    const path = `${user.id}/banners/${crypto.randomUUID()}.${ext}` // ✅ 확장자는 점(.)으로
 
     const { error: uploadErr } = await supabase.storage
-      .from('study_image')
+      .from('study_image') // ✅ 실제 버킷명으로 통일
       .upload(path, banner, { cacheControl: '3600', upsert: false })
-    if (uploadErr) return { ok: false, message: `이미지 업로드 실패: ${uploadErr.message}` }
+
+    if (uploadErr) {
+      return { ok: false, message: `이미지 업로드 실패: ${uploadErr.message}` }
+    }
 
     const { data } = supabase.storage.from('study_image').getPublicUrl(path)
     bannerPublicUrl = data.publicUrl
@@ -61,7 +68,7 @@ export async function createStudyAction(
       {
         owner_id: user.id,
         title,
-        category: finalCategory,
+        category,
         region,
         region_depth: regionDepth,
         description,
