@@ -60,7 +60,10 @@ export function BookMarkProvider({ children }: PropsWithChildren) {
     async (studyId: string, userId: string) => {
       const isCurrentBookmark = isRoomBookmarked(studyId)
 
+      let prevData: Bookmark[] | undefined | null
+
       const optimisticUpdate = (data: Bookmark[] | undefined | null) => {
+        prevData = data
         const list = data ?? []
 
         if (!isCurrentBookmark) {
@@ -77,8 +80,7 @@ export function BookMarkProvider({ children }: PropsWithChildren) {
           return list.filter((item) => item.room_id !== studyId)
         }
       }
-
-      const prevData = await bookmarkMutation(optimisticUpdate, {
+      await bookmarkMutation(optimisticUpdate, {
         revalidate: false,
       })
 
