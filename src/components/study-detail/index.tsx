@@ -202,6 +202,7 @@ function StudyDetail({
         </div>
 
         <div className="detail-contents">
+          <h3>소개</h3>
           <p>{studyRoomData.description}</p>
         </div>
 

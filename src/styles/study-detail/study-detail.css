@@ -80,8 +80,14 @@
   padding-inline: 0.3125rem;
   margin-bottom: 0.9375rem;
 
+  & h3 {
+    margin-block: 0.625rem;
+  }
+
   & p {
     line-height: 1.8;
+    white-space: pre-wrap;
+    word-break: keep-all;
   }
 }
 
