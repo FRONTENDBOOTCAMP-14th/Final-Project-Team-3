@@ -8,6 +8,8 @@ import CategoryUI from '@/components/ui/category-ui'
 import { useBookMark } from '@/hooks/useBookmark'
 import type { StudyRoom } from '@/libs/supabase'
 
+import { useLikes } from '../../hooks/useLikes'
+
 interface Props {
   item: StudyRoom
   userId: string | null | undefined
@@ -15,9 +17,11 @@ interface Props {
 
 function StudyCard({ item, userId }: Props) {
   const { bookmarkHandler, isRoomBookmarked } = useBookMark()
+  const { likesHandler, isRoomLiked } = useLikes()
   const [isDisabled, setIsDisabled] = useState(false)
 
   const isBookmark = isRoomBookmarked(item.id)
+  const isLikes = isRoomLiked(item.id)
 
   const bookmarkToggle = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -29,6 +33,20 @@ function StudyCard({ item, userId }: Props) {
     setIsDisabled(true)
 
     await bookmarkHandler(item.id, userId)
+
+    setIsDisabled(false)
+  }
+
+  const likesToggle = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!userId) {
+      alert('로그인이 필요합니다.')
+      return
+    }
+    setIsDisabled(true)
+
+    await likesHandler(item.id, userId)
 
     setIsDisabled(false)
   }
@@ -52,9 +70,14 @@ function StudyCard({ item, userId }: Props) {
               type="button"
               disabled={isDisabled}
               className="study-bookmark-btn"
-              onClick={bookmarkToggle}
+              onClick={likesToggle}
             >
-              <Icons name="heart" aria-hidden="true" width={32} height={32} />
+              <Icons
+                name={isLikes ? 'heart-fill' : 'heart'}
+                aria-hidden="true"
+                width={32}
+                height={32}
+              />
             </button>
             <button
               type="button"

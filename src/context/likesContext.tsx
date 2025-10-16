@@ -82,14 +82,14 @@ export function LikesProvider({ children }: PropsWithChildren) {
       try {
         if (!isCurrentLikes) {
           await setLikesStudyRoom(studyId, userId)
-          alert('즐겨찾기에 추가 되었습니다.!')
+          alert('"좋아요"가 추가 되었습니다.!')
         } else {
           await removeLikesStudyRoom(studyId, userId)
-          alert('즐겨찾기에서 삭제 되었습니다.!')
+          alert('"좋아요"가 삭제 되었습니다.!')
         }
       } catch (error) {
         await likesMutation(() => prevData, { revalidate: false })
-        alert(`즐겨찾기 추가 실패 : ${error.message}`)
+        alert(`"좋아요" 추가 실패 : ${error.message}`)
       }
     },
     [isRoomLiked, likesMutation]

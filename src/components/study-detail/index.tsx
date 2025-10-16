@@ -14,6 +14,8 @@ import {
 
 import '@/styles/study-detail/study-detail.css'
 
+import { useLikes } from '../../hooks/useLikes'
+
 import DetailModal from './detail-modal'
 
 interface Props {
@@ -33,6 +35,7 @@ function StudyDetail({
 }: Props) {
   const { user } = useAuth()
   const { bookmarkHandler, isRoomBookmarked } = useBookMark()
+  const { likesHandler, isRoomLiked } = useLikes()
 
   const filterRequestsData = studyRoomRequestsData?.find(
     (item) => item.user_id === user?.id
@@ -47,6 +50,9 @@ function StudyDetail({
   >(filterRequestsData)
   const [isPending, startTransition] = useTransition()
   const isOwner = user?.id === studyRoomData.owner_id
+
+  const isBookmark = isRoomBookmarked(studyRoomData.id)
+  const isLikes = isRoomLiked(studyRoomData.id)
 
   const handleRequestClick = () => {
     startTransition(async () => {
@@ -80,8 +86,6 @@ function StudyDetail({
     })
   }
 
-  const isBookmark = isRoomBookmarked(studyRoomData.id)
-
   const bookmarkToggle = async (e: React.MouseEvent) => {
     e.preventDefault()
 
@@ -92,6 +96,20 @@ function StudyDetail({
     setIsDisabled(true)
 
     await bookmarkHandler(studyRoomData.id, user.id)
+
+    setIsDisabled(false)
+  }
+
+  const likesToggle = async (e: React.MouseEvent) => {
+    e.preventDefault()
+
+    if (!user) {
+      alert('로그인이 필요합니다.')
+      return
+    }
+    setIsDisabled(true)
+
+    await likesHandler(studyRoomData.id, user.id)
 
     setIsDisabled(false)
   }
@@ -122,8 +140,15 @@ function StudyDetail({
                     type="button"
                     aria-label="좋아요 버튼"
                     className="contents-icons-btn"
+                    disabled={isDisabled}
+                    onClick={likesToggle}
                   >
-                    <Icons name="heart" width={32} height={32} />
+                    <Icons
+                      name={isLikes ? 'heart-fill' : 'heart'}
+                      aria-hidden="true"
+                      width={32}
+                      height={32}
+                    />
                   </button>
                   <button
                     type="button"
@@ -132,11 +157,11 @@ function StudyDetail({
                     disabled={isDisabled}
                     onClick={bookmarkToggle}
                   >
-                    {isBookmark ? (
-                      <Icons name="star-yellow-fill" width={32} height={32} />
-                    ) : (
-                      <Icons name="star" width={32} height={32} />
-                    )}
+                    <Icons
+                      name={isBookmark ? 'star-yellow-fill' : 'star'}
+                      width={32}
+                      height={32}
+                    />
                   </button>
                   {isPending ? (
                     <button type="button" disabled>
