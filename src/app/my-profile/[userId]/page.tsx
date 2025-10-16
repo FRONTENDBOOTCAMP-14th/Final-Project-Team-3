@@ -1,17 +1,16 @@
 import { redirect } from 'next/navigation'
 
-
 import ProfilePageClient from '@/components/ProfilePageClient'
+import type { StudyRoom } from '@/libs/supabase'
 import { getUserProfile } from '@/libs/supabase/api/user'
-
 import { createClient } from '@/libs/supabase/server'
 
 interface PageProps {
-  params: { userId: string }
+  params: Promise<{ userId: string }>
 }
 
 export default async function MyProfilePage({ params }: PageProps) {
-  const { userId } = params
+  const { userId } = await params
   const supabase = await createClient()
 
   const {
@@ -37,47 +36,61 @@ export default async function MyProfilePage({ params }: PageProps) {
     avatarUrl: profile.profile_url ?? '/images/default-avatar.png',
   }
 
-  const studies = [
+  const studies: StudyRoom[] = [
     {
-      id: 1,
+      id: crypto.randomUUID(),
       title: 'React 스터디',
-      role: '참가자',
-      imageUrl: '/images/no-image.png',
+      banner_image: '/images/no-image.png',
       category: '프론트엔드',
-      location: '서울',
-      members: 5,
-      likes: 12,
+      region: '서울',
+      region_depth: '구로구',
+      member_count: 5,
+      likes_count: 12,
+      owner_id: userId,
+      created_at: new Date().toISOString(),
+      description: '프론트 엔드 공부',
     },
     {
-      id: 2,
-      title: 'TypeScript 스터디',
-      role: '리더',
-      imageUrl: '/images/no-image.png',
+      id: crypto.randomUUID(),
+      title: 'React 스터디',
+      banner_image: '/images/no-image.png',
       category: '프론트엔드',
-      location: '온라인',
-      members: 8,
-      likes: 20,
+      region: '서울',
+      region_depth: '강남구',
+      member_count: 15,
+      likes_count: 62,
+      owner_id: userId,
+      created_at: new Date().toISOString(),
+      description: 'SQL 공부',
     },
   ]
 
   const favorites = [
     {
-      id: 3,
-      title: 'Next.js 스터디',
-      imageUrl: '/images/no-image.png',
+      id: crypto.randomUUID(),
+      title: 'React 스터디',
+      banner_image: '/images/no-image.png',
       category: '프론트엔드',
-      location: '서울',
-      members: 10,
-      likes: 5,
+      region: '경기도',
+      region_depth: '광명시',
+      member_count: 50,
+      likes_count: 121,
+      owner_id: userId,
+      created_at: new Date().toISOString(),
+      description: '풀스택 공부',
     },
     {
-      id: 4,
-      title: 'GraphQL 스터디',
-      imageUrl: '/images/no-image.png',
-      category: '백엔드',
-      location: '온라인',
-      members: 7,
-      likes: 7,
+      id: crypto.randomUUID(),
+      title: 'React 스터디',
+      banner_image: '/images/no-image.png',
+      category: '프론트엔드',
+      region: '세종특별자치시',
+      region_depth: '세종특별자치시',
+      member_count: 10,
+      likes_count: 20,
+      owner_id: userId,
+      created_at: new Date().toISOString(),
+      description: '백엔드 공부',
     },
   ]
 

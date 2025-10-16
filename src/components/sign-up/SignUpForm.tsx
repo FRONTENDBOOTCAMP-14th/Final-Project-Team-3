@@ -96,8 +96,7 @@ async function signUpAction(
       message: '회원가입 성공! 이메일을 확인해주세요 📧',
       success: true,
     }
-  } catch (error: any) {
-    console.error(error)
+  } catch (error) {
     return {
       message: `회원가입 실패: ${error.message ?? '알 수 없는 오류'}`,
       success: false,
@@ -110,7 +109,7 @@ export default function SignUpForm() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [nickname, setNickname] = useState('')
-  const [isPasswordValid, setIsPasswordValid] = useState(true)
+  const [isPasswordValid, _setIsPasswordValid] = useState(true)
 
   const [state, formAction] = useActionState(signUpAction, initialFormState)
 
