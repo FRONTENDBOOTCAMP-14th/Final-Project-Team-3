@@ -50,6 +50,45 @@ export interface Database {
           },
         ]
       }
+      comments: {
+        Row: {
+          comment: string
+          created_at: string
+          id: string
+          room_id: string
+          user_id: string
+        }
+        Insert: {
+          comment: string
+          created_at?: string
+          id?: string
+          room_id: string
+          user_id: string
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          id?: string
+          room_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'comments_room_id_fkey'
+            columns: ['room_id']
+            isOneToOne: false
+            referencedRelation: 'study_room'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'comments_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profile'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       likes: {
         Row: {
           created_at: string

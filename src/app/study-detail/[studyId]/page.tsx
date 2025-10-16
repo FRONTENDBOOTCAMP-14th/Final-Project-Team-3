@@ -7,6 +7,8 @@ import {
   studyRoomRequestsLists,
 } from '@/libs/supabase/api/study-room'
 
+import { getComments } from '../../../libs/supabase/api/comments'
+
 interface Props {
   params: Promise<{ studyId: string }>
 }
@@ -17,17 +19,17 @@ async function StudyDetailPage({ params }: Props) {
   const [
     studyRoomData,
     ownerProfileData,
-    studyRoomRequestsData,
     requestsListsData,
     participantsMembers,
   ] = await Promise.all([
     getStudyRoomDetail(studyId),
     getOwnerProfile(studyId),
-    getStudyRoomRequests(studyId),
     studyRoomRequestsLists(studyId),
     getStudyRoomParticipants(studyId),
   ])
 
+  const studyRoomRequestsData = await getStudyRoomRequests(studyId)
+  const commentData = await getComments(studyId)
   return (
     <section>
       <StudyDetail
@@ -36,6 +38,7 @@ async function StudyDetailPage({ params }: Props) {
         studyRoomRequestsData={studyRoomRequestsData}
         requestsListsData={requestsListsData}
         participantsMembers={participantsMembers}
+        commentData={commentData}
       />
     </section>
   )

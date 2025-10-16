@@ -111,9 +111,7 @@ export const getOwnerProfile = async (
 
 export const getStudyRoomRequests = async (
   studyId: string
-): Promise<StudyRoomRequests[] | null> => {
-  if (!studyId) return null
-
+): Promise<StudyRoomRequests[]> => {
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -131,9 +129,7 @@ export const getStudyRoomRequests = async (
 export const studyRoomRequestCancel = async (
   studyId: string,
   userId: string
-): Promise<void | null> => {
-  if (!studyId || !userId) return null
-
+): Promise<void> => {
   const supabase = await createClient()
 
   const { error } = await supabase
@@ -247,7 +243,7 @@ export const StudyRoomRequestsFn = async (
 
 export const studyRoomRequestsLists = async (
   studyId: string
-): Promise<Profile[] | null> => {
+): Promise<Profile[]> => {
   const supabase = await createClient()
 
   const { data } = await supabase
@@ -256,16 +252,14 @@ export const studyRoomRequestsLists = async (
     .eq('room_id', studyId)
     .eq('status', 'PENDING')
 
-  if (!data) return null
-
-  const profileLists = data.map((item) => item.profile)
+  const profileLists = data?.map((item) => item.profile)
 
   return profileLists ?? []
 }
 
 export const getStudyRoomParticipants = async (
   studyId: string
-): Promise<Profile[] | null> => {
+): Promise<Profile[]> => {
   const supabase = await createClient()
 
   const { data, error: participantsError } = await supabase
@@ -276,8 +270,6 @@ export const getStudyRoomParticipants = async (
   if (participantsError) {
     throw new Error(participantsError.message)
   }
-
-  if (!data) return null
 
   const profileLists = data.map((item) => item.profile)
 

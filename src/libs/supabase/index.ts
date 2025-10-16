@@ -29,3 +29,8 @@ export type BookmarkUpdate = TablesUpdate<'bookmark'>
 export type Likes = Tables<'likes'>
 export type LikesInsert = TablesInsert<'likes'>
 export type LikesUpdate = TablesUpdate<'likes'>
+
+// 스터디 룸 코멘트 타입
+export type Comments = Tables<'comments'>
+export type CommentsInsert = TablesInsert<'comments'>
+export type CommentsUpdate = TablesUpdate<'comments'>
