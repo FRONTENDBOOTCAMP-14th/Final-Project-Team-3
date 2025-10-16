@@ -98,6 +98,10 @@
       border: 0;
       transition: scale 0.2s ease-in-out;
 
+      &:first-of-type {
+        margin-inline-end: 0.3125rem;
+      }
+
       &:hover {
         scale: 1.2;
       }

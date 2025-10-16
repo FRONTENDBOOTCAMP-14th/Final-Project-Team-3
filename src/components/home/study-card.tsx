@@ -54,6 +54,14 @@ function StudyCard({ item, userId }: Props) {
               className="study-bookmark-btn"
               onClick={bookmarkToggle}
             >
+              <Icons name="heart" aria-hidden="true" width={32} height={32} />
+            </button>
+            <button
+              type="button"
+              disabled={isDisabled}
+              className="study-bookmark-btn"
+              onClick={bookmarkToggle}
+            >
               <Icons
                 name={isBookmark ? 'star-yellow-fill' : 'star'}
                 aria-hidden="true"
