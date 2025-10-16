@@ -1,7 +1,7 @@
 'use client'
 import type { PropsWithChildren } from 'react'
 import { createContext, useCallback, useMemo } from 'react'
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
 
 import { useAuth } from '@/hooks/useAuth'
 import type { Likes } from '@/libs/supabase'
@@ -82,9 +82,11 @@ export function LikesProvider({ children }: PropsWithChildren) {
       try {
         if (!isCurrentLikes) {
           await setLikesStudyRoom(studyId, userId)
+          await mutate(['study_room_data', studyId])
           alert('"좋아요"가 추가 되었습니다.!')
         } else {
           await removeLikesStudyRoom(studyId, userId)
+          await mutate(['study_room_data', studyId])
           alert('"좋아요"가 삭제 되었습니다.!')
         }
       } catch (error) {

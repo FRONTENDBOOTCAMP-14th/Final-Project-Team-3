@@ -6,6 +6,7 @@ import Icons from '@/components/icons'
 import CategoryUI from '@/components/ui/category-ui'
 import { useAuth } from '@/hooks/useAuth'
 import { useBookMark } from '@/hooks/useBookmark'
+import { useLikes } from '@/hooks/useLikes'
 import type { Profile, StudyRoom, StudyRoomRequests } from '@/libs/supabase'
 import {
   studyRoomRequestCancel,
@@ -13,8 +14,6 @@ import {
 } from '@/libs/supabase/api/study-room'
 
 import '@/styles/study-detail/study-detail.css'
-
-import { useLikes } from '../../hooks/useLikes'
 
 import DetailModal from './detail-modal'
 

@@ -6,9 +6,8 @@ import React, { useState } from 'react'
 import Icons from '@/components/icons'
 import CategoryUI from '@/components/ui/category-ui'
 import { useBookMark } from '@/hooks/useBookmark'
+import { useLikes } from '@/hooks/useLikes'
 import type { StudyRoom } from '@/libs/supabase'
-
-import { useLikes } from '../../hooks/useLikes'
 
 interface Props {
   item: StudyRoom

@@ -38,12 +38,12 @@ function CategoryUI({ studyData }: Props) {
 
       <p>
         <Icons name="user" aria-hidden="true" />
-        <span>멤버 수 {data?.member_count}</span>
+        <span>멤버 {data?.member_count}</span>
       </p>
 
       <p>
         <Icons name="heart" aria-hidden="true" />
-        <span>좋아요 수</span>
+        <span>좋아요 {data?.likes_count}</span>
       </p>
     </div>
   )
