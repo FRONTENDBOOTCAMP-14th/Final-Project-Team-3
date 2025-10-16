@@ -1,4 +1,4 @@
-import StudyDetail from '@/components/study-detail/study-detail'
+import StudyDetail from '@/components/study-detail'
 import {
   getOwnerProfile,
   getStudyRoomDetail,
@@ -14,12 +14,19 @@ interface Props {
 async function StudyDetailPage({ params }: Props) {
   const { studyId } = await params
 
-  // promise.all 사용 예정
-  const studyRoomData = await getStudyRoomDetail(studyId)
-  const ownerProfileData = await getOwnerProfile(studyId)
-  const studyRoomRequestsData = await getStudyRoomRequests(studyId)
-  const requestsListsData = await studyRoomRequestsLists(studyId)
-  const participantsMembers = await getStudyRoomParticipants(studyId)
+  const [
+    studyRoomData,
+    ownerProfileData,
+    studyRoomRequestsData,
+    requestsListsData,
+    participantsMembers,
+  ] = await Promise.all([
+    getStudyRoomDetail(studyId),
+    getOwnerProfile(studyId),
+    getStudyRoomRequests(studyId),
+    studyRoomRequestsLists(studyId),
+    getStudyRoomParticipants(studyId),
+  ])
 
   return (
     <section>

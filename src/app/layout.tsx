@@ -3,11 +3,12 @@ import type { PropsWithChildren } from 'react'
 
 import SiteFooter from '@/components/footer/footer'
 import Header from '@/components/header'
+import FloatingButton from '@/components/ui/floating-button'
+import { AuthProvider } from '@/context/autnContext'
+import { BookMarkProvider } from '@/context/bookmarkContext'
+import { createClient } from '@/libs/supabase/server'
 
 import '@/styles/common/index.css'
-import FloatingButton from '../components/ui/floating-button'
-import { AuthProvider } from '../context/autnContext'
-import { createClient } from '../libs/supabase/server'
 
 // --------------------------------------------------------------------------
 // 메타데이터
@@ -32,10 +33,12 @@ export default async function RootLayout({ children }: PropsWithChildren) {
     <html lang="ko-KR">
       <body>
         <AuthProvider user={user}>
-          <Header />
-          <main className="web-main">{children}</main>
-          <SiteFooter />
-          <FloatingButton />
+          <BookMarkProvider>
+            <Header />
+            <main className="web-main">{children}</main>
+            <SiteFooter />
+            <FloatingButton />
+          </BookMarkProvider>
         </AuthProvider>
       </body>
     </html>

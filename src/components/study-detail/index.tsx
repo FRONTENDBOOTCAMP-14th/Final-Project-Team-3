@@ -5,6 +5,7 @@ import { useState, useTransition } from 'react'
 import Icons from '@/components/icons'
 import CategoryUI from '@/components/ui/category-ui'
 import { useAuth } from '@/hooks/useAuth'
+import { useBookMark } from '@/hooks/useBookmark'
 import type { Profile, StudyRoom, StudyRoomRequests } from '@/libs/supabase'
 import {
   studyRoomRequestCancel,
@@ -31,10 +32,12 @@ function StudyDetail({
   participantsMembers,
 }: Props) {
   const { user } = useAuth()
+  const { bookmarkHandler, isRoomBookmarked } = useBookMark()
 
   const filterRequestsData = studyRoomRequestsData?.find(
     (item) => item.user_id === user?.id
   )
+  const [isDisabled, setIsDisabled] = useState(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [modalType, setModalType] = useState<'member' | 'applicant' | null>(
     null
@@ -43,6 +46,7 @@ function StudyDetail({
     StudyRoomRequests | null | undefined
   >(filterRequestsData)
   const [isPending, startTransition] = useTransition()
+  const isOwner = user?.id === studyRoomData.owner_id
 
   const handleRequestClick = () => {
     startTransition(async () => {
@@ -76,7 +80,21 @@ function StudyDetail({
     })
   }
 
-  const isOwner = user?.id === studyRoomData.owner_id
+  const isBookmark = isRoomBookmarked(studyRoomData.id)
+
+  const bookmarkToggle = async (e: React.MouseEvent) => {
+    e.preventDefault()
+
+    if (!user) {
+      alert('로그인이 필요합니다.')
+      return
+    }
+    setIsDisabled(true)
+
+    await bookmarkHandler(studyRoomData.id, user.id)
+
+    setIsDisabled(false)
+  }
 
   return (
     <div className="detail-container">
@@ -97,71 +115,94 @@ function StudyDetail({
         <div className="detail-heading">
           <div className="detail-header">
             <h3>{studyRoomData.title}</h3>
-            {studyRoomData.owner_id !== user?.id ? (
-              <>
-                {isPending ? (
-                  <button type="button" disabled>
-                    {requestData?.user_id === user?.id &&
-                    requestData?.status === 'PENDING'
-                      ? '취소 중...'
-                      : '신청 중...'}
-                  </button>
-                ) : requestData?.user_id === user?.id &&
-                  requestData?.status === 'PENDING' ? (
+            <div className="detail-button-group">
+              {studyRoomData.owner_id !== user?.id ? (
+                <>
                   <button
                     type="button"
-                    className="cancel-btn"
-                    onClick={handleRequestCancelClick}
-                    disabled={isPending}
+                    aria-label="좋아요 버튼"
+                    className="contents-icons-btn"
                   >
-                    신청 취소
+                    <Icons name="heart" width={32} height={32} />
                   </button>
-                ) : requestData?.user_id === user?.id &&
-                  (requestData?.status === 'REJECTED' ||
-                    requestData?.status === 'DEPORTATION') ? (
                   <button
                     type="button"
-                    disabled={
-                      requestData?.status === 'REJECTED' ||
-                      requestData?.status === 'DEPORTATION'
-                    }
+                    aria-label="즐겨찾기 버튼"
+                    className="contents-icons-btn"
+                    disabled={isDisabled}
+                    onClick={bookmarkToggle}
                   >
-                    신청 불가
+                    {isBookmark ? (
+                      <Icons name="star-yellow-fill" width={32} height={32} />
+                    ) : (
+                      <Icons name="star" width={32} height={32} />
+                    )}
                   </button>
-                ) : requestData?.user_id === user?.id &&
-                  requestData?.status === 'APPROVED' ? (
-                  <button
-                    type="button"
-                    disabled={requestData?.status === 'APPROVED'}
-                  >
-                    참여 중
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleRequestClick}
-                    disabled={isPending}
-                  >
-                    신청 하기
-                  </button>
-                )}
-              </>
-            ) : (
-              <button
-                type="button"
-                onClick={() => {
-                  setOpenModal(true)
-                  setModalType('applicant')
-                }}
-              >
-                신청 목록
-              </button>
-            )}
+                  {isPending ? (
+                    <button type="button" disabled>
+                      {requestData?.user_id === user?.id &&
+                      requestData?.status === 'PENDING'
+                        ? '취소 중...'
+                        : '신청 중...'}
+                    </button>
+                  ) : requestData?.user_id === user?.id &&
+                    requestData?.status === 'PENDING' ? (
+                    <button
+                      type="button"
+                      className="cancel-btn"
+                      onClick={handleRequestCancelClick}
+                      disabled={isPending}
+                    >
+                      신청 취소
+                    </button>
+                  ) : requestData?.user_id === user?.id &&
+                    (requestData?.status === 'REJECTED' ||
+                      requestData?.status === 'DEPORTATION') ? (
+                    <button
+                      type="button"
+                      disabled={
+                        requestData?.status === 'REJECTED' ||
+                        requestData?.status === 'DEPORTATION'
+                      }
+                    >
+                      신청 불가
+                    </button>
+                  ) : requestData?.user_id === user?.id &&
+                    requestData?.status === 'APPROVED' ? (
+                    <button
+                      type="button"
+                      disabled={requestData?.status === 'APPROVED'}
+                    >
+                      참여 중
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleRequestClick}
+                      disabled={isPending}
+                    >
+                      신청 하기
+                    </button>
+                  )}
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenModal(true)
+                    setModalType('applicant')
+                  }}
+                >
+                  신청 목록
+                </button>
+              )}
+            </div>
           </div>
           <CategoryUI studyData={studyRoomData} />
         </div>
 
         <div className="detail-contents">
+          <h3>소개</h3>
           <p>{studyRoomData.description}</p>
         </div>
 

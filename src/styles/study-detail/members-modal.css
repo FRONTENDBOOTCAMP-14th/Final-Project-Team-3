@@ -53,7 +53,7 @@
 .member-list-owner {
   .owner-image {
     position: relative;
-    max-inline-size: 5rem;
+    min-inline-size: 5rem;
 
     & .owner-icon {
       position: absolute;
@@ -72,24 +72,21 @@
 .member-info {
   flex: 1;
   padding-inline-end: 0.9375rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   & .info-name {
     font-size: var(--font-sm);
     font-weight: 600;
     color: var(--color-text-primary);
-
-    overflow: hidden;
     white-space: nowrap;
-    text-overflow: ellipsis;
   }
 
   & .info-bio {
     margin-block-start: 0.3125rem;
     font-size: var(--font-sm);
     color: var(--color-text-secondary);
-    overflow: hidden;
     line-height: 1.2;
-    overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;

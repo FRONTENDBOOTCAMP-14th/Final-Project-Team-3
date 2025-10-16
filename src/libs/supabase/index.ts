@@ -19,3 +19,13 @@ export type StudyRoomRequestsUpdate = TablesUpdate<'study_requests'>
 export type StudyRoomParticipants = Tables<'study_participants'>
 export type StudyRoomParticipantsInsert = TablesInsert<'study_participants'>
 export type StudyRoomParticipantsUpdate = TablesUpdate<'study_participants'>
+
+// 스터디 룸 즐겨찾기 타입
+export type Bookmark = Tables<'bookmark'>
+export type BookmarkInsert = TablesInsert<'bookmark'>
+export type BookmarkUpdate = TablesUpdate<'bookmark'>
+
+// 스터디 룸 좋아요 타입
+export type Likes = Tables<'likes'>
+export type LikesInsert = TablesInsert<'likes'>
+export type LikesUpdate = TablesUpdate<'likes'>
