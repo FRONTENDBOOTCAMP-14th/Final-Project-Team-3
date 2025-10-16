@@ -1,6 +1,6 @@
 'use server'
 
-import type { Bookmark, Profile } from '..'
+import type { Bookmark, Likes, Profile } from '..'
 import { createClient } from '../server'
 
 interface SignUpData {
@@ -122,7 +122,7 @@ export async function setLikesStudyRoom(
   }
 }
 
-export async function getMyLikesStudyRoom(userId: string): Promise<Bookmark[]> {
+export async function getMyLikesStudyRoom(userId: string): Promise<Likes[]> {
   const supabase = await createClient()
 
   const { data, error } = await supabase

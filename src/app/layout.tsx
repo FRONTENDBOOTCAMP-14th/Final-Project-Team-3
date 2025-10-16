@@ -6,6 +6,7 @@ import Header from '@/components/header'
 import FloatingButton from '@/components/ui/floating-button'
 import { AuthProvider } from '@/context/autnContext'
 import { BookMarkProvider } from '@/context/bookmarkContext'
+import { LikesProvider } from '@/context/likesContext'
 import { createClient } from '@/libs/supabase/server'
 
 import '@/styles/common/index.css'
@@ -33,12 +34,14 @@ export default async function RootLayout({ children }: PropsWithChildren) {
     <html lang="ko-KR">
       <body>
         <AuthProvider user={user}>
-          <BookMarkProvider>
-            <Header />
-            <main className="web-main">{children}</main>
-            <SiteFooter />
-            <FloatingButton />
-          </BookMarkProvider>
+          <LikesProvider>
+            <BookMarkProvider>
+              <Header />
+              <main className="web-main">{children}</main>
+              <SiteFooter />
+              <FloatingButton />
+            </BookMarkProvider>
+          </LikesProvider>
         </AuthProvider>
       </body>
     </html>
