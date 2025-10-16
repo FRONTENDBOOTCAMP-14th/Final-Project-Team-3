@@ -1,6 +1,6 @@
 'use client'
 
-import StudyDetailCard from '@/components/home/study-detail-card'
+import StudyCardLists from '@/components/home/study-card-lists'
 import type { StudyRoom } from '@/libs/supabase'
 
 interface Props {
@@ -11,7 +11,7 @@ export default function UserStudiesSection({ studies }: Props) {
   return (
     <section className="user-study-section">
       <h3 className="section-title">내 스터디</h3>
-      <StudyDetailCard studyData={studies} />
+      <StudyCardLists studyData={studies} />
     </section>
   )
 }
