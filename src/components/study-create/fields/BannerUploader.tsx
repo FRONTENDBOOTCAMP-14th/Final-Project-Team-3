@@ -2,11 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 const ALLOWED = new Set(['image/jpeg', 'image/png', 'image/gif'])
-
-interface Props {
-  value: File | null
-  onChange: (f: File | null) => void
-}
+const MAX_SIZE = 10 * 1024 * 1024 // 10MB
 
 interface Props {
   value: File | null
@@ -15,6 +11,7 @@ interface Props {
 
 export default function BannerUploader({ value, onChange }: Props) {
   const [isDragging, setIsDragging] = useState(false)
+  const [_dragDepth, setDragDepth] = useState(0) // ✅ 드래그 안정화
   const [previewUrl, setPreviewUrl] = useState('')
   const [localFile, setLocalFile] = useState<File | null>(value ?? null)
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -33,33 +30,53 @@ export default function BannerUploader({ value, onChange }: Props) {
 
   const resetNative = () => {
     if (!inputRef.current) return
-    const dt = new DataTransfer()
-    inputRef.current.files = dt.files
+    try {
+      const dt = new DataTransfer()
+      inputRef.current.files = dt.files
+    } catch {
+      // ignore
+    }
     inputRef.current.value = ''
+  }
+
+  const validate = (f: File) => {
+    if (!ALLOWED.has(f.type)) {
+      alert('JPEG, PNG, GIF 파일만 업로드할 수 있습니다.')
+      return false
+    }
+    if (f.size > MAX_SIZE) {
+      alert('파일 용량은 최대 10MB까지 업로드할 수 있습니다.')
+      return false
+    }
+    return true
   }
 
   const applyFile = (f: File | null, fromDrag = false) => {
     if (!f) {
       setLocalFile(null)
-      onChange?.(null) // ← ✅ 안전 호출
+      onChange?.(null)
       resetNative()
       return
     }
-    if (!ALLOWED.has(f.type)) {
-      alert('JPEG, PNG, GIF 파일만 업로드할 수 있습니다.')
+    if (!validate(f)) {
       resetNative()
       return
     }
-
     setLocalFile(f)
-    onChange?.(f) // ← ✅ 안전 호출
+    onChange?.(f)
 
     if (fromDrag && inputRef.current) {
-      const dt = new DataTransfer()
-      dt.items.add(f)
-      inputRef.current.files = dt.files
+      try {
+        const dt = new DataTransfer()
+        dt.items.add(f)
+        inputRef.current.files = dt.files
+      } catch {
+        // ignore
+      }
     }
   }
+
+  const helperId = 'banner-helper'
 
   return (
     <fieldset className="banner-fieldset form-field--full">
@@ -70,16 +87,24 @@ export default function BannerUploader({ value, onChange }: Props) {
         className="banner-input"
         name="banner"
         type="file"
-        // 3종만 선택 가능하게
-        accept=".jpeg,.png,.gif"
+        accept="image/jpeg,image/png,image/gif"
         onChange={(e) => applyFile(e.currentTarget.files?.[0] ?? null)}
+        onPaste={(e) => {
+          const f = e.clipboardData?.files?.[0]
+          if (f) applyFile(f)
+        }}
+        aria-describedby={helperId} // ✅ 접근성 연결
       />
 
       <div
         className={`banner-dropzone ${isDragging ? 'is-dragging' : ''} ${previewUrl ? 'has-image' : ''}`}
         onDragEnter={(e) => {
           e.preventDefault()
-          setIsDragging(true)
+          setDragDepth((d) => {
+            const next = d + 1
+            if (next === 1) setIsDragging(true)
+            return next
+          })
         }}
         onDragOver={(e) => {
           e.preventDefault()
@@ -87,11 +112,16 @@ export default function BannerUploader({ value, onChange }: Props) {
         }}
         onDragLeave={(e) => {
           e.preventDefault()
-          setIsDragging(false)
+          setDragDepth((d) => {
+            const next = Math.max(0, d - 1)
+            if (next === 0) setIsDragging(false)
+            return next
+          })
         }}
         onDrop={(e) => {
           e.preventDefault()
           setIsDragging(false)
+          setDragDepth(0)
           const file = e.dataTransfer.files?.[0] ?? null
           applyFile(file, true)
         }}
@@ -113,8 +143,8 @@ export default function BannerUploader({ value, onChange }: Props) {
               src={previewUrl}
               alt="배너 미리보기"
               draggable={false}
+              decoding="async"
             />
-
             <button
               type="button"
               className="banner-delete"
@@ -130,7 +160,7 @@ export default function BannerUploader({ value, onChange }: Props) {
             </button>
           </>
         ) : (
-          <div className="banner-empty">
+          <div className="banner-empty" id={helperId}>
             <span className="banner-empty-icon">📎</span>
             <p className="banner-empty-text">
               이미지를 드래그해 놓거나 <u>클릭</u>하여 업로드
