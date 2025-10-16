@@ -1,4 +1,3 @@
-// components/ui/site-footer.tsx
 import Link from 'next/link'
 import { useId } from 'react'
 
@@ -34,7 +33,6 @@ const linksSocial = [
   },
 ] as const satisfies ReadonlyArray<FooterLink>
 
-// ✅ 외부/내부 분기 + sr-only만 사용 (aria-label 제거)
 function A11yLink({
   label,
   href,
@@ -74,6 +72,9 @@ export default function SiteFooter() {
   const supportId = useId()
   const socialId = useId()
 
+  // 모든 내부 링크 비활성화 (준비중)
+  const DISABLE_INTERNAL_LINKS = true
+
   return (
     <footer className="site-footer" role="contentinfo">
       <div className="footer-inner">
@@ -95,6 +96,7 @@ export default function SiteFooter() {
             푸터 내비게이션
           </h2>
 
+          {/* 플랫폼 */}
           <div className="nav-group" aria-labelledby={platformId}>
             <h3 id={platformId} className="nav-title">
               플랫폼
@@ -102,16 +104,28 @@ export default function SiteFooter() {
             <ul className="nav-list">
               {linksCompany.map((item) => (
                 <li key={item.href}>
-                  <A11yLink
-                    className="nav-link"
-                    label={item.label}
-                    href={item.href}
-                  />
+                  {DISABLE_INTERNAL_LINKS ? (
+                    <span
+                      role="link"
+                      aria-disabled="true"
+                      tabIndex={-1}
+                      className="nav-link disabled"
+                    >
+                      {item.label} (준비중)
+                    </span>
+                  ) : (
+                    <A11yLink
+                      className="nav-link"
+                      label={item.label}
+                      href={item.href}
+                    />
+                  )}
                 </li>
               ))}
             </ul>
           </div>
 
+          {/* 지원 */}
           <div className="nav-group" aria-labelledby={supportId}>
             <h3 id={supportId} className="nav-title">
               지원
@@ -119,16 +133,28 @@ export default function SiteFooter() {
             <ul className="nav-list">
               {linksSupport.map((item) => (
                 <li key={item.href}>
-                  <A11yLink
-                    className="nav-link"
-                    label={item.label}
-                    href={item.href}
-                  />
+                  {DISABLE_INTERNAL_LINKS ? (
+                    <span
+                      role="link"
+                      aria-disabled="true"
+                      tabIndex={-1}
+                      className="nav-link disabled"
+                    >
+                      {item.label} (준비중)
+                    </span>
+                  ) : (
+                    <A11yLink
+                      className="nav-link"
+                      label={item.label}
+                      href={item.href}
+                    />
+                  )}
                 </li>
               ))}
             </ul>
           </div>
 
+          {/* 소셜 */}
           <div className="nav-group" aria-labelledby={socialId}>
             <h3 id={socialId} className="nav-title">
               소셜
@@ -150,7 +176,7 @@ export default function SiteFooter() {
       </div>
 
       <div className="footer-bottom" aria-label="저작권 정보">
-        <p className="copyright">© {year}. 3시세끼. All rights reserved</p>
+        <p className="copyright">©2025. 3시세끼. All rights reserved</p>
       </div>
     </footer>
   )
