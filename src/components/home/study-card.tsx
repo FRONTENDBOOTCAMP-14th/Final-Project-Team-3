@@ -12,9 +12,10 @@ import type { StudyRoom } from '@/libs/supabase'
 interface Props {
   item: StudyRoom
   userId: string | null | undefined
+  isPriority?: boolean
 }
 
-function StudyCard({ item, userId }: Props) {
+function StudyCard({ item, userId, isPriority }: Props) {
   const { bookmarkHandler, isRoomBookmarked } = useBookMark()
   const { likesHandler, isRoomLiked } = useLikes()
   const [isDisabled, setIsDisabled] = useState(false)
@@ -60,6 +61,8 @@ function StudyCard({ item, userId }: Props) {
             fill
             className="studybanner-img"
             aria-hidden="true"
+            sizes="(max-width: 768px) 100vw, (max-width: 1023px) 450px, 430px"
+            priority={isPriority}
           />
         </div>
         <div className="description-wrapper">

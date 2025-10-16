@@ -133,35 +133,35 @@ function StudyDetail({
           <div className="detail-header">
             <h3>{studyRoomData.title}</h3>
             <div className="detail-button-group">
+              <button
+                type="button"
+                aria-label="좋아요 버튼"
+                className="contents-icons-btn"
+                disabled={isDisabled}
+                onClick={likesToggle}
+              >
+                <Icons
+                  name={isLikes ? 'heart-fill' : 'heart'}
+                  aria-hidden="true"
+                  width={32}
+                  height={32}
+                />
+              </button>
+              <button
+                type="button"
+                aria-label="즐겨찾기 버튼"
+                className="contents-icons-btn"
+                disabled={isDisabled}
+                onClick={bookmarkToggle}
+              >
+                <Icons
+                  name={isBookmark ? 'star-yellow-fill' : 'star'}
+                  width={32}
+                  height={32}
+                />
+              </button>
               {studyRoomData.owner_id !== user?.id ? (
                 <>
-                  <button
-                    type="button"
-                    aria-label="좋아요 버튼"
-                    className="contents-icons-btn"
-                    disabled={isDisabled}
-                    onClick={likesToggle}
-                  >
-                    <Icons
-                      name={isLikes ? 'heart-fill' : 'heart'}
-                      aria-hidden="true"
-                      width={32}
-                      height={32}
-                    />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="즐겨찾기 버튼"
-                    className="contents-icons-btn"
-                    disabled={isDisabled}
-                    onClick={bookmarkToggle}
-                  >
-                    <Icons
-                      name={isBookmark ? 'star-yellow-fill' : 'star'}
-                      width={32}
-                      height={32}
-                    />
-                  </button>
                   {isPending ? (
                     <button type="button" disabled>
                       {requestData?.user_id === user?.id &&
@@ -250,6 +250,7 @@ function StudyDetail({
                 alt="no-image"
                 width={80}
                 height={80}
+                priority
               />
               <Icons
                 className="owner-icon"
@@ -267,6 +268,7 @@ function StudyDetail({
                   alt="no-image"
                   width={80}
                   height={80}
+                  priority
                 />
               </li>
             ))}
