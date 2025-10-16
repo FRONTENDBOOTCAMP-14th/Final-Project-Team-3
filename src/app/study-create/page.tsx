@@ -4,7 +4,6 @@ import { redirect } from 'next/navigation'
 import StudyCreateForm from '@/components/study-create/studycreateform'
 import { createClient } from '@/libs/supabase/server'
 
-// 캐시 없이 매 요청마다 인증 확인(선택 사항, 권장)
 export const dynamic = 'force-dynamic'
 
 export default async function StudyCreatePage() {
@@ -14,8 +13,8 @@ export default async function StudyCreatePage() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    // 로그인 안 된 경우 홈(또는 로그인)으로
-    redirect('/?next=/study-create')
+    //  새로운 경고 페이지로 리다이렉트
+    redirect('/auth/alert?next=/study-create')
   }
 
   return (
