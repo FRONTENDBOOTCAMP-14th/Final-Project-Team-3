@@ -7,12 +7,10 @@ interface Props {
   studyData: StudyRoom[]
 }
 
-const MAX_PRIORITY_COUNT = 5
-
 function StudyRoomCard({ studyData }: Props) {
   return (
     <ul className="latest-lists">
-      {studyData.map((item, index) => (
+      {studyData.map((item) => (
         <li className="latest-lists-item" key={item.id}>
           <Link href={`/study-detail/${item.id}`}>
             <div className="image-wrapper">
@@ -23,7 +21,7 @@ function StudyRoomCard({ studyData }: Props) {
                 className="studybanner-img"
                 aria-hidden="true"
                 sizes="(max-width: 768px) 165px, (max-width: 1023px) 200px, 250px"
-                priority={index < MAX_PRIORITY_COUNT}
+                priority
               />
             </div>
             <h3 title={item.title}>{item.title}</h3>

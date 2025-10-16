@@ -15,6 +15,8 @@ import {
 
 import '@/styles/study-detail/study-detail.css'
 
+import CommentForm from './comment-form'
+import CommentLists from './comment-lists'
 import DetailModal from './detail-modal'
 
 interface Props {
@@ -246,7 +248,7 @@ function StudyDetail({
           <div className="owner-member">
             <div className="owner-member-wrapper">
               <Image
-                src={ownerProfile.profile_url ?? '/images/no-image.png'}
+                src={ownerProfile.profile_url ?? '/images/default-avatar.png'}
                 alt="no-image"
                 width={80}
                 height={80}
@@ -264,7 +266,7 @@ function StudyDetail({
             {participantsMembers?.map((member) => (
               <li className="member-image" key={member.id}>
                 <Image
-                  src={member.profile_url ?? '/images/no-image.png'}
+                  src={member.profile_url ?? '/images/default-avatar.png'}
                   alt="no-image"
                   width={80}
                   height={80}
@@ -274,6 +276,10 @@ function StudyDetail({
             ))}
           </ul>
         </div>
+      </div>
+      <div>
+        <CommentForm />
+        <CommentLists />
       </div>
       {openModal && (
         <DetailModal

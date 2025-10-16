@@ -124,7 +124,7 @@
 
   & .owner-icon {
     position: absolute;
-    bottom: -0.25rem;
+    bottom: 0.3125rem;
     right: 0.3125rem;
   }
 }
