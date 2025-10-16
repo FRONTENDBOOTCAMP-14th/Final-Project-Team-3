@@ -1,180 +1,61 @@
-.main-wrapper {
-  inline-size: 100%;
-  block-size: auto;
-  padding: var(--space-lg);
-  background-color: var(--color-bg-primary);
-  color: var(--color-text-primary);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2xl);
-}
-
-.user-info-section {
-  display: flex;
-  align-items: center;
-  gap: var(--space-lg);
-  padding: var(--space-lg);
-  background-color: var(--color-bg-secondary);
-  border-radius: var(--radius-md);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
-  flex-wrap: wrap;
-  transition: box-shadow 0.3s ease;
-}
-
-.user-info-section:hover {
-  box-shadow: 0 0.75rem 1.25rem rgba(0, 0, 0, 0.1);
-}
-
-.user-avatar {
-  width: 8rem;
-  height: 8rem;
-  border-radius: var(--radius-full);
-  object-fit: cover;
-  border: 3px solid var(--color-border);
-  background-color: var(--color-bg-primary);
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
-  transition: transform 0.25s ease;
-}
-
-.user-avatar:hover {
-  transform: scale(1.05);
-}
-
-.user-details {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.user-name {
-  font-size: var(--font-xl);
-  font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-.user-email {
-  font-size: var(--font-md);
-  color: var(--color-text-secondary);
-}
-
-.user-details input[type='file'] {
-  margin-top: var(--space-s);
+.user-bio {
   font-size: var(--font-sm);
   color: var(--color-text-secondary);
-  background-color: transparent;
+  margin-top: var(--space-xs);
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
-.section-title {
-  font-size: var(--font-lg);
-  font-weight: 600;
-  border-bottom: 2px solid var(--color-border);
-  padding-bottom: var(--space-s);
-  margin-bottom: var(--space-md);
-}
-
-.study-list,
-.favorites-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-md);
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.study-card {
-  width: 220px;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--color-bg-secondary);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  cursor: pointer;
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
-}
-
-.study-card:hover {
-  transform: translateY(-0.25rem);
-  box-shadow: 0 0.75rem 1rem rgba(0, 0, 0, 0.08);
-}
-
-.image-wrapper {
-  inline-size: 100%;
-  block-size: auto;
-  overflow: hidden;
-  background-color: var(--color-bg-primary);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.studybanner-img {
-  inline-size: 100%;
-  block-size: auto;
-  display: block;
-  object-fit: cover;
-}
-
-.description-wrapper {
-  padding: var(--space-sm);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.study-title {
-  font-size: var(--font-md);
-  font-weight: 600;
-  color: var(--color-text-primary);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.study-role {
-  font-size: var(--font-sm);
+.user-bio:hover {
   color: var(--color-primary);
-  font-weight: 500;
+  text-decoration: underline;
 }
 
-.etc-description p {
-  font-size: var(--font-sm);
-  color: var(--color-text-secondary);
+.bio-edit {
   display: flex;
-  align-items: center;
   gap: var(--space-xs);
-  margin: 0.2rem 0;
+  margin-top: var(--space-xs);
 }
 
-@media (max-width: 64rem) {
-  .user-info-section {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .user-avatar {
-    width: 6.5rem;
-    height: 6.5rem;
-  }
-
-  .study-card {
-    width: 180px;
-  }
+.bio-input {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  font-size: var(--font-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.2s ease;
 }
 
-@media (max-width: 48rem) {
-  .main-wrapper {
-    padding: var(--space-md);
-  }
+.bio-input:focus {
+  border-color: var(--color-primary);
+}
 
-  .study-card {
-    width: 100%;
-  }
+.bio-save-btn,
+.bio-cancel-btn {
+  padding: 0.3rem 0.6rem;
+  font-size: var(--font-xs);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
 
-  .study-list,
-  .favorites-list {
-    justify-content: center;
-  }
+.bio-save-btn {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.bio-save-btn:hover {
+  background-color: darken(var(--color-primary), 10%);
+}
+
+.bio-cancel-btn {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.bio-cancel-btn:hover {
+  background-color: var(--color-bg-hover);
 }
