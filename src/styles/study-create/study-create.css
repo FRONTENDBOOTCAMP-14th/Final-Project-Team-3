@@ -1,0 +1,413 @@
+.study-create {
+  /* 가운데 정렬 + 최대 너비 */
+  max-inline-size: 48rem;
+  margin-inline: auto;
+  padding-block: var(--space-lg);
+  padding-inline: var(--space-ml);
+}
+
+/* 페이지 타이틀 */
+.study-create__title {
+  font-size: var(--font-xl);
+  font-weight: 600;
+  margin-block-end: var(--space-lg);
+  color: var(--color-text-primary);
+}
+
+/* 풀 */
+.study-form {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+/* 각 필드 래퍼 */
+.form-field {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+/* 레이블 */
+.field-label {
+  margin-top: 1rem;
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+/* 인풋/셀렉트/텍스트에어리어 공통 스타일 */
+.field-control {
+  inline-size: 100%;
+  block-size: 2.875rem;
+  padding-inline: var(--space-sm);
+  padding-block: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 8px);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-size: var(--font-md);
+}
+
+/* 텍스트 에어리어 높이 */
+.field-control--textarea {
+  min-block-size: 12rem;
+  max-block-size: 12rem;
+  resize: none;
+  overflow-y: auto;
+  line-height: 1.5;
+  padding: 0.75rem 1rem;
+}
+
+/* 포커스 접근성 */
+.field-control:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--color-tertiary);
+  outline-offset: 2px;
+}
+
+/* 비활성화 */
+.field-control[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ========== 배너 업로드 ========== */
+.banner-fieldset {
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md, 8px);
+  padding-inline: var(--space-md);
+  padding-block: var(--space-md);
+}
+
+.banner-legend {
+  padding-inline: var(--space-2xs, 0.25rem);
+  color: var(--color-text-secondary);
+  font-size: var(--font-md);
+  font-weight: 600;
+}
+
+/* 파일 인풋 */
+.banner-input {
+  inline-size: 100%;
+}
+
+/* 미리보기 박스 */
+.banner-preview {
+  margin-block-start: var(--space-sm);
+  inline-size: 100%;
+  max-inline-size: 40rem;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg, 12px);
+  overflow: hidden;
+  background-color: var(--color-bg-secondary);
+}
+
+.banner-preview > img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* 드래그&드롭 컨테이너 */
+.banner-dropzone {
+  position: relative;
+  border: 1px dashed var(--color-border);
+  border-radius: 0.75rem;
+  background-color: var(--color-bg-secondary);
+  min-block-size: 12rem;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+  overflow: hidden;
+}
+
+.banner-dropzone.is-dragging {
+  border-color: var(--color-primary);
+  background-color: color-mix(
+    in srgb,
+    var(--color-primary) 8%,
+    var(--color-bg-secondary)
+  );
+  box-shadow: 0 0 0 4px
+    color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+.banner-dropzone.has-image {
+  border-style: solid;
+  background-color: var(--color-bg-primary);
+}
+
+/* 프리뷰 이미지 */
+.banner-image {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  object-fit: cover;
+}
+
+/* 비어 있을 때 안내 */
+.banner-empty {
+  display: grid;
+  place-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  padding: 1rem;
+}
+.banner-empty-icon {
+  font-size: 1.5rem;
+}
+.banner-empty-text {
+  font-size: var(--font-sm);
+}
+
+.banner-empty-sub {
+  display: block;
+  margin-block-start: 0.25rem;
+  font-size: var(--font-xs);
+  color: var(--color-text-secondary);
+}
+
+/* 삭제 버튼(클릭 영역) */
+.banner-delete {
+  position: absolute;
+  inset-block-start: 0.5rem;
+  inset-inline-end: 0.5rem;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border: none;
+  border-radius: var(--radius-full);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  font-weight: 900; /* 좀 더 도톰하게 */
+  font-size: 1.2rem; /* 아이콘 크기 */
+
+  box-shadow: 0 2px 6px rgba(0 0 0 / 25%);
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background-color 0.12s ease;
+}
+
+.banner-delete:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0 0 0 / 30%);
+}
+
+.banner-delete__icon {
+  position: relative;
+  top: -0.1rem;
+  line-height: 1;
+  pointer-events: none;
+}
+/* 아이콘만 따로 미세정렬 */
+.banner-delete__icon {
+  position: relative;
+  top: -0.15rem; /*  살짝 위로—필요시 -0.12 ~ -0.2 사이 조정 */
+  font-size: 1.1rem; /* 크기 */
+  font-weight: 800; /* 굵기 */
+  line-height: 1;
+  pointer-events: none; /* 클릭 영역은 버튼에만 */
+}
+
+/* ========== 제출 버튼 ========== */
+.submit-row {
+  display: flex;
+  justify-content: flex-end;
+  padding-block: 0.5rem;
+  margin-block-end: 2rem;
+}
+
+.submit-button {
+  display: block;
+  inline-size: 100%;
+  padding-block: 1rem;
+  padding-inline: 1.25rem;
+  border: none;
+  border-radius: var(--radius-md, 8px);
+  background-color: var(--color-primary);
+  color: var(--color-bg-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+  box-shadow: 0 6px 18px rgba(0 0 0 / 18%);
+}
+
+.submit-button:hover,
+.submit-button:active {
+  background-color: var(--color-secondary);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(0 0 0 / 22%);
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Custom Select */
+.moida-select {
+  position: relative;
+}
+
+.moida-select__button {
+  inline-size: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+.moida-select__button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.moida-select__label.is-placeholder {
+  color: var(--color-text-secondary);
+}
+.moida-select__arrow {
+  font-size: 0.875rem;
+}
+
+/* 패널: 최대 6줄만 보이고 내부 스크롤 */
+.moida-select__panel {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: calc(100% + 0.25rem);
+  z-index: 40;
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-bg-primary);
+  box-shadow: 0 10px 24px rgba(0 0 0 / 15%);
+
+  --option-h: 2.25rem;
+  max-block-size: calc(var(--option-h) * 6);
+  overflow: auto;
+}
+
+.moida-select__option {
+  block-size: var(--option-h);
+  display: flex;
+  align-items: center;
+  padding-inline: 0.75rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+.moida-select__option:hover {
+  background: rgba(0 0 0 / 6%);
+}
+.moida-select__option.is-active {
+  background: rgba(0 0 0 / 8%);
+  font-weight: 600;
+}
+
+.moida-select__option.is-focused {
+  background: var(--color-bg-secondary);
+  outline: 1px solid var(--color-primary);
+}
+
+.moida-select.is-disabled .moida-select__button {
+  background: var(--color-bg-secondary);
+}
+
+.field-hint {
+  margin-top: 0.375rem;
+  font-size: var(--font-xs);
+  color: var(--color-text-secondary);
+}
+
+/* 폼 알람 */
+.form-alert {
+  margin-block-end: 2rem;
+  padding: 0.75rem 0.875rem;
+  border-radius: 8px;
+  font-size: 0.875rem; /* 14px 정도 */
+  line-height: 1.4;
+}
+
+/* 에러 메시지 */
+.form-alert--error {
+  color: #b42318; /* 진한 레드 텍스트 */
+  background-color: #fee4e2; /* 옅은 레드 배경 */
+  border: 1px solid #f3b0aa; /* 테두리 톤 다운 */
+}
+
+/* (선택) 성공 메시지 */
+.form-alert--success {
+  color: #067647;
+  background-color: #d1fadf;
+  border: 1px solid #9ae6b4;
+}
+
+/* ========== 반응형 ========== */
+/* 태블릿(≥768px) */
+@media (min-width: 48rem) {
+  .banner-preview {
+    margin-inline: auto; /* 가운데 정렬 */
+  }
+
+  .study-form {
+    /* 라벨/컨트롤 2열 배치에 쓰기 좋은 그리드 */
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--space-xl, 2rem);
+  }
+
+  /* 한 줄 전체를 차지해야 하는 행들 */
+  .form-field--full {
+    grid-column: 1 / -1;
+  }
+
+  /* 소개 textarea는 항상 전체 폭 */
+  .field-control--textarea {
+    grid-column: 1 / -1;
+  }
+
+  .submit-row {
+    grid-column: 1 / -1;
+  }
+
+  .study-form {
+    max-inline-size: 60rem; /* 672px */
+    margin-inline: auto;
+    padding-inline: 2rem;
+  }
+}
+
+/* 데스크탑(≥1024px) */
+@media (min-width: 64rem) {
+  .study-create {
+    max-inline-size: 60rem; /* 960px */
+  }
+}
+
+/* ========== 모션 선호도 ========== */
+@media (prefers-reduced-motion: reduce) {
+  .submit-button {
+    transition: none;
+  }
+}

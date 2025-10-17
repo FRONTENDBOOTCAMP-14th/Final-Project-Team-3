@@ -1,0 +1,126 @@
+.member-list-modal-container {
+  --color-overlay: rgba(0, 0, 0, 0.5);
+
+  position: fixed;
+  inset: 0;
+  background-color: var(--color-overlay);
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.member-list-modal-wrapper {
+  background-color: var(--color-bg-primary);
+  inline-size: 100%;
+  max-inline-size: 80%;
+  padding: var(--space-md);
+  border-radius: var(--radius-xs);
+
+  @media screen and (width >= 48rem) {
+    max-inline-size: 80%;
+  }
+
+  @media screen and (width >= 64rem) {
+    max-inline-size: 40%;
+  }
+}
+
+.modal-scroll {
+  max-block-size: 25rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.member-list-heading {
+  margin-block: 0.625rem;
+  font-size: var(--font-lg);
+}
+
+.member-list-owner,
+.member-list-wrapper {
+  display: flex;
+  gap: 0.9375rem;
+  max-block-size: 6.25rem;
+}
+
+.member-list-owner img,
+.member-list-wrapper img {
+  border-radius: var(--radius-full);
+}
+
+.member-list-owner {
+  .owner-image {
+    position: relative;
+    min-inline-size: 5rem;
+
+    & .owner-icon {
+      position: absolute;
+      bottom: 0.3125rem;
+      right: 0.3125rem;
+    }
+  }
+}
+
+.member-lists {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+.member-info {
+  flex: 1;
+  padding-inline-end: 0.9375rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  & .info-name {
+    font-size: var(--font-sm);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+  }
+
+  & .info-bio {
+    margin-block-start: 0.3125rem;
+    font-size: var(--font-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+}
+
+.info-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  & .request-button-group {
+    display: flex;
+    gap: 0.3125rem;
+
+    & button {
+      border: 0;
+      padding: 0.3125rem;
+      border-radius: 0.3125rem;
+      color: #fff;
+      font-size: var(--font-sm);
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
+    & .rejected-btn {
+      background-color: red;
+    }
+
+    & .approved-btn {
+      background-color: var(--color-primary);
+    }
+  }
+}

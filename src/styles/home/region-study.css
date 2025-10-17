@@ -1,0 +1,110 @@
+.region-study-container {
+  padding-block: var(--space-ml);
+}
+
+.region-study-header {
+  margin-block-end: 0.625rem;
+
+  & h2 {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    color: var(--color-text-primary);
+
+    & span {
+      margin-left: 0.3125rem;
+    }
+  }
+}
+
+.region-study-wrapper {
+  inline-size: 100%;
+}
+
+.region-study-lists {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.25rem;
+
+  @media screen and (width >= 48rem) {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 2fr));
+    gap: 1.875rem;
+  }
+
+  @media screen and (width >= 64rem) {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 4fr));
+  }
+}
+
+.region-study-lists-item {
+  inline-size: 100%;
+  border-radius: var(--radius-xs);
+  box-shadow: 0 0.125rem 0.25rem #0000000d;
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-0.3125rem);
+    box-shadow: 0 0.25rem 0.5rem #0000001a;
+  }
+
+  & a {
+    text-decoration: none;
+  }
+
+  & .image-wrapper {
+    inline-size: 100%;
+    block-size: 12.5rem;
+    position: relative;
+
+    & .studybanner-img {
+      border-top-right-radius: var(--radius-xs);
+      border-top-left-radius: var(--radius-xs);
+    }
+  }
+
+  .description-wrapper {
+    padding-inline: 0.9375rem;
+    padding-block: 0.9375rem;
+
+    & h3 {
+      font-size: var(--font-lg);
+      color: var(--color-text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      & span {
+        display: inline-block;
+        inline-size: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    & p {
+      font-size: var(--font-sm);
+      color: var(--color-text-secondary);
+      margin-block: 0.3125rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    & .study-bookmark-btn {
+      padding: 0;
+      border: 0;
+      transition: scale 0.2s ease-in-out;
+
+      &:first-of-type {
+        margin-inline-end: 0.3125rem;
+      }
+
+      &:hover {
+        scale: 1.2;
+      }
+    }
+  }
+}

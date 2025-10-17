@@ -1,0 +1,61 @@
+.user-bio {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.user-bio:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.bio-edit {
+  display: flex;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+}
+
+.bio-input {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  font-size: var(--font-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.bio-input:focus {
+  border-color: var(--color-primary);
+}
+
+.bio-save-btn,
+.bio-cancel-btn {
+  padding: 0.3rem 0.6rem;
+  font-size: var(--font-xs);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.bio-save-btn {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.bio-save-btn:hover {
+  background-color: darken(var(--color-primary), 10%);
+}
+
+.bio-cancel-btn {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.bio-cancel-btn:hover {
+  background-color: var(--color-bg-hover);
+}
