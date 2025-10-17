@@ -3,6 +3,7 @@
 import { useAuth } from '@/hooks/useAuth'
 import type { StudyRoom } from '@/libs/supabase'
 
+import '@/styles/home/region-study.css'
 import StudyCard from './study-card'
 
 interface Props {

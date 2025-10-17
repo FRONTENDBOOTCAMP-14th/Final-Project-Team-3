@@ -51,6 +51,8 @@ function StudyCard({ item, userId, isPriority }: Props) {
     setIsDisabled(false)
   }
 
+  const isGif = item.banner_image?.toLowerCase().endsWith('.gif')
+
   return (
     <li className="region-study-lists-item" key={item.id}>
       <Link href={`/study-detail/${item.id}`}>
@@ -63,6 +65,7 @@ function StudyCard({ item, userId, isPriority }: Props) {
             aria-hidden="true"
             sizes="(max-width: 768px) 100vw, (max-width: 1023px) 450px, 430px"
             priority={isPriority}
+            unoptimized={isGif ?? undefined}
           />
         </div>
         <div className="description-wrapper">
