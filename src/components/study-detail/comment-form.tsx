@@ -22,7 +22,9 @@ function CommentForm({
   setModifyComment,
 }: Props) {
   const formRef = useRef<HTMLFormElement | null>(null)
-  const [inputValue, setInputValue] = useState<string>(comment ?? '')
+  const [inputValue, setInputValue] = useState<string>(
+    type === 'MODIFY' && comment && userId ? comment : ''
+  )
   const [debounceValue, setDebounceValue] = useState<string>('')
 
   const [isPending, startTransition] = useTransition()
@@ -34,6 +36,10 @@ function CommentForm({
 
     return () => clearTimeout(timer)
   }, [inputValue])
+
+  useEffect(() => {
+    if (!userId) setInputValue('')
+  }, [userId])
 
   const submitHandler = async (formData: FormData) => {
     const comment = formData.get('comment') as string
@@ -48,6 +54,7 @@ function CommentForm({
         await addComments(studyId, comment, commentId)
 
         if (type === 'MODIFY' && setModifyComment) setModifyComment(false)
+        setInputValue('')
         alert(type === 'MODIFY' ? '댓글 수정 성공!' : '댓글 추가 성공!')
       } catch (_error) {
         alert(type === 'MODIFY' ? '댓글 수정 실패...' : '댓글 추가 실패...')
@@ -68,9 +75,7 @@ function CommentForm({
             name="comment"
             required
             autoComplete="off"
-            value={
-              type === 'MODIFY' && comment && userId ? inputValue : undefined
-            }
+            value={inputValue}
             disabled={userId ? false : true}
             onChange={(e) => setInputValue(e.target.value)}
           />

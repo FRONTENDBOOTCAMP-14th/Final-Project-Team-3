@@ -56,8 +56,8 @@ function CommentItem({ commentData, user }: Props) {
         <Image
           src={commentData.profile.profile_url ?? '/images/default-avatar'}
           alt={`${commentData.profile.nickname} 이미지`}
-          width={60}
-          height={60}
+          width={50}
+          height={50}
         />
       </div>
       <div className="comment-info">
