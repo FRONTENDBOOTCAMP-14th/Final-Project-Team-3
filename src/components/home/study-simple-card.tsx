@@ -20,6 +20,7 @@ function StudyRoomCard({ studyData }: Props) {
                 fill
                 className="studybanner-img"
                 aria-hidden="true"
+                sizes="(max-width: 768px) 165px, (max-width: 1023px) 200px, 250px"
                 priority
               />
             </div>

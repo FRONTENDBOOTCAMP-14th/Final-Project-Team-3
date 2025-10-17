@@ -3,14 +3,13 @@ import type { PropsWithChildren } from 'react'
 import { createContext, useCallback, useMemo } from 'react'
 import useSWR from 'swr'
 
+import { useAuth } from '@/hooks/useAuth'
 import type { Bookmark } from '@/libs/supabase'
 import {
   getMyBookMarkStudyRoom,
   removeBookMarkStudyRoom,
   setBookMarkStudyRoom,
 } from '@/libs/supabase/api/user'
-
-import { useAuth } from '../hooks/useAuth'
 
 export interface BookMarkContextValue {
   isLoading: boolean

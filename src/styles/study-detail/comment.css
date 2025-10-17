@@ -1,0 +1,147 @@
+.comment-heading {
+  & h3 {
+    font-size: var(--font-lg);
+  }
+}
+
+.comment-form-wrapper {
+  inline-size: 100%;
+}
+
+.comment-form {
+  display: flex;
+  justify-content: center;
+  flex-flow: column nowrap;
+  gap: 0.625rem;
+
+  & .comment-input {
+    border: 0;
+    border-bottom: 0.0625rem solid #000;
+    padding-block: 0.625rem;
+    font-size: var(--font-sm);
+    font-weight: 600;
+
+    &:disabled {
+      border-bottom-color: var(--color-text-tertiary);
+      cursor: not-allowed;
+    }
+  }
+
+  & .comment-btn-group {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.4375rem;
+  }
+
+  & .comment-form-btn {
+    max-inline-size: 6.25rem;
+    padding: 0.625rem;
+    border-radius: 0.3125rem;
+    color: #fff;
+    background-color: var(--color-primary);
+    border: 0;
+
+    &.cancel-btn {
+      background-color: var(--color-cancel);
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &:disabled {
+      background-color: var(--color-text-tertiary);
+      cursor: not-allowed;
+    }
+  }
+}
+
+.comment-lists-wrapper {
+  margin-block: 0.9375rem;
+}
+
+.comment-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4375rem;
+  margin-block: 0.75rem;
+}
+
+.comment-lists-user {
+  min-inline-size: 3.75rem;
+
+  & img {
+    border-radius: 50%;
+  }
+}
+
+.comment-info {
+  padding-block-start: 0.3125rem;
+  display: flex;
+  flex-flow: column nowrap;
+  inline-size: 100%;
+
+  & span {
+    font-size: var(--font-sm);
+    font-weight: 600;
+  }
+
+  & .comment-btn {
+    margin-inline-start: 0.4375rem;
+    padding: 0;
+    border: 0;
+    font-size: var(--font-sm);
+
+    &.modify {
+      color: var(--color-primary);
+
+      &:hover {
+        color: var(--color-secondary);
+      }
+    }
+
+    &.delete {
+      color: var(--color-cancel);
+
+      &:hover {
+        color: var(--color-cancel-secondary);
+      }
+    }
+  }
+
+  & p {
+    font-size: var(--font-sm);
+    inline-size: 100%;
+    max-height: 6.1231rem;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+    line-clamp: 5;
+    -webkit-line-clamp: 5;
+
+    &.active {
+      -webkit-line-clamp: unset;
+      line-clamp: unset;
+      max-height: unset;
+    }
+  }
+
+  .comment-more {
+    margin-block-start: 0.3125rem;
+    align-self: flex-end;
+    border: 0;
+    padding: 0;
+    font-size: var(--font-sm);
+    font-weight: 600;
+    color: var(--color-primary);
+
+    &:hover {
+      color: var(--color-tertiary);
+    }
+  }
+}

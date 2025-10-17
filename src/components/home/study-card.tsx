@@ -6,18 +6,22 @@ import React, { useState } from 'react'
 import Icons from '@/components/icons'
 import CategoryUI from '@/components/ui/category-ui'
 import { useBookMark } from '@/hooks/useBookmark'
+import { useLikes } from '@/hooks/useLikes'
 import type { StudyRoom } from '@/libs/supabase'
 
 interface Props {
   item: StudyRoom
   userId: string | null | undefined
+  isPriority?: boolean
 }
 
-function StudyCard({ item, userId }: Props) {
+function StudyCard({ item, userId, isPriority }: Props) {
   const { bookmarkHandler, isRoomBookmarked } = useBookMark()
+  const { likesHandler, isRoomLiked } = useLikes()
   const [isDisabled, setIsDisabled] = useState(false)
 
   const isBookmark = isRoomBookmarked(item.id)
+  const isLikes = isRoomLiked(item.id)
 
   const bookmarkToggle = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -33,6 +37,20 @@ function StudyCard({ item, userId }: Props) {
     setIsDisabled(false)
   }
 
+  const likesToggle = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!userId) {
+      alert('로그인이 필요합니다.')
+      return
+    }
+    setIsDisabled(true)
+
+    await likesHandler(item.id, userId)
+
+    setIsDisabled(false)
+  }
+
   return (
     <li className="region-study-lists-item" key={item.id}>
       <Link href={`/study-detail/${item.id}`}>
@@ -43,11 +61,26 @@ function StudyCard({ item, userId }: Props) {
             fill
             className="studybanner-img"
             aria-hidden="true"
+            sizes="(max-width: 768px) 100vw, (max-width: 1023px) 450px, 430px"
+            priority={isPriority}
           />
         </div>
         <div className="description-wrapper">
           <h3>
             <span>{item.title}</span>
+            <button
+              type="button"
+              disabled={isDisabled}
+              className="study-bookmark-btn"
+              onClick={likesToggle}
+            >
+              <Icons
+                name={isLikes ? 'heart-fill' : 'heart'}
+                aria-hidden="true"
+                width={32}
+                height={32}
+              />
+            </button>
             <button
               type="button"
               disabled={isDisabled}

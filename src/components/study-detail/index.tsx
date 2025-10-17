@@ -1,27 +1,28 @@
 'use client'
 import Image from 'next/image'
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 
 import Icons from '@/components/icons'
 import CategoryUI from '@/components/ui/category-ui'
 import { useAuth } from '@/hooks/useAuth'
-import { useBookMark } from '@/hooks/useBookmark'
 import type { Profile, StudyRoom, StudyRoomRequests } from '@/libs/supabase'
-import {
-  studyRoomRequestCancel,
-  StudyRoomRequestsFn,
-} from '@/libs/supabase/api/study-room'
+import type { CommentsWithProfile } from '@/libs/supabase/api/comments'
 
 import '@/styles/study-detail/study-detail.css'
 
+import CommentForm from './comment-form'
+import CommentLists from './comment-lists'
 import DetailModal from './detail-modal'
+import LikesAndBookmarks from './likesAndBookmarks'
+import RequestBtn from './request-btn'
 
 interface Props {
   studyRoomData: StudyRoom
   ownerProfile: Profile
-  studyRoomRequestsData: StudyRoomRequests[] | null
-  requestsListsData: Profile[] | null
-  participantsMembers: Profile[] | null
+  studyRoomRequestsData: StudyRoomRequests[]
+  requestsListsData: Profile[]
+  participantsMembers: Profile[]
+  commentData: CommentsWithProfile[]
 }
 
 function StudyDetail({
@@ -30,71 +31,16 @@ function StudyDetail({
   studyRoomRequestsData,
   requestsListsData,
   participantsMembers,
+  commentData,
 }: Props) {
   const { user } = useAuth()
-  const { bookmarkHandler, isRoomBookmarked } = useBookMark()
 
-  const filterRequestsData = studyRoomRequestsData?.find(
-    (item) => item.user_id === user?.id
-  )
-  const [isDisabled, setIsDisabled] = useState(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [modalType, setModalType] = useState<'member' | 'applicant' | null>(
     null
   )
-  const [requestData, setRequestData] = useState<
-    StudyRoomRequests | null | undefined
-  >(filterRequestsData)
-  const [isPending, startTransition] = useTransition()
+
   const isOwner = user?.id === studyRoomData.owner_id
-
-  const handleRequestClick = () => {
-    startTransition(async () => {
-      try {
-        if (!studyRoomData.id || !user?.id) return
-
-        const data = await StudyRoomRequestsFn(
-          studyRoomData.id,
-          user?.id,
-          'PENDING'
-        )
-
-        setRequestData(data)
-        alert('신청이 완료 되었습니다.')
-      } catch (e) {
-        alert(`신청 에러 ${e.message}`)
-      }
-    })
-  }
-
-  const handleRequestCancelClick = () => {
-    startTransition(async () => {
-      try {
-        if (!studyRoomData.id || !user?.id) return
-
-        await studyRoomRequestCancel(studyRoomData.id, user?.id)
-        setRequestData(null)
-      } catch (e) {
-        alert(`취소 에러 ${e.message}`)
-      }
-    })
-  }
-
-  const isBookmark = isRoomBookmarked(studyRoomData.id)
-
-  const bookmarkToggle = async (e: React.MouseEvent) => {
-    e.preventDefault()
-
-    if (!user) {
-      alert('로그인이 필요합니다.')
-      return
-    }
-    setIsDisabled(true)
-
-    await bookmarkHandler(studyRoomData.id, user.id)
-
-    setIsDisabled(false)
-  }
 
   return (
     <div className="detail-container">
@@ -107,7 +53,7 @@ function StudyDetail({
           aria-hidden="true"
           priority
           sizes="100vw"
-          quality={90}
+          quality={75}
         />
       </div>
 
@@ -116,74 +62,14 @@ function StudyDetail({
           <div className="detail-header">
             <h3>{studyRoomData.title}</h3>
             <div className="detail-button-group">
+              <LikesAndBookmarks user={user} studyRoomData={studyRoomData} />
               {studyRoomData.owner_id !== user?.id ? (
                 <>
-                  <button
-                    type="button"
-                    aria-label="좋아요 버튼"
-                    className="contents-icons-btn"
-                  >
-                    <Icons name="heart" width={32} height={32} />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="즐겨찾기 버튼"
-                    className="contents-icons-btn"
-                    disabled={isDisabled}
-                    onClick={bookmarkToggle}
-                  >
-                    {isBookmark ? (
-                      <Icons name="star-yellow-fill" width={32} height={32} />
-                    ) : (
-                      <Icons name="star" width={32} height={32} />
-                    )}
-                  </button>
-                  {isPending ? (
-                    <button type="button" disabled>
-                      {requestData?.user_id === user?.id &&
-                      requestData?.status === 'PENDING'
-                        ? '취소 중...'
-                        : '신청 중...'}
-                    </button>
-                  ) : requestData?.user_id === user?.id &&
-                    requestData?.status === 'PENDING' ? (
-                    <button
-                      type="button"
-                      className="cancel-btn"
-                      onClick={handleRequestCancelClick}
-                      disabled={isPending}
-                    >
-                      신청 취소
-                    </button>
-                  ) : requestData?.user_id === user?.id &&
-                    (requestData?.status === 'REJECTED' ||
-                      requestData?.status === 'DEPORTATION') ? (
-                    <button
-                      type="button"
-                      disabled={
-                        requestData?.status === 'REJECTED' ||
-                        requestData?.status === 'DEPORTATION'
-                      }
-                    >
-                      신청 불가
-                    </button>
-                  ) : requestData?.user_id === user?.id &&
-                    requestData?.status === 'APPROVED' ? (
-                    <button
-                      type="button"
-                      disabled={requestData?.status === 'APPROVED'}
-                    >
-                      참여 중
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={handleRequestClick}
-                      disabled={isPending}
-                    >
-                      신청 하기
-                    </button>
-                  )}
+                  <RequestBtn
+                    studyRoomRequestsData={studyRoomRequestsData}
+                    user={user}
+                    studyId={studyRoomData.id}
+                  />
                 </>
               ) : (
                 <button
@@ -222,10 +108,11 @@ function StudyDetail({
           <div className="owner-member">
             <div className="owner-member-wrapper">
               <Image
-                src={ownerProfile.profile_url ?? '/images/no-image.png'}
+                src={ownerProfile.profile_url ?? '/images/default-avatar.png'}
                 alt="no-image"
                 width={80}
                 height={80}
+                priority
               />
               <Icons
                 className="owner-icon"
@@ -239,15 +126,23 @@ function StudyDetail({
             {participantsMembers?.map((member) => (
               <li className="member-image" key={member.id}>
                 <Image
-                  src={member.profile_url ?? '/images/no-image.png'}
+                  src={member.profile_url ?? '/images/default-avatar.png'}
                   alt="no-image"
                   width={80}
                   height={80}
+                  priority
                 />
               </li>
             ))}
           </ul>
         </div>
+      </div>
+      <div>
+        <div className="comment-heading">
+          <h3>댓글 ({commentData.length})</h3>
+        </div>
+        <CommentForm studyId={studyRoomData.id} userId={user?.id} />
+        <CommentLists commentData={commentData} user={user} />
       </div>
       {openModal && (
         <DetailModal
