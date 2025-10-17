@@ -24,6 +24,8 @@ function RequestBtn({ studyRoomRequestsData, studyId, user }: Props) {
   const [isPending, startTransition] = useTransition()
 
   const handleRequestClick = () => {
+    if (!user) alert('로그인이 필요합니다.')
+
     startTransition(async () => {
       try {
         if (!studyId || !user?.id) return
