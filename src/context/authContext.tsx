@@ -3,7 +3,7 @@ import type { Session, User } from '@supabase/supabase-js'
 import type { PropsWithChildren, SetStateAction } from 'react'
 import React, { createContext, useEffect, useMemo, useState } from 'react'
 
-import supabase from '../libs/supabase/client'
+import supabase from '@/libs/supabase/client'
 
 export interface AuthContextValue {
   user: User | null

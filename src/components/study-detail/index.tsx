@@ -49,7 +49,7 @@ function StudyDetail({
       <div className="detail-banner">
         <Image
           src={studyRoomData.banner_image ?? '/images/no-image.png'}
-          alt={`${studyRoomData.title} 이미지`}
+          alt={`${studyRoomData.title}`}
           fill
           className="studybanner-img"
           aria-hidden="true"
