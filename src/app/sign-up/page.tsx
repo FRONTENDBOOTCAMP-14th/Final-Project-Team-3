@@ -1,18 +1,28 @@
-import { redirect } from 'next/navigation'
+'use client'
+
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 import SignUpForm from '@/components/sign-up/SignUpForm'
-import { createClient } from '@/libs/supabase/server'
+import supabase from '@/libs/supabase/client'
 
-export default async function SignUpPage() {
-  const supabase = await createClient()
+export default function SignUpPage() {
+  const router = useRouter()
 
-  const {
-    data: { user: loggedInUser },
-  } = await supabase.auth.getUser()
+  useEffect(() => {
+    async function checkUser() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
 
-  if (loggedInUser) {
-    redirect('/')
-  }
+      if (user) {
+        alert('이미 로그인된 상태에서는 회원가입 페이지에 접근할 수 없습니다.')
+        router.replace('/')
+      }
+    }
+
+    checkUser()
+  }, [router])
 
   return (
     <main className="sign-up-wrapper">

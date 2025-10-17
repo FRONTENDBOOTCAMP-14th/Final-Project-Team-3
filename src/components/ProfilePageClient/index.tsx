@@ -1,15 +1,11 @@
 'use client'
 
-import '@/styles/page-profile/profile-page.css'
-import { useEffect, useState } from 'react'
-
+import StudyCardLists from '@/components/home/study-card-lists'
 import type { StudyRoom } from '@/libs/supabase'
 
-import UserFavoritesSection from './user-favorites-section'
 import UserInfoSection from './user-info-section'
-import UserStudiesSection from './user-studies-section'
 
-interface ProfilePageClientProps {
+interface Props {
   user: {
     name: string
     email: string
@@ -19,33 +15,20 @@ interface ProfilePageClientProps {
   favorites: StudyRoom[]
 }
 
-export default function ProfilePageClient({
-  user,
-  studies,
-  favorites,
-}: ProfilePageClientProps) {
-  const [avatarFile, setAvatarFile] = useState<File | null>(null)
-  const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl)
-
-  useEffect(() => {
-    if (avatarFile) {
-      const url = URL.createObjectURL(avatarFile)
-      setAvatarUrl(url)
-      return () => URL.revokeObjectURL(url)
-    } else {
-      setAvatarUrl(user.avatarUrl)
-    }
-  }, [avatarFile, user.avatarUrl])
-
+export default function ProfilePageClient({ user, studies, favorites }: Props) {
   return (
-    <div className="main-wrapper">
+    <section>
       <UserInfoSection
-        user={user}
-        avatarUrl={avatarUrl}
-        setAvatarFile={setAvatarFile}
+        user={{ name: user.name, email: user.email }}
+        avatarUrl={user.avatarUrl}
+        setAvatarFile={() => {}}
       />
-      <UserStudiesSection studies={studies} />
-      <UserFavoritesSection favorites={favorites} />
-    </div>
+
+      <h3 className="section-subtitle">내 스터디</h3>
+      <StudyCardLists studyData={studies} />
+
+      <h3 className="section-subtitle">즐겨찾기</h3>
+      <StudyCardLists studyData={favorites} />
+    </section>
   )
 }
