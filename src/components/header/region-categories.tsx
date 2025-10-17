@@ -1,11 +1,12 @@
+'use client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useRef, useState } from 'react'
 
-import useFocusTrap from '../../hooks/useFocusTrap'
-import useKeyEvent from '../../hooks/useKeyEvent'
-import type { DepthName, RegionName } from '../../types/region'
-import REGION_DATA from '../../types/region'
-import Icons from '../icons'
+import Icons from '@/components/icons'
+import useFocusTrap from '@/hooks/useFocusTrap'
+import useKeyEvent from '@/hooks/useKeyEvent'
+import type { DepthName, RegionName } from '@/types/region'
+import REGION_DATA from '@/types/region'
 
 interface Props {
   setCategoryVisible: (value: React.SetStateAction<boolean>) => void

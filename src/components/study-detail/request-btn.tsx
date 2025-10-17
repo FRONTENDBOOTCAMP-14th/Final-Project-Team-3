@@ -1,11 +1,11 @@
 import type { User } from '@supabase/supabase-js'
 import { useState, useTransition } from 'react'
 
-import type { StudyRoom, StudyRoomRequests } from '../../libs/supabase'
+import type { StudyRoom, StudyRoomRequests } from '@/libs/supabase'
 import {
   studyRoomRequestCancel,
   StudyRoomRequestsFn,
-} from '../../libs/supabase/api/study-room'
+} from '@/libs/supabase/api/study-room'
 
 interface Props {
   user: User | null

@@ -8,10 +8,9 @@ import LoginModal from '@/components/loginmodal/loginmodal'
 import NavBar from '@/components/navbar'
 import { useAuth } from '@/hooks/useAuth'
 import useScrollLock from '@/hooks/useScrollLock'
+import type { Profile } from '@/libs/supabase'
+import { getUserProfile } from '@/libs/supabase/api/user'
 import '@/styles/header/header.css'
-
-import type { Profile } from '../../libs/supabase'
-import { getUserProfile } from '../../libs/supabase/api/user'
 
 import HeaderContent from './header-content'
 import HeaderSearch from './header-search'

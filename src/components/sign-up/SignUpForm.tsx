@@ -5,9 +5,8 @@ import type { ChangeEvent } from 'react'
 import { useActionState, useEffect, useState } from 'react'
 
 import Button from '@/components/ui/button'
-
-import { signUpAndCreateProfile } from '../../libs/supabase/api/user'
-import { validatePassword } from '../../utils/validatePassword'
+import { signUpAndCreateProfile } from '@/libs/supabase/api/user'
+import { validatePassword } from '@/utils/validatePassword'
 
 interface PasswordHintProps {
   isValid: boolean

@@ -1,6 +1,7 @@
 'use client'
 
-import REGION_DATA from '../../../types/region'
+import REGION_DATA from '@/types/region'
+
 import InlineSelect from '../ui/InlineSelect'
 
 interface Props {
