@@ -2,18 +2,17 @@ import { redirect } from 'next/navigation'
 
 import ProfilePageClient from '@/components/ProfilePageClient'
 import type { StudyRoom } from '@/libs/supabase'
+import { getUserBookmarks } from '@/libs/supabase/api/bookmark'
 import { getAllStudyRoom } from '@/libs/supabase/api/study-room'
 import { getUserProfile } from '@/libs/supabase/api/user'
 import { createClient } from '@/libs/supabase/server'
 
-import { getUserBookmarks } from '@/libs/supabase/api/bookmark'
-
 interface PageProps {
-  params: { userId: string }
+  params: Promise<{ userId: string }>
 }
 
 export default async function MyProfilePage({ params }: PageProps) {
-  const { userId } = params
+  const { userId } = await params
   const supabase = await createClient()
 
   const {
@@ -35,7 +34,7 @@ export default async function MyProfilePage({ params }: PageProps) {
   const allStudies: StudyRoom[] = await getAllStudyRoom()
   const studies = allStudies.filter((study) => study.owner_id === userId)
 
-  const favorites = await getUserBookmarks(userId)
+  const favorites = (await getUserBookmarks(userId)) ?? []
 
   return (
     <ProfilePageClient user={user} studies={studies} favorites={favorites} />

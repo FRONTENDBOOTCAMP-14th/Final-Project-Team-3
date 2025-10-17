@@ -1,61 +1,121 @@
-.user-bio {
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  max-inline-size: 1200px;
+  margin-inline: auto;
+  padding-block: var(--space-lg);
+}
+
+.user-info-section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background-color: var(--color-bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  min-block-size: 6rem;
+}
+
+.user-avatar {
+  inline-size: 6rem;
+  block-size: 6rem;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--color-bg-secondary);
+}
+
+.user-info-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.user-name {
+  font-size: var(--font-lg);
+  font-weight: 600;
+}
+
+.user-email {
   font-size: var(--font-sm);
   color: var(--color-text-secondary);
-  margin-top: var(--space-xs);
-  cursor: pointer;
-  transition: color 0.2s ease;
 }
 
-.user-bio:hover {
-  color: var(--color-primary);
-  text-decoration: underline;
+.section-subtitle {
+  margin-block-start: var(--space-lg);
+  margin-block-end: var(--space-sm);
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--color-text-primary);
 }
 
-.bio-edit {
+.study-card-list {
   display: flex;
-  gap: var(--space-xs);
-  margin-top: var(--space-xs);
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  justify-content: flex-start;
+  width: 100%;
 }
 
-.bio-input {
-  flex: 1;
-  padding: 0.4rem 0.6rem;
-  font-size: var(--font-sm);
+.study-card-list > * {
+  flex: 1 1 calc(20% - var(--space-md));
+  max-inline-size: 14rem;
+  min-inline-size: 10rem;
+}
+
+@media screen and (max-width: 1024px) {
+  .study-card-list > * {
+    flex: 1 1 calc(33.333% - var(--space-md));
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .study-card-list > * {
+    flex: 1 1 calc(50% - var(--space-md));
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .study-card-list > * {
+    flex: 1 1 100%;
+  }
+}
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-block-start: var(--space-md);
+}
+
+.pagination-button {
+  padding: 0.5rem 0.75rem;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  outline: none;
-  transition: border-color 0.2s ease;
-}
-
-.bio-input:focus {
-  border-color: var(--color-primary);
-}
-
-.bio-save-btn,
-.bio-cancel-btn {
-  padding: 0.3rem 0.6rem;
-  font-size: var(--font-xs);
-  border: none;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-size: var(--font-sm);
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
-.bio-save-btn {
-  background-color: var(--color-primary);
+.pagination-button:hover {
+  background: var(--color-primary);
   color: #fff;
 }
 
-.bio-save-btn:hover {
-  background-color: darken(var(--color-primary), 10%);
+.pagination-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.bio-cancel-btn {
-  background-color: var(--color-bg-secondary);
+.empty-message {
+  padding: var(--space-lg);
+  text-align: center;
   color: var(--color-text-secondary);
-  border: 1px solid var(--color-border);
-}
-
-.bio-cancel-btn:hover {
-  background-color: var(--color-bg-hover);
+  font-size: var(--font-sm);
 }
