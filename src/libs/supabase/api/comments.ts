@@ -18,6 +18,7 @@ export const getComments = async (
     .from('comments')
     .select('*, profile:user_id(id, nickname, profile_url)')
     .eq('room_id', studyId)
+    .order('created_at', { ascending: false })
 
   if (commentError) throw new Error('댓글을 가져오지 못했습니다...')
 
@@ -26,7 +27,8 @@ export const getComments = async (
 
 export const addComments = async (
   studyId: string,
-  comment: string
+  comment: string,
+  commentId?: string
 ): Promise<void> => {
   const supabase = await createClient()
 
@@ -36,13 +38,34 @@ export const addComments = async (
 
   if (!user) throw new Error('로그인이 필요합니다.')
 
-  const { error: commentError } = await supabase.from('comments').insert({
+  const commentIdObject = commentId ? { id: commentId } : {}
+
+  const { error: commentError } = await supabase.from('comments').upsert({
+    ...commentIdObject,
     room_id: studyId,
     user_id: user.id,
     comment,
   })
 
-  if (commentError) throw new Error('댓글 추가 실패...')
+  if (commentError) throw new Error('댓글 추가 수정 실패...')
+
+  revalidatePath(`/study-detail/${studyId}`)
+}
+
+export const deleteComment = async (
+  commentId: string,
+  studyId: string,
+  userId: string
+): Promise<void> => {
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('comments')
+    .delete()
+    .eq('id', commentId)
+    .eq('user_id', userId)
+
+  if (error) throw new Error(error.message)
 
   revalidatePath(`/study-detail/${studyId}`)
 }

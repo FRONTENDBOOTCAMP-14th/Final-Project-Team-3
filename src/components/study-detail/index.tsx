@@ -53,7 +53,7 @@ function StudyDetail({
           aria-hidden="true"
           priority
           sizes="100vw"
-          quality={90}
+          quality={75}
         />
       </div>
 
@@ -138,8 +138,11 @@ function StudyDetail({
         </div>
       </div>
       <div>
+        <div className="comment-heading">
+          <h3>댓글 ({commentData.length})</h3>
+        </div>
         <CommentForm studyId={studyRoomData.id} userId={user?.id} />
-        <CommentLists commentData={commentData} />
+        <CommentLists commentData={commentData} user={user} />
       </div>
       {openModal && (
         <DetailModal
