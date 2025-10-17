@@ -42,6 +42,8 @@ function StudyDetail({
 
   const isOwner = user?.id === studyRoomData.owner_id
 
+  const isGif = studyRoomData.banner_image?.toLowerCase().endsWith('.gif')
+
   return (
     <div className="detail-container">
       <div className="detail-banner">
@@ -54,6 +56,7 @@ function StudyDetail({
           priority
           sizes="100vw"
           quality={75}
+          unoptimized={isGif ?? undefined}
         />
       </div>
 
