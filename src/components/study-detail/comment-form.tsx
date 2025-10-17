@@ -68,41 +68,45 @@ function CommentForm({
             name="comment"
             required
             autoComplete="off"
-            value={type === 'MODIFY' && comment ? inputValue : undefined}
+            value={
+              type === 'MODIFY' && comment && userId ? inputValue : undefined
+            }
             disabled={userId ? false : true}
             onChange={(e) => setInputValue(e.target.value)}
           />
 
           <div className="comment-btn-group">
-            {debounceValue.trim() !== '' && comment !== inputValue && (
-              <>
-                {!type && !comment && (
+            {debounceValue.trim() !== '' &&
+              comment !== inputValue &&
+              userId && (
+                <>
+                  {!type && !comment && (
+                    <button
+                      type="button"
+                      className="comment-form-btn cancel-btn"
+                      onClick={() => {
+                        formRef.current?.reset()
+                        setInputValue('')
+                      }}
+                    >
+                      취소
+                    </button>
+                  )}
                   <button
-                    type="button"
-                    className="comment-form-btn cancel-btn"
-                    onClick={() => {
-                      formRef.current?.reset()
-                      setInputValue('')
-                    }}
+                    type="submit"
+                    className="comment-form-btn"
+                    disabled={isPending}
                   >
-                    취소
+                    {comment && type === 'MODIFY'
+                      ? isPending
+                        ? '수정 중...'
+                        : '수정'
+                      : isPending
+                        ? '등록 중...'
+                        : '등록'}
                   </button>
-                )}
-                <button
-                  type="submit"
-                  className="comment-form-btn"
-                  disabled={isPending}
-                >
-                  {comment && type === 'MODIFY'
-                    ? isPending
-                      ? '수정 중...'
-                      : '수정'
-                    : isPending
-                      ? '등록 중...'
-                      : '등록'}
-                </button>
-              </>
-            )}
+                </>
+              )}
           </div>
         </form>
       </div>
