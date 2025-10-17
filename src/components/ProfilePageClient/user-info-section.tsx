@@ -2,58 +2,48 @@
 
 import { useEffect, useState } from 'react'
 
-import BannerUploader from '@/components/study-create/fields/profileimguploader'
+import ProfileImgUploader from '@/components/study-create/fields/profileimguploader'
 
-interface UserInfoSectionProps {
+interface Props {
   user: {
     name: string
     email: string
+    avatarUrl: string
   }
-  avatarUrl: string
   setAvatarFile: (file: File | null) => void
 }
 
-export default function UserInfoSection({
-  user,
-  avatarUrl,
-  setAvatarFile,
-}: UserInfoSectionProps) {
-  // ✅ 업로드 파일 상태
-  const [avatarFile, setAvatarFileState] = useState<File | null>(null)
+export default function UserInfoSection({ user, setAvatarFile }: Props) {
+  const [_avatarFile, setAvatarFileState] = useState<File | null>(null)
+  const [displayedImage, setDisplayedImage] = useState<string>(
+    user.avatarUrl || '/images/default-avatar.png'
+  )
 
-  // BannerUploader 변경 시 상태 업데이트
   const handleFileChange = (file: File | null) => {
     setAvatarFileState(file)
     setAvatarFile(file)
   }
 
-  // 기존 avatarUrl + 업로드 파일 미리보기 통합
-  const [displayedImage, setDisplayedImage] = useState<string>(avatarUrl)
   useEffect(() => {
-    if (avatarFile) {
-      const url = URL.createObjectURL(avatarFile)
+    if (_avatarFile) {
+      const url = URL.createObjectURL(_avatarFile)
       setDisplayedImage(url)
       return () => URL.revokeObjectURL(url)
     } else {
-      setDisplayedImage(avatarUrl)
+      setDisplayedImage(user.avatarUrl || '/images/default-avatar.png')
     }
-  }, [avatarFile, avatarUrl])
+  }, [_avatarFile, user.avatarUrl])
 
   return (
     <div className="user-info-section">
-      <div className="avatar-uploader">
-        <BannerUploader value={avatarFile} onChange={handleFileChange} />
-        <img
-          src={displayedImage}
-          alt="User avatar"
-          className="avatar-preview"
-        />
-      </div>
+      <ProfileImgUploader value={_avatarFile} onChange={handleFileChange} />
 
-      <div className="user-details">
+      <div className="user-info-text">
         <h2 className="user-name">{user.name}</h2>
         <p className="user-email">{user.email}</p>
       </div>
+
+      <img src={displayedImage} alt="User avatar" className="user-avatar" />
     </div>
   )
 }

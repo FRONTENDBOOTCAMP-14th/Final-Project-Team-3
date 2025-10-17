@@ -14,8 +14,8 @@ interface PageProps {
 
 export default async function MyProfilePage({ params }: PageProps) {
   const { userId } = params
-  const supabase = await createClient()
 
+  const supabase = await createClient()
   const {
     data: { user: loggedInUser },
   } = await supabase.auth.getUser()
@@ -35,7 +35,7 @@ export default async function MyProfilePage({ params }: PageProps) {
   const allStudies: StudyRoom[] = await getAllStudyRoom()
   const studies = allStudies.filter((study) => study.owner_id === userId)
 
-  const favorites = await getUserBookmarks(userId)
+  const favorites = (await getUserBookmarks(userId)) ?? []
 
   return (
     <ProfilePageClient user={user} studies={studies} favorites={favorites} />
