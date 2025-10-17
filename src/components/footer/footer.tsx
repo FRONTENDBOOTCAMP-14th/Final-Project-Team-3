@@ -66,7 +66,6 @@ function A11yLink({
 }
 
 export default function SiteFooter() {
-  const year = new Date().getFullYear()
   const navId = useId()
   const platformId = useId()
   const supportId = useId()
