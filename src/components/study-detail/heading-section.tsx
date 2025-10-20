@@ -1,7 +1,8 @@
+'use client'
 import type { User } from '@supabase/supabase-js'
-import type { Dispatch, SetStateAction } from 'react'
 
 import CategoryUI from '@/components/ui/category-ui'
+import { useModal } from '@/hooks/useModal'
 import type { StudyRoom, StudyRoomRequests } from '@/libs/supabase'
 
 import LikesAndBookmarks from './button/likesAndBookmarks'
@@ -11,17 +12,10 @@ interface Props {
   studyRoomRequestsData: StudyRoomRequests[]
   studyRoomData: StudyRoom
   user: User | null
-  setModalType: Dispatch<SetStateAction<'applicant' | 'member' | null>>
-  setOpenModal: Dispatch<SetStateAction<boolean>>
 }
 
-function HeadingSection({
-  studyRoomRequestsData,
-  studyRoomData,
-  user,
-  setModalType,
-  setOpenModal,
-}: Props) {
+function HeadingSection({ studyRoomRequestsData, studyRoomData, user }: Props) {
+  const { setOpenModal, setModalType } = useModal()
   return (
     <div className="detail-heading">
       <div className="detail-header">
@@ -41,7 +35,7 @@ function HeadingSection({
               type="button"
               onClick={() => {
                 setOpenModal(true)
-                setModalType('applicant')
+                setModalType('APPLICANT')
               }}
             >
               신청 목록
@@ -49,7 +43,7 @@ function HeadingSection({
           )}
         </div>
       </div>
-      <CategoryUI studyData={studyRoomData} />
+      <CategoryUI studyId={studyRoomData.id} />
     </div>
   )
 }

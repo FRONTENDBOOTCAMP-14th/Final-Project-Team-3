@@ -1,12 +1,13 @@
 import StudyDetail from '@/components/study-detail'
 import { CommentsProvider } from '@/context/commentsContext'
+import { MemberProvider } from '@/context/memberContext'
+import { ModalContextProvider } from '@/context/modalContext'
 import {
   getOwnerProfile,
   getStudyRoomDetail,
-  getStudyRoomParticipants,
   getStudyRoomRequests,
-  studyRoomRequestsLists,
 } from '@/libs/supabase/api/study-room'
+import { createClient } from '@/libs/supabase/server'
 
 interface Props {
   params: Promise<{ studyId: string }>
@@ -15,31 +16,33 @@ interface Props {
 async function StudyDetailPage({ params }: Props) {
   const { studyId } = await params
 
-  const [
-    studyRoomData,
-    ownerProfileData,
-    requestsListsData,
-    participantsMembers,
-  ] = await Promise.all([
+  const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const [studyRoomData, ownerProfileData] = await Promise.all([
     getStudyRoomDetail(studyId),
     getOwnerProfile(studyId),
-    studyRoomRequestsLists(studyId),
-    getStudyRoomParticipants(studyId),
   ])
 
   const studyRoomRequestsData = await getStudyRoomRequests(studyId)
 
   return (
     <section>
-      <CommentsProvider studyId={studyId}>
-        <StudyDetail
-          studyRoomData={studyRoomData}
-          ownerProfile={ownerProfileData}
-          studyRoomRequestsData={studyRoomRequestsData}
-          requestsListsData={requestsListsData}
-          participantsMembers={participantsMembers}
-        />
-      </CommentsProvider>
+      <MemberProvider studyId={studyId}>
+        <CommentsProvider studyId={studyId}>
+          <ModalContextProvider>
+            <StudyDetail
+              studyRoomData={studyRoomData}
+              ownerProfile={ownerProfileData}
+              studyRoomRequestsData={studyRoomRequestsData}
+              user={user}
+            />
+          </ModalContextProvider>
+        </CommentsProvider>
+      </MemberProvider>
     </section>
   )
 }

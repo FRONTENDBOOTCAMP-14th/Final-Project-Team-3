@@ -22,6 +22,11 @@ function StudyRoomCard({ studyData }: Props) {
                 aria-hidden="true"
                 sizes="(max-width: 768px) 165px, (max-width: 1023px) 200px, 250px"
                 priority
+                unoptimized={
+                  item.banner_image?.toLowerCase().endsWith('.gif')
+                    ? true
+                    : undefined
+                }
               />
             </div>
             <h3 title={item.title}>{item.title}</h3>

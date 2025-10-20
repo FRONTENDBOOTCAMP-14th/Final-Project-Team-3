@@ -1,22 +1,18 @@
+'use client'
 import Image from 'next/image'
-import type { Dispatch, SetStateAction } from 'react'
 
 import Icons from '@/components/icons'
+import { useMember } from '@/hooks/useMember'
+import { useModal } from '@/hooks/useModal'
 import type { Profile } from '@/libs/supabase'
 
 interface Props {
-  participantsMembers: Profile[]
   ownerProfile: Profile
-  setModalType: Dispatch<SetStateAction<'applicant' | 'member' | null>>
-  setOpenModal: Dispatch<SetStateAction<boolean>>
 }
 
-function MembersSection({
-  participantsMembers,
-  ownerProfile,
-  setModalType,
-  setOpenModal,
-}: Props) {
+function MembersSection({ ownerProfile }: Props) {
+  const { participantsMembersData } = useMember()
+  const { setModalType, setOpenModal } = useModal()
   return (
     <div className="study-members">
       <h3 className="study-members-heading">
@@ -25,7 +21,7 @@ function MembersSection({
           type="button"
           onClick={() => {
             setOpenModal(true)
-            setModalType('member')
+            setModalType('MEMBER')
           }}
         >
           전체 보기 ↓
@@ -49,7 +45,7 @@ function MembersSection({
         </div>
       </div>
       <ul className="member-image-wrapper">
-        {participantsMembers?.map((member) => (
+        {participantsMembersData?.map((member) => (
           <li className="member-image" key={member.id}>
             <Image
               src={member.profile_url ?? '/images/default-avatar.png'}

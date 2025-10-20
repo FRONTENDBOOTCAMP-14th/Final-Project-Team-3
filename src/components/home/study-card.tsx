@@ -99,7 +99,7 @@ function StudyCard({ item, userId, isPriority }: Props) {
             </button>
           </h3>
           <p>{item.description}</p>
-          <CategoryUI studyData={item} />
+          <CategoryUI studyId={item.id} />
         </div>
       </Link>
     </li>

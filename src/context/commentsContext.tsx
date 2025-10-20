@@ -24,7 +24,7 @@ export interface CommentsContextValue {
 }
 
 export const CommentsContex = createContext<CommentsContextValue | null>(null)
-
+CommentsContex.displayName = 'CommentsContex'
 const fetcher = async (
   studyId: string,
   fetchFn: (studyId: string) => Promise<CommentsWithProfile[] | null>
@@ -83,7 +83,7 @@ export function CommentsProvider({
             },
           }
 
-          return [...list, newComment]
+          return [newComment, ...list]
         }
       }
 
