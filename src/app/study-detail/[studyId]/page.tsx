@@ -1,4 +1,5 @@
 import StudyDetail from '@/components/study-detail'
+import { CommentsProvider } from '@/context/commentsContext'
 import {
   getOwnerProfile,
   getStudyRoomDetail,
@@ -30,13 +31,15 @@ async function StudyDetailPage({ params }: Props) {
 
   return (
     <section>
-      <StudyDetail
-        studyRoomData={studyRoomData}
-        ownerProfile={ownerProfileData}
-        studyRoomRequestsData={studyRoomRequestsData}
-        requestsListsData={requestsListsData}
-        participantsMembers={participantsMembers}
-      />
+      <CommentsProvider studyId={studyId}>
+        <StudyDetail
+          studyRoomData={studyRoomData}
+          ownerProfile={ownerProfileData}
+          studyRoomRequestsData={studyRoomRequestsData}
+          requestsListsData={requestsListsData}
+          participantsMembers={participantsMembers}
+        />
+      </CommentsProvider>
     </section>
   )
 }

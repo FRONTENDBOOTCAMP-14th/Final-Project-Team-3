@@ -1,6 +1,9 @@
+'use client'
 import '@/styles/study-detail/comment.css'
 import type { Dispatch, SetStateAction } from 'react'
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
+import { useComments } from '@/hooks/useComments'
 
 interface Props {
   userId?: string | null
@@ -8,11 +11,6 @@ interface Props {
   comment?: string
   type?: 'MODIFY'
   setModifyComment?: Dispatch<SetStateAction<boolean>>
-  commentsHandler: (
-    comment: string,
-    commentId?: string,
-    type?: 'MODIFY'
-  ) => Promise<void>
 }
 
 function CommentForm({
@@ -21,7 +19,6 @@ function CommentForm({
   commentId,
   comment,
   setModifyComment,
-  commentsHandler,
 }: Props) {
   const formRef = useRef<HTMLFormElement | null>(null)
   const [inputValue, setInputValue] = useState<string>(
@@ -29,7 +26,7 @@ function CommentForm({
   )
   const [debounceValue, setDebounceValue] = useState<string>('')
 
-  const [isPending, startTransition] = useTransition()
+  const { upsertCommentsHandler, isAdding } = useComments()
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -51,16 +48,10 @@ function CommentForm({
       return
     }
 
-    startTransition(async () => {
-      try {
-        await commentsHandler(comment, commentId, type)
-        if (type === 'MODIFY' && setModifyComment) setModifyComment(false)
-        setInputValue('')
-        alert(type === 'MODIFY' ? '댓글 수정 성공!' : '댓글 추가 성공!')
-      } catch (_error) {
-        alert(type === 'MODIFY' ? '댓글 수정 실패...' : '댓글 추가 실패...')
-      }
-    })
+    await upsertCommentsHandler(comment, commentId, type)
+
+    if (type === 'MODIFY' && setModifyComment) setModifyComment(false)
+    setInputValue('')
   }
 
   return (
@@ -101,13 +92,13 @@ function CommentForm({
                   <button
                     type="submit"
                     className="comment-form-btn"
-                    disabled={isPending}
+                    disabled={isAdding}
                   >
                     {comment && type === 'MODIFY'
-                      ? isPending
+                      ? isAdding
                         ? '수정 중...'
                         : '수정'
-                      : isPending
+                      : isAdding
                         ? '등록 중...'
                         : '등록'}
                   </button>

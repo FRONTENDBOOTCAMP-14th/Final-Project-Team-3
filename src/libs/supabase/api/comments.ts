@@ -20,7 +20,7 @@ export const getComments = async (
 
   if (commentError) throw new Error('댓글을 가져오지 못했습니다...')
 
-  return commentData
+  return commentData ?? []
 }
 
 export const addComments = async (

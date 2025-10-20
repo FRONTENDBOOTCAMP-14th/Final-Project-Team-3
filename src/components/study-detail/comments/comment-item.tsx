@@ -1,8 +1,9 @@
 import '@/styles/study-detail/comment.css'
 import type { User } from '@supabase/supabase-js'
 import Image from 'next/image'
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
+import { useComments } from '@/hooks/useComments'
 import type { CommentsWithProfile } from '@/libs/supabase/api/comments'
 
 import CommentForm from './comment-form'
@@ -10,25 +11,14 @@ import CommentForm from './comment-form'
 interface Props {
   commentData: CommentsWithProfile
   user: User | null
-  commentsHandler: (
-    comment: string,
-    commentId?: string,
-    type?: 'MODIFY'
-  ) => Promise<void>
-  commentDeleteHandler: (commentId: string) => Promise<void>
 }
 
-function CommentItem({
-  commentData,
-  user,
-  commentsHandler,
-  commentDeleteHandler,
-}: Props) {
+function CommentItem({ commentData, user }: Props) {
   const [isShow, setIsShow] = useState<boolean>(false)
   const [btnVisibled, setBtnVisibled] = useState<boolean>(false)
   const [modifyComment, setModifyComment] = useState<boolean>(false)
   const pRef = useRef<HTMLParagraphElement | null>(null)
-  const [isPending, startTransition] = useTransition()
+  const { deleteCommentHandler } = useComments()
 
   useEffect(() => {
     if (!pRef.current) return
@@ -40,18 +30,10 @@ function CommentItem({
     setIsShow((prev) => !prev)
   }
 
-  const deleteCommentHandler = async () => {
+  const deleteHandler = () => {
     if (!user) return
 
-    startTransition(async () => {
-      try {
-        await commentDeleteHandler(commentData.id)
-
-        alert('삭제 되었습니다.')
-      } catch (error) {
-        alert(`삭제 실패!! ${error.message}`)
-      }
-    })
+    deleteCommentHandler(commentData.id)
   }
 
   const modifyCommentHandler = () => {
@@ -83,9 +65,9 @@ function CommentItem({
               <button
                 type="button"
                 className="comment-btn delete"
-                onClick={deleteCommentHandler}
+                onClick={deleteHandler}
               >
-                {isPending ? '삭제 중...' : '삭제'}
+                삭제
               </button>
             </>
           )}
@@ -97,7 +79,6 @@ function CommentItem({
             type="MODIFY"
             commentId={commentData.id}
             comment={commentData.comment}
-            commentsHandler={commentsHandler}
           />
         ) : (
           <p className={isShow ? 'active' : ''} ref={pRef}>

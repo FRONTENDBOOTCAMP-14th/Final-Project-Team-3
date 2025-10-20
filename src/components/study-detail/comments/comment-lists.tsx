@@ -10,32 +10,15 @@ import CommentItem from './comment-item'
 interface Props {
   commentData: CommentsWithProfile[]
   user: User | null
-  commentsHandler: (
-    comment: string,
-    commentId?: string,
-    type?: 'MODIFY'
-  ) => Promise<void>
-  commentDeleteHandler: (commentId: string) => Promise<void>
 }
 
-function CommentLists({
-  commentData,
-  user,
-  commentsHandler,
-  commentDeleteHandler,
-}: Props) {
+function CommentLists({ commentData, user }: Props) {
   return (
     <div className="comment-lists-wrapper">
       {commentData.length !== 0 ? (
         <ul className="comment-lists">
           {commentData.map((item) => (
-            <CommentItem
-              commentData={item}
-              key={item.id}
-              user={user}
-              commentsHandler={commentsHandler}
-              commentDeleteHandler={commentDeleteHandler}
-            />
+            <CommentItem commentData={item} key={item.id} user={user} />
           ))}
         </ul>
       ) : (
