@@ -1,0 +1,57 @@
+import type { User } from '@supabase/supabase-js'
+import type { Dispatch, SetStateAction } from 'react'
+
+import CategoryUI from '@/components/ui/category-ui'
+import type { StudyRoom, StudyRoomRequests } from '@/libs/supabase'
+
+import LikesAndBookmarks from './button/likesAndBookmarks'
+import RequestBtn from './button/request-btn'
+
+interface Props {
+  studyRoomRequestsData: StudyRoomRequests[]
+  studyRoomData: StudyRoom
+  user: User | null
+  setModalType: Dispatch<SetStateAction<'applicant' | 'member' | null>>
+  setOpenModal: Dispatch<SetStateAction<boolean>>
+}
+
+function HeadingSection({
+  studyRoomRequestsData,
+  studyRoomData,
+  user,
+  setModalType,
+  setOpenModal,
+}: Props) {
+  return (
+    <div className="detail-heading">
+      <div className="detail-header">
+        <h3>{studyRoomData.title}</h3>
+        <div className="detail-button-group">
+          <LikesAndBookmarks user={user} studyRoomData={studyRoomData} />
+          {studyRoomData.owner_id !== user?.id ? (
+            <>
+              <RequestBtn
+                studyRoomRequestsData={studyRoomRequestsData}
+                user={user}
+                studyId={studyRoomData.id}
+              />
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                setOpenModal(true)
+                setModalType('applicant')
+              }}
+            >
+              신청 목록
+            </button>
+          )}
+        </div>
+      </div>
+      <CategoryUI studyData={studyRoomData} />
+    </div>
+  )
+}
+
+export default HeadingSection

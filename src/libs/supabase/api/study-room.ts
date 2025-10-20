@@ -225,8 +225,6 @@ export const StudyRoomRequestsFn = async (
             user_id: userId,
           },
         ])
-        .select('*')
-        .single()
 
       if (participantError) {
         new Error(participantError.message)
@@ -288,7 +286,6 @@ export const studyRoomDeportation = async (
     .delete()
     .eq('room_id', studyId)
     .eq('user_id', userId)
-    .single()
 
   if (error) {
     throw new Error(error.message)
@@ -302,8 +299,6 @@ export const studyRoomDeportation = async (
     })
     .eq('room_id', studyId)
     .eq('user_id', userId)
-    .select('*')
-    .single()
 
   if (requestsError) {
     throw new Error(requestsError.message)

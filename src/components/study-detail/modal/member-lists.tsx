@@ -203,10 +203,10 @@ export default MemberLists
 function RenderType({ type }: Pick<Props, 'type'>) {
   switch (type) {
     case 'MEMBER':
-      return <p>참가중인 멤버가 없습니다...</p>
+      return <p>참가 중인 멤버가 없습니다...</p>
 
     case 'APPLICANT':
-      return <p>참가중인 멤버가 없습니다...</p>
+      return <p>신청 중인 멤버가 없습니다...</p>
 
     default:
       return null

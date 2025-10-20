@@ -2,24 +2,26 @@ import '@/styles/study-detail/comment.css'
 import type { Dispatch, SetStateAction } from 'react'
 import { useEffect, useRef, useState, useTransition } from 'react'
 
-import { addComments } from '@/libs/supabase/api/comments'
-
 interface Props {
-  studyId: string
   userId?: string | null
   commentId?: string
   comment?: string
   type?: 'MODIFY'
   setModifyComment?: Dispatch<SetStateAction<boolean>>
+  commentsHandler: (
+    comment: string,
+    commentId?: string,
+    type?: 'MODIFY'
+  ) => Promise<void>
 }
 
 function CommentForm({
-  studyId,
   userId,
   type,
   commentId,
   comment,
   setModifyComment,
+  commentsHandler,
 }: Props) {
   const formRef = useRef<HTMLFormElement | null>(null)
   const [inputValue, setInputValue] = useState<string>(
@@ -51,8 +53,7 @@ function CommentForm({
 
     startTransition(async () => {
       try {
-        await addComments(studyId, comment, commentId)
-
+        await commentsHandler(comment, commentId, type)
         if (type === 'MODIFY' && setModifyComment) setModifyComment(false)
         setInputValue('')
         alert(type === 'MODIFY' ? '댓글 수정 성공!' : '댓글 추가 성공!')

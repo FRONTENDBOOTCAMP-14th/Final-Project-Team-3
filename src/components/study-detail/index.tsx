@@ -1,20 +1,17 @@
 'use client'
-import Image from 'next/image'
 import { useState } from 'react'
 
-import Icons from '@/components/icons'
-import CategoryUI from '@/components/ui/category-ui'
 import { useAuth } from '@/hooks/useAuth'
 import type { Profile, StudyRoom, StudyRoomRequests } from '@/libs/supabase'
-import type { CommentsWithProfile } from '@/libs/supabase/api/comments'
 
 import '@/styles/study-detail/study-detail.css'
 
-import CommentForm from './comment-form'
-import CommentLists from './comment-lists'
-import DetailModal from './detail-modal'
-import LikesAndBookmarks from './likesAndBookmarks'
-import RequestBtn from './request-btn'
+import BannerSection from './banner-section'
+import CommentsSection from './comments'
+import ContentsSection from './contents-section'
+import HeadingSection from './heading-section'
+import MembersSection from './members-section'
+import DetailModal from './modal'
 
 interface Props {
   studyRoomData: StudyRoom
@@ -22,7 +19,6 @@ interface Props {
   studyRoomRequestsData: StudyRoomRequests[]
   requestsListsData: Profile[]
   participantsMembers: Profile[]
-  commentData: CommentsWithProfile[]
 }
 
 function StudyDetail({
@@ -31,7 +27,6 @@ function StudyDetail({
   studyRoomRequestsData,
   requestsListsData,
   participantsMembers,
-  commentData,
 }: Props) {
   const { user } = useAuth()
 
@@ -42,111 +37,29 @@ function StudyDetail({
 
   const isOwner = user?.id === studyRoomData.owner_id
 
-  const isGif = studyRoomData.banner_image?.toLowerCase().endsWith('.gif')
-
   return (
     <div className="detail-container">
-      <div className="detail-banner">
-        <Image
-          src={studyRoomData.banner_image ?? '/images/no-image.png'}
-          alt={`${studyRoomData.title}`}
-          fill
-          className="studybanner-img"
-          aria-hidden="true"
-          priority
-          sizes="100vw"
-          quality={75}
-          unoptimized={isGif ?? undefined}
+      <BannerSection studyRoomData={studyRoomData} />
+
+      <section className="detail-description">
+        <HeadingSection
+          studyRoomRequestsData={studyRoomRequestsData}
+          studyRoomData={studyRoomData}
+          user={user}
+          setModalType={setModalType}
+          setOpenModal={setOpenModal}
         />
-      </div>
 
-      <div className="detail-description">
-        <div className="detail-heading">
-          <div className="detail-header">
-            <h3>{studyRoomData.title}</h3>
-            <div className="detail-button-group">
-              <LikesAndBookmarks user={user} studyRoomData={studyRoomData} />
-              {studyRoomData.owner_id !== user?.id ? (
-                <>
-                  <RequestBtn
-                    studyRoomRequestsData={studyRoomRequestsData}
-                    user={user}
-                    studyId={studyRoomData.id}
-                  />
-                </>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setOpenModal(true)
-                    setModalType('applicant')
-                  }}
-                >
-                  신청 목록
-                </button>
-              )}
-            </div>
-          </div>
-          <CategoryUI studyData={studyRoomData} />
-        </div>
+        <ContentsSection description={studyRoomData.description} />
 
-        <div className="detail-contents">
-          <h3>소개</h3>
-          <p>{studyRoomData.description}</p>
-        </div>
-
-        <div className="study-members">
-          <h3 className="study-members-heading">
-            <span>멤버</span>
-            <button
-              type="button"
-              onClick={() => {
-                setOpenModal(true)
-                setModalType('member')
-              }}
-            >
-              전체 보기 ↓
-            </button>
-          </h3>
-          <div className="owner-member">
-            <div className="owner-member-wrapper">
-              <Image
-                src={ownerProfile.profile_url ?? '/images/default-avatar.png'}
-                alt="no-image"
-                width={80}
-                height={80}
-                priority
-              />
-              <Icons
-                className="owner-icon"
-                name="star-blue-fill"
-                width={24}
-                height={24}
-              />
-            </div>
-          </div>
-          <ul className="member-image-wrapper">
-            {participantsMembers?.map((member) => (
-              <li className="member-image" key={member.id}>
-                <Image
-                  src={member.profile_url ?? '/images/default-avatar.png'}
-                  alt="no-image"
-                  width={80}
-                  height={80}
-                  priority
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-      <div>
-        <div className="comment-heading">
-          <h3>댓글 ({commentData.length})</h3>
-        </div>
-        <CommentForm studyId={studyRoomData.id} userId={user?.id} />
-        <CommentLists commentData={commentData} user={user} />
-      </div>
+        <MembersSection
+          participantsMembers={participantsMembers}
+          ownerProfile={ownerProfile}
+          setModalType={setModalType}
+          setOpenModal={setOpenModal}
+        />
+      </section>
+      <CommentsSection studyRoomData={studyRoomData} user={user} />
       {openModal && (
         <DetailModal
           setOpenModa={setOpenModal}

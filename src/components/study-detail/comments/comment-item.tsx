@@ -3,19 +3,27 @@ import type { User } from '@supabase/supabase-js'
 import Image from 'next/image'
 import { useEffect, useRef, useState, useTransition } from 'react'
 
-import {
-  type CommentsWithProfile,
-  deleteComment,
-} from '@/libs/supabase/api/comments'
+import type { CommentsWithProfile } from '@/libs/supabase/api/comments'
 
 import CommentForm from './comment-form'
 
 interface Props {
   commentData: CommentsWithProfile
   user: User | null
+  commentsHandler: (
+    comment: string,
+    commentId?: string,
+    type?: 'MODIFY'
+  ) => Promise<void>
+  commentDeleteHandler: (commentId: string) => Promise<void>
 }
 
-function CommentItem({ commentData, user }: Props) {
+function CommentItem({
+  commentData,
+  user,
+  commentsHandler,
+  commentDeleteHandler,
+}: Props) {
   const [isShow, setIsShow] = useState<boolean>(false)
   const [btnVisibled, setBtnVisibled] = useState<boolean>(false)
   const [modifyComment, setModifyComment] = useState<boolean>(false)
@@ -37,7 +45,7 @@ function CommentItem({ commentData, user }: Props) {
 
     startTransition(async () => {
       try {
-        await deleteComment(commentData.id, commentData.room_id, user.id)
+        await commentDeleteHandler(commentData.id)
 
         alert('삭제 되었습니다.')
       } catch (error) {
@@ -84,12 +92,12 @@ function CommentItem({ commentData, user }: Props) {
         </div>
         {modifyComment ? (
           <CommentForm
-            studyId={commentData.room_id}
             userId={user?.id}
             setModifyComment={setModifyComment}
             type="MODIFY"
             commentId={commentData.id}
             comment={commentData.comment}
+            commentsHandler={commentsHandler}
           />
         ) : (
           <p className={isShow ? 'active' : ''} ref={pRef}>
