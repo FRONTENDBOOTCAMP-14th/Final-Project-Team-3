@@ -40,7 +40,7 @@ function MemberLists({ isOwner, type }: Props) {
           ? `멤버 (${participantsMembersData?.length ?? 0})`
           : `신청 멤버 (${requestMembersData?.length ?? 0})`}
       </h2>
-      <ul className="member-lists">
+      <ul className="member-lists" tabIndex={0}>
         {type === 'MEMBER' && participantsMembersData?.length !== 0
           ? participantsMembersData?.map((member) => (
               <li className="member-list-wrapper" key={member.id}>

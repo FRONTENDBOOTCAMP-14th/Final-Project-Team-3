@@ -27,8 +27,12 @@
   }
 }
 
-.modal-scroll {
-  max-block-size: 25rem;
+.member-lists {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+  gap: 1.25rem;
+  max-block-size: 21.875rem;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -63,12 +67,6 @@
   }
 }
 
-.member-lists {
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: flex-start;
-  gap: 1.25rem;
-}
 .member-info {
   flex: 1;
   padding-inline-end: 0.9375rem;

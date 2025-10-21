@@ -51,7 +51,9 @@ function StudyCard({ item, userId, isPriority }: Props) {
     setIsDisabled(false)
   }
 
-  const isGif = item.banner_image?.toLowerCase().endsWith('.gif')
+  const isGif = ['.gif', '_gif'].some((gif) =>
+    item.banner_image?.toLowerCase().endsWith(gif)
+  )
 
   return (
     <li className="region-study-lists-item" key={item.id}>

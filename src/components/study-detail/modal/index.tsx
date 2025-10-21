@@ -9,6 +9,8 @@ import { useModal } from '@/hooks/useModal'
 import useScrollLock from '@/hooks/useScrollLock'
 import type { Profile } from '@/libs/supabase'
 
+import Chat from '../chat'
+
 import ApplicantContent from './applicant-content'
 import MembersContent from './members-content'
 
@@ -47,9 +49,7 @@ function DetailModal({ isOwner, ownerProfile }: ModalProps) {
           className="member-list-modal-wrapper"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="modal-scroll" tabIndex={0}>
-            {ModalContentType({ modalType }, isOwner, ownerProfile)}
-          </div>
+          {ModalContentType({ modalType }, isOwner, ownerProfile)}
         </div>
       </div>
     )
@@ -59,7 +59,7 @@ function DetailModal({ isOwner, ownerProfile }: ModalProps) {
 export default DetailModal
 
 function ModalContentType(
-  { modalType }: { modalType: 'MEMBER' | 'APPLICANT' | null },
+  { modalType }: { modalType: 'MEMBER' | 'APPLICANT' | 'CHAT' | null },
   isOwner: boolean = false,
   ownerProfile: Profile
 ) {
@@ -69,6 +69,9 @@ function ModalContentType(
 
     case 'APPLICANT':
       return <ApplicantContent isOwner={isOwner} />
+
+    case 'CHAT':
+      return <Chat />
 
     default:
       return null

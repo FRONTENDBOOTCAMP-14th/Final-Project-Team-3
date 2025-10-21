@@ -1,9 +1,11 @@
+'use client'
 import type { User } from '@supabase/supabase-js'
 import { useState } from 'react'
 
 import Icons from '@/components/icons'
 import { useBookMark } from '@/hooks/useBookmark'
 import { useLikes } from '@/hooks/useLikes'
+import { useModal } from '@/hooks/useModal'
 import type { StudyRoom } from '@/libs/supabase'
 
 interface Props {
@@ -11,11 +13,12 @@ interface Props {
   studyRoomData: StudyRoom
 }
 
-function LikesAndBookmarks({ user, studyRoomData }: Props) {
+function IconsButtonGroup({ user, studyRoomData }: Props) {
   const [isDisabled, setIsDisabled] = useState(false)
 
   const { bookmarkHandler, isRoomBookmarked } = useBookMark()
   const { likesHandler, isRoomLiked } = useLikes()
+  const { setOpenModal, setModalType } = useModal()
 
   const isBookmark = isRoomBookmarked(studyRoomData.id)
   const isLikes = isRoomLiked(studyRoomData.id)
@@ -56,6 +59,7 @@ function LikesAndBookmarks({ user, studyRoomData }: Props) {
         className="contents-icons-btn"
         disabled={isDisabled}
         onClick={likesToggle}
+        title="좋아요 버튼"
       >
         <Icons
           name={isLikes ? 'heart-fill' : 'heart'}
@@ -70,6 +74,7 @@ function LikesAndBookmarks({ user, studyRoomData }: Props) {
         className="contents-icons-btn"
         disabled={isDisabled}
         onClick={bookmarkToggle}
+        title="즐겨찾기 버튼"
       >
         <Icons
           name={isBookmark ? 'star-yellow-fill' : 'star'}
@@ -77,8 +82,21 @@ function LikesAndBookmarks({ user, studyRoomData }: Props) {
           height={32}
         />
       </button>
+      <button
+        type="button"
+        aria-label="채팅 버튼"
+        className="contents-icons-btn"
+        disabled={isDisabled}
+        title="채팅 버튼"
+        onClick={() => {
+          setModalType('CHAT')
+          setOpenModal(true)
+        }}
+      >
+        <Icons name={'chat'} aria-hidden="true" width={32} height={32} />
+      </button>
     </>
   )
 }
 
-export default LikesAndBookmarks
+export default IconsButtonGroup
