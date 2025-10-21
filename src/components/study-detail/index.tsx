@@ -43,7 +43,12 @@ function StudyDetail({
       </section>
       <CommentsSection user={user} />
 
-      <DetailModal isOwner={isOwner} user={user} ownerProfile={ownerProfile} />
+      <DetailModal
+        isOwner={isOwner}
+        user={user}
+        ownerProfile={ownerProfile}
+        studyId={studyRoomData.id}
+      />
     </div>
   )
 }

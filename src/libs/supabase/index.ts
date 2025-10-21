@@ -34,3 +34,8 @@ export type LikesUpdate = TablesUpdate<'likes'>
 export type Comments = Tables<'comments'>
 export type CommentsInsert = TablesInsert<'comments'>
 export type CommentsUpdate = TablesUpdate<'comments'>
+
+// 스터디 룸 채팅 타입
+export type Chat = Tables<'chat'>
+export type ChatInsert = TablesInsert<'chat'>
+export type ChatUpdate = TablesUpdate<'chat'>

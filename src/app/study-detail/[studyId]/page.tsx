@@ -2,6 +2,7 @@ import StudyDetail from '@/components/study-detail'
 import { CommentsProvider } from '@/context/commentsContext'
 import { MemberProvider } from '@/context/memberContext'
 import { ModalContextProvider } from '@/context/modalContext'
+import { getComments } from '@/libs/supabase/api/comments'
 import {
   getOwnerProfile,
   getStudyRoomDetail,
@@ -22,17 +23,18 @@ async function StudyDetailPage({ params }: Props) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const [studyRoomData, ownerProfileData] = await Promise.all([
+  const [studyRoomData, ownerProfileData, commentsData] = await Promise.all([
     getStudyRoomDetail(studyId),
     getOwnerProfile(studyId),
+    getComments(studyId),
   ])
 
   const studyRoomRequestsData = await getStudyRoomRequests(studyId)
 
   return (
     <section>
-      <MemberProvider studyId={studyId}>
-        <CommentsProvider studyId={studyId}>
+      <MemberProvider studyId={studyId} studyData={studyRoomData}>
+        <CommentsProvider studyId={studyId} commentsData={commentsData}>
           <ModalContextProvider>
             <StudyDetail
               studyRoomData={studyRoomData}

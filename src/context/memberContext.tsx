@@ -51,40 +51,35 @@ const participantsFetcher = async (
 export function MemberProvider({
   children,
   studyId,
-}: PropsWithChildren<{ studyId: string }>) {
+  studyData,
+}: PropsWithChildren<{ studyId: string; studyData: StudyRoom }>) {
   const { user } = useAuth()
-  const swrStudyKey = studyId ? ['study_room_data', studyId] : null
-  const swrMemberKey = studyId ? ['member_data', studyId] : null
-  const swrApplicantKey = studyId ? ['applicant_data', studyId] : null
+  const swrStudyKey = studyId ? [`study_room_data_${studyId}`] : null
+  const swrMemberKey = studyId ? [`member_data_${studyId}`] : null
+  const swrApplicantKey = studyId ? [`applicant_data_${studyId}`] : null
   const { data: studyRoomData, mutate: studyDataMutation } = useSWR(
     swrStudyKey,
-    ([_key, studyId]) => studyFetcher(studyId, getStudyRoomDetail),
+    () => studyFetcher(studyId, getStudyRoomDetail),
     {
       revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      refreshInterval: 0,
-      dedupingInterval: 10000,
+      fallbackData: studyData,
     }
   )
 
   const { data: requestMembersData, mutate: requestMemberDataMutation } =
-    useSWR(
-      swrMemberKey,
-      ([_key, studyId]) => memberFetcher(studyId, studyRoomRequestsLists),
-      {
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-        refreshInterval: 0,
-        dedupingInterval: 10000,
-      }
-    )
+    useSWR(swrMemberKey, () => memberFetcher(studyId, studyRoomRequestsLists), {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      refreshInterval: 0,
+      dedupingInterval: 10000,
+    })
 
   const {
     data: participantsMembersData,
     mutate: participantsMemberDataMutation,
   } = useSWR(
     swrApplicantKey,
-    ([_key, studyId]) => participantsFetcher(studyId, getStudyRoomParticipants),
+    () => participantsFetcher(studyId, getStudyRoomParticipants),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,

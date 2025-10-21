@@ -37,19 +37,21 @@ const fetcher = async (
 export function CommentsProvider({
   children,
   studyId,
-}: PropsWithChildren<{ studyId: string }>) {
+  commentsData,
+}: PropsWithChildren<{
+  studyId: string
+  commentsData: CommentsWithProfile[]
+}>) {
   const { user, isAuthenticated } = useAuth()
   const [isAdding, setIsAdding] = useState(false)
-  const swrKey = studyId ? ['comments', studyId] : null
+  const swrKey = studyId ? [`comments_${studyId}`] : null
   const {
     data,
     isLoading,
     mutate: commentsMutation,
-  } = useSWR(swrKey, ([_key, studyId]) => fetcher(studyId, getComments), {
+  } = useSWR(swrKey, () => fetcher(studyId, getComments), {
     revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    refreshInterval: 0,
-    dedupingInterval: 10000,
+    fallbackData: commentsData,
   })
 
   const upsertCommentsHandler = useCallback(

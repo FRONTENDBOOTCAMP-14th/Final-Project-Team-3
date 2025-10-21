@@ -27,7 +27,7 @@ function StudyCard({ item, userId, isPriority }: Props) {
     e.preventDefault()
     e.stopPropagation()
     if (!userId) {
-      alert('로그인이 필요합니다.')
+      alert('로그인이 필요합니다. : BookMark')
       return
     }
     setIsDisabled(true)
@@ -41,7 +41,7 @@ function StudyCard({ item, userId, isPriority }: Props) {
     e.preventDefault()
     e.stopPropagation()
     if (!userId) {
-      alert('로그인이 필요합니다.')
+      alert('로그인이 필요합니다. : Likes')
       return
     }
     setIsDisabled(true)
@@ -51,7 +51,9 @@ function StudyCard({ item, userId, isPriority }: Props) {
     setIsDisabled(false)
   }
 
-  const isGif = item.banner_image?.toLowerCase().endsWith('.gif')
+  const isGif = ['.gif', '_gif'].some((gif) =>
+    item.banner_image?.toLowerCase().endsWith(gif)
+  )
 
   return (
     <li className="region-study-lists-item" key={item.id}>

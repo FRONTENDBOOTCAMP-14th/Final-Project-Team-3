@@ -5,7 +5,7 @@ import CategoryUI from '@/components/ui/category-ui'
 import { useModal } from '@/hooks/useModal'
 import type { StudyRoom, StudyRoomRequests } from '@/libs/supabase'
 
-import LikesAndBookmarks from './button/likesAndBookmarks'
+import IconsButtonGroup from './button/icon-button-group'
 import RequestBtn from './button/request-btn'
 
 interface Props {
@@ -21,7 +21,7 @@ function HeadingSection({ studyRoomRequestsData, studyRoomData, user }: Props) {
       <div className="detail-header">
         <h3>{studyRoomData.title}</h3>
         <div className="detail-button-group">
-          <LikesAndBookmarks user={user} studyRoomData={studyRoomData} />
+          <IconsButtonGroup user={user} studyRoomData={studyRoomData} />
           {studyRoomData.owner_id !== user?.id ? (
             <>
               <RequestBtn
