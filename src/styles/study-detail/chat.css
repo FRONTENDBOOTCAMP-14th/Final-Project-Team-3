@@ -13,6 +13,7 @@
 
 .chat-message-contents {
   padding: 0.9375rem;
+  min-block-size: 27rem;
   max-block-size: 27rem;
   overflow-x: hidden;
   overflow-y: auto;
@@ -51,6 +52,7 @@
 
       .chat-user-message {
         background-color: #cae1f7;
+        word-break: break-all;
       }
     }
   }
@@ -78,6 +80,7 @@
       padding: 0.5rem;
       font-size: var(--font-sm);
       line-height: 1.3;
+      word-break: break-all;
     }
   }
 }
@@ -87,6 +90,7 @@
 }
 
 .chat-message-form {
+  position: relative;
   border-top: 0.0625rem solid var(--color-border);
   padding-block-start: 0.625rem;
   padding-inline: 0.4375rem;

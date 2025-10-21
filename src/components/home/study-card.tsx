@@ -27,7 +27,7 @@ function StudyCard({ item, userId, isPriority }: Props) {
     e.preventDefault()
     e.stopPropagation()
     if (!userId) {
-      alert('로그인이 필요합니다.')
+      alert('로그인이 필요합니다. : BookMark')
       return
     }
     setIsDisabled(true)
@@ -41,7 +41,7 @@ function StudyCard({ item, userId, isPriority }: Props) {
     e.preventDefault()
     e.stopPropagation()
     if (!userId) {
-      alert('로그인이 필요합니다.')
+      alert('로그인이 필요합니다. : Likes')
       return
     }
     setIsDisabled(true)

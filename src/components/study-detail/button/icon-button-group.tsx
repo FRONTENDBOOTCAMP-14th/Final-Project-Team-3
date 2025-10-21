@@ -5,6 +5,7 @@ import { useState } from 'react'
 import Icons from '@/components/icons'
 import { useBookMark } from '@/hooks/useBookmark'
 import { useLikes } from '@/hooks/useLikes'
+import { useMember } from '@/hooks/useMember'
 import { useModal } from '@/hooks/useModal'
 import type { StudyRoom } from '@/libs/supabase'
 
@@ -19,6 +20,7 @@ function IconsButtonGroup({ user, studyRoomData }: Props) {
   const { bookmarkHandler, isRoomBookmarked } = useBookMark()
   const { likesHandler, isRoomLiked } = useLikes()
   const { setOpenModal, setModalType } = useModal()
+  const { participantsMembersData } = useMember()
 
   const isBookmark = isRoomBookmarked(studyRoomData.id)
   const isLikes = isRoomLiked(studyRoomData.id)
@@ -27,7 +29,7 @@ function IconsButtonGroup({ user, studyRoomData }: Props) {
     e.preventDefault()
 
     if (!user) {
-      alert('로그인이 필요합니다.')
+      alert('로그인이 필요합니다. : Bookmark')
       return
     }
     setIsDisabled(true)
@@ -41,7 +43,7 @@ function IconsButtonGroup({ user, studyRoomData }: Props) {
     e.preventDefault()
 
     if (!user) {
-      alert('로그인이 필요합니다.')
+      alert('로그인이 필요합니다. : Likes')
       return
     }
     setIsDisabled(true)
@@ -49,6 +51,19 @@ function IconsButtonGroup({ user, studyRoomData }: Props) {
     await likesHandler(studyRoomData.id, user.id)
 
     setIsDisabled(false)
+  }
+
+  const isChat = () => {
+    if (!user) {
+      return
+    }
+
+    const isChecked =
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      participantsMembersData?.some((item) => item.id === user.id) ||
+      studyRoomData.owner_id === user.id
+
+    return isChecked
   }
 
   return (
@@ -82,19 +97,21 @@ function IconsButtonGroup({ user, studyRoomData }: Props) {
           height={32}
         />
       </button>
-      <button
-        type="button"
-        aria-label="채팅 버튼"
-        className="contents-icons-btn"
-        disabled={isDisabled}
-        title="채팅 버튼"
-        onClick={() => {
-          setModalType('CHAT')
-          setOpenModal(true)
-        }}
-      >
-        <Icons name={'chat'} aria-hidden="true" width={32} height={32} />
-      </button>
+      {isChat() && (
+        <button
+          type="button"
+          aria-label="채팅 버튼"
+          className="contents-icons-btn"
+          disabled={isDisabled}
+          title="채팅 버튼"
+          onClick={() => {
+            setModalType('CHAT')
+            setOpenModal(true)
+          }}
+        >
+          <Icons name={'chat'} aria-hidden="true" width={32} height={32} />
+        </button>
+      )}
     </>
   )
 }
