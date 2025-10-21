@@ -1,22 +1,21 @@
 'use client'
 import useSWR from 'swr'
 
-import Icons from '@/components/icons'
-import type { StudyRoom } from '@/libs/supabase'
-import { getStudyRoomDetail } from '@/libs/supabase/api/study-room'
-
 import '@/styles/ui/category-ui.css'
 
+import Icons from '@/components/icons'
+import { getStudyRoomDetail } from '@/libs/supabase/api/study-room'
+
 interface Props {
-  studyData: StudyRoom
+  studyId: string
 }
 
 const fetcher = (studyId: string) => getStudyRoomDetail(studyId)
 
-function CategoryUI({ studyData }: Props) {
+function CategoryUI({ studyId }: Props) {
   const { data } = useSWR(
-    ['study_room_data', studyData.id],
-    () => fetcher(studyData.id),
+    ['study_room_data', studyId],
+    () => fetcher(studyId),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,

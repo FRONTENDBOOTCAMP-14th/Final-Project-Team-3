@@ -47,6 +47,7 @@ function LikesAndBookmarks({ user, studyRoomData }: Props) {
 
     setIsDisabled(false)
   }
+
   return (
     <>
       <button

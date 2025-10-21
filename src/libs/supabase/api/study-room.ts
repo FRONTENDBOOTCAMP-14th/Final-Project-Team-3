@@ -146,7 +146,7 @@ export const studyRoomRequestCancel = async (
 export const StudyRoomRequestsFn = async (
   studyId: string,
   userId: string,
-  status: 'PENDING' | 'REJECTED' | 'APPROVED'
+  status: 'PENDING' | 'REJECTED' | 'APPROVED' | 'DEPORTATION'
 ): Promise<StudyRoomRequests | null> => {
   if (!studyId || !userId) return null
 
@@ -225,12 +225,39 @@ export const StudyRoomRequestsFn = async (
             user_id: userId,
           },
         ])
-        .select('*')
-        .single()
 
       if (participantError) {
         new Error(participantError.message)
         return requestsData
+      }
+
+      return requestsData
+    }
+
+    case 'DEPORTATION': {
+      const { error } = await supabase
+        .from('study_participants')
+        .delete()
+        .eq('room_id', studyId)
+        .eq('user_id', userId)
+
+      if (error) {
+        throw new Error(error.message)
+      }
+
+      const { data: requestsData, error: requestsError } = await supabase
+        .from('study_requests')
+        .update({
+          status,
+          request_message: '추방 되었습니다.',
+        })
+        .eq('room_id', studyId)
+        .eq('user_id', userId)
+        .select('*')
+        .single()
+
+      if (requestsError) {
+        throw new Error(requestsError.message)
       }
 
       return requestsData
@@ -274,38 +301,4 @@ export const getStudyRoomParticipants = async (
   const profileLists = data.map((item) => item.profile)
 
   return profileLists ?? []
-}
-
-export const studyRoomDeportation = async (
-  studyId: string,
-  userId: string,
-  status: 'DEPORTATION'
-) => {
-  const supabase = await createClient()
-
-  const { error } = await supabase
-    .from('study_participants')
-    .delete()
-    .eq('room_id', studyId)
-    .eq('user_id', userId)
-    .single()
-
-  if (error) {
-    throw new Error(error.message)
-  }
-
-  const { error: requestsError } = await supabase
-    .from('study_requests')
-    .update({
-      status,
-      request_message: '추방 되었습니다.',
-    })
-    .eq('room_id', studyId)
-    .eq('user_id', userId)
-    .select('*')
-    .single()
-
-  if (requestsError) {
-    throw new Error(requestsError.message)
-  }
 }

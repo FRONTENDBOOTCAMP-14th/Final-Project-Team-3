@@ -1,11 +1,11 @@
+'use client'
 import '@/styles/study-detail/comment.css'
 import type { Dispatch, SetStateAction } from 'react'
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import { addComments } from '@/libs/supabase/api/comments'
+import { useComments } from '@/hooks/useComments'
 
 interface Props {
-  studyId: string
   userId?: string | null
   commentId?: string
   comment?: string
@@ -14,7 +14,6 @@ interface Props {
 }
 
 function CommentForm({
-  studyId,
   userId,
   type,
   commentId,
@@ -27,7 +26,7 @@ function CommentForm({
   )
   const [debounceValue, setDebounceValue] = useState<string>('')
 
-  const [isPending, startTransition] = useTransition()
+  const { upsertCommentsHandler, isAdding } = useComments()
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -49,17 +48,10 @@ function CommentForm({
       return
     }
 
-    startTransition(async () => {
-      try {
-        await addComments(studyId, comment, commentId)
+    await upsertCommentsHandler(comment, commentId, type)
 
-        if (type === 'MODIFY' && setModifyComment) setModifyComment(false)
-        setInputValue('')
-        alert(type === 'MODIFY' ? '댓글 수정 성공!' : '댓글 추가 성공!')
-      } catch (_error) {
-        alert(type === 'MODIFY' ? '댓글 수정 실패...' : '댓글 추가 실패...')
-      }
-    })
+    if (type === 'MODIFY' && setModifyComment) setModifyComment(false)
+    setInputValue('')
   }
 
   return (
@@ -100,13 +92,13 @@ function CommentForm({
                   <button
                     type="submit"
                     className="comment-form-btn"
-                    disabled={isPending}
+                    disabled={isAdding}
                   >
                     {comment && type === 'MODIFY'
-                      ? isPending
+                      ? isAdding
                         ? '수정 중...'
                         : '수정'
-                      : isPending
+                      : isAdding
                         ? '등록 중...'
                         : '등록'}
                   </button>

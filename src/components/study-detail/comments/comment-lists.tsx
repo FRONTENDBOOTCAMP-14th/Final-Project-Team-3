@@ -1,3 +1,4 @@
+'use client'
 import '@/styles/study-detail/comment.css'
 
 import type { User } from '@supabase/supabase-js'

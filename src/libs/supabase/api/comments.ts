@@ -1,7 +1,5 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-
 import type { Comments, Profile } from '..'
 import { createClient } from '../server'
 
@@ -22,14 +20,14 @@ export const getComments = async (
 
   if (commentError) throw new Error('댓글을 가져오지 못했습니다...')
 
-  return commentData
+  return commentData ?? []
 }
 
 export const addComments = async (
   studyId: string,
   comment: string,
   commentId?: string
-): Promise<void> => {
+): Promise<CommentsWithProfile> => {
   const supabase = await createClient()
 
   const {
@@ -40,32 +38,26 @@ export const addComments = async (
 
   const commentIdObject = commentId ? { id: commentId } : {}
 
-  const { error: commentError } = await supabase.from('comments').upsert({
-    ...commentIdObject,
-    room_id: studyId,
-    user_id: user.id,
-    comment,
-  })
+  const { data: commentData, error: commentError } = await supabase
+    .from('comments')
+    .upsert({
+      ...commentIdObject,
+      room_id: studyId,
+      user_id: user.id,
+      comment,
+    })
+    .select('*, profile:user_id(id, nickname, profile_url)')
+    .single()
 
   if (commentError) throw new Error('댓글 추가 수정 실패...')
 
-  revalidatePath(`/study-detail/${studyId}`)
+  return commentData
 }
 
-export const deleteComment = async (
-  commentId: string,
-  studyId: string,
-  userId: string
-): Promise<void> => {
+export const deleteComment = async (commentId: string): Promise<void> => {
   const supabase = await createClient()
 
-  const { error } = await supabase
-    .from('comments')
-    .delete()
-    .eq('id', commentId)
-    .eq('user_id', userId)
+  const { error } = await supabase.from('comments').delete().eq('id', commentId)
 
   if (error) throw new Error(error.message)
-
-  revalidatePath(`/study-detail/${studyId}`)
 }

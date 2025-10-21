@@ -1,11 +1,9 @@
 import type { User } from '@supabase/supabase-js'
 import { useState, useTransition } from 'react'
 
+import { useMember } from '@/hooks/useMember'
 import type { StudyRoom, StudyRoomRequests } from '@/libs/supabase'
-import {
-  studyRoomRequestCancel,
-  StudyRoomRequestsFn,
-} from '@/libs/supabase/api/study-room'
+import { studyRoomRequestCancel } from '@/libs/supabase/api/study-room'
 
 interface Props {
   user: User | null
@@ -18,26 +16,21 @@ function RequestBtn({ studyRoomRequestsData, studyId, user }: Props) {
     (item) => item.user_id === user?.id
   )
 
+  const { requestsHandler } = useMember()
+
   const [requestData, setRequestData] = useState<
     StudyRoomRequests | null | undefined
   >(filterRequestsData)
   const [isPending, startTransition] = useTransition()
 
-  const handleRequestClick = () => {
+  const handleRequestClick = async () => {
     if (!user) alert('로그인이 필요합니다.')
 
-    startTransition(async () => {
-      try {
-        if (!studyId || !user?.id) return
+    if (!studyId || !user?.id) return
 
-        const data = await StudyRoomRequestsFn(studyId, user?.id, 'PENDING')
+    const data = await requestsHandler(user?.id, 'PENDING')
 
-        setRequestData(data)
-        alert('신청이 완료 되었습니다.')
-      } catch (e) {
-        alert(`신청 에러 ${e.message}`)
-      }
-    })
+    setRequestData(data)
   }
 
   const handleRequestCancelClick = () => {
@@ -47,6 +40,7 @@ function RequestBtn({ studyRoomRequestsData, studyId, user }: Props) {
 
         await studyRoomRequestCancel(studyId, user?.id)
         setRequestData(null)
+        alert('신청 취소 되었습니다.')
       } catch (e) {
         alert(`취소 에러 ${e.message}`)
       }
