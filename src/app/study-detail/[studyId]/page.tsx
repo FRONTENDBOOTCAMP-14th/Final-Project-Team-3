@@ -1,4 +1,5 @@
 import StudyDetail from '@/components/study-detail'
+import EditButton from '@/components/study-detail/edit-button'
 import { CommentsProvider } from '@/context/commentsContext'
 import { MemberProvider } from '@/context/memberContext'
 import { ModalContextProvider } from '@/context/modalContext'
@@ -9,6 +10,9 @@ import {
   getStudyRoomRequests,
 } from '@/libs/supabase/api/study-room'
 import { createClient } from '@/libs/supabase/server'
+
+export const revalidate = 0
+export const dynamic = 'force-dynamic'
 
 interface Props {
   params: Promise<{ studyId: string }>
@@ -33,6 +37,7 @@ async function StudyDetailPage({ params }: Props) {
 
   return (
     <section>
+      <EditButton studyId={studyId} />
       <MemberProvider studyId={studyId} studyData={studyRoomData}>
         <CommentsProvider studyId={studyId} commentsData={commentsData}>
           <ModalContextProvider>
