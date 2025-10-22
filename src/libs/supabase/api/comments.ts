@@ -1,5 +1,7 @@
 'use server'
 
+import type { ResultType } from '@/types/apiResultsType'
+
 import type { Comments, Profile } from '..'
 import { createClient } from '../server'
 
@@ -9,7 +11,7 @@ export type CommentsWithProfile = Comments & {
 
 export const getComments = async (
   studyId: string
-): Promise<CommentsWithProfile[]> => {
+): Promise<ResultType<CommentsWithProfile[]>> => {
   const supabase = await createClient()
 
   const { data: commentData, error: commentError } = await supabase
@@ -18,16 +20,18 @@ export const getComments = async (
     .eq('room_id', studyId)
     .order('created_at', { ascending: false })
 
-  if (commentError) throw new Error('댓글을 가져오지 못했습니다...')
+  if (commentError) {
+    return { ok: false, message: '댓글을 가져오지 못했습니다...' }
+  }
 
-  return commentData ?? []
+  return { ok: true, data: commentData ?? [] }
 }
 
 export const addComments = async (
   studyId: string,
   comment: string,
   commentId?: string
-): Promise<CommentsWithProfile> => {
+): Promise<ResultType<CommentsWithProfile>> => {
   const supabase = await createClient()
 
   const {
@@ -49,15 +53,27 @@ export const addComments = async (
     .select('*, profile:user_id(id, nickname, profile_url)')
     .single()
 
-  if (commentError) throw new Error('댓글 추가 수정 실패...')
+  if (commentError) {
+    return { ok: false, message: '댓글 추가 수정 실패...' }
+  }
 
-  return commentData
+  return {
+    ok: true,
+    data: commentData,
+    message: commentId ? '댓글이 수정 되었습니다.' : '댓글이 추가 되었습니다.',
+  }
 }
 
-export const deleteComment = async (commentId: string): Promise<void> => {
+export const deleteComment = async (
+  commentId: string
+): Promise<ResultType<void>> => {
   const supabase = await createClient()
 
   const { error } = await supabase.from('comments').delete().eq('id', commentId)
 
-  if (error) throw new Error(error.message)
+  if (error) {
+    return { ok: false, message: '댓글 삭제 실패...' }
+  }
+
+  return { ok: true, message: '댓글이 삭제 되었습니다.' }
 }

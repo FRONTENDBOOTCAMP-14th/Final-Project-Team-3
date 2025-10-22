@@ -1,6 +1,7 @@
 'use client'
 import type { PropsWithChildren } from 'react'
-import { createContext, useCallback, useMemo, useState } from 'react'
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
+import { toast } from 'sonner'
 import useSWR from 'swr'
 
 import { useAuth } from '@/hooks/useAuth'
@@ -10,11 +11,12 @@ import {
   getComments,
   type CommentsWithProfile,
 } from '@/libs/supabase/api/comments'
+import type { ResultType } from '@/types/apiResultsType'
 
 export interface CommentsContextValue {
   isAdding: boolean
   isLoading: boolean
-  commentsData: CommentsWithProfile[]
+  commentsData: ResultType<CommentsWithProfile[]>
   upsertCommentsHandler: (
     comment: string,
     commentId?: string,
@@ -27,8 +29,10 @@ export const CommentsContex = createContext<CommentsContextValue | null>(null)
 CommentsContex.displayName = 'CommentsContex'
 const fetcher = async (
   studyId: string,
-  fetchFn: (studyId: string) => Promise<CommentsWithProfile[] | null>
-): Promise<CommentsWithProfile[] | null> => {
+  fetchFn: (
+    studyId: string
+  ) => Promise<ResultType<CommentsWithProfile[]> | null>
+): Promise<ResultType<CommentsWithProfile[]> | null> => {
   if (!studyId) return null
 
   return fetchFn(studyId)
@@ -40,7 +44,7 @@ export function CommentsProvider({
   commentsData,
 }: PropsWithChildren<{
   studyId: string
-  commentsData: CommentsWithProfile[]
+  commentsData: ResultType<CommentsWithProfile[]>
 }>) {
   const { user, isAuthenticated } = useAuth()
   const [isAdding, setIsAdding] = useState(false)
@@ -54,24 +58,45 @@ export function CommentsProvider({
     fallbackData: commentsData,
   })
 
+  useEffect(() => {
+    if (!data?.ok && data !== undefined) {
+      toast.error(data?.message, {
+        action: {
+          label: '확인',
+          onClick: () => {},
+        },
+      })
+    }
+  }, [data])
+
   const upsertCommentsHandler = useCallback(
     async (comment: string, commentId?: string, type?: 'MODIFY') => {
-      if (!user || !isAuthenticated) return
+      if (!user || !isAuthenticated) {
+        toast.error('로그인이 필요합니다.', {
+          action: {
+            label: '확인',
+            onClick: () => {},
+          },
+        })
+        return
+      }
 
-      const prevData: CommentsWithProfile[] | null | undefined = data ?? []
+      const prevData: ResultType<CommentsWithProfile[]> | null | undefined =
+        data ?? { ok: true, data: [] }
 
       const optimisticUpdate = () => {
-        const list = data ?? []
+        const list = data?.data ?? []
 
         if (comment && type === 'MODIFY') {
           const modifyComment = list.map((item) =>
             item.id === commentId ? { ...item, comment } : item
           )
 
-          return [...modifyComment]
+          return {
+            ok: true,
+            data: [...modifyComment],
+          }
         } else {
-          if (!user && !isAuthenticated) return
-
           const newComment: CommentsWithProfile = {
             id: crypto.randomUUID(),
             created_at: new Date().toISOString(),
@@ -85,7 +110,10 @@ export function CommentsProvider({
             },
           }
 
-          return [newComment, ...list]
+          return {
+            ok: true,
+            data: [newComment, ...list],
+          }
         }
       }
 
@@ -93,45 +121,80 @@ export function CommentsProvider({
 
       setIsAdding(true)
 
-      try {
-        if (type === 'MODIFY') {
-          await addComments(studyId, comment, commentId)
-          alert('댓글 수정 성공!')
-        } else {
-          await addComments(studyId, comment)
-          alert('댓글 추가 성공!')
-        }
-        await commentsMutation()
-      } catch (error) {
-        await commentsMutation(() => prevData, { revalidate: false })
-        alert(`댓글 추가, 수정 실패 : ${error.message}`)
-      } finally {
-        setIsAdding(false)
+      let result: { ok: boolean; message?: string | undefined }
+
+      if (type === 'MODIFY') {
+        result = await addComments(studyId, comment, commentId)
+      } else {
+        result = await addComments(studyId, comment)
       }
+      await commentsMutation()
+
+      if (result.ok) {
+        toast.success(result.message, {
+          action: {
+            label: '확인',
+            onClick: () => {},
+          },
+        })
+      } else {
+        await commentsMutation(() => prevData, { revalidate: false })
+        toast.error(result.message, {
+          action: {
+            label: '확인',
+            onClick: () => {},
+          },
+        })
+      }
+
+      setIsAdding(false)
     },
     [commentsMutation, data, isAuthenticated, studyId, user]
   )
 
   const deleteCommentHandler = useCallback(
     async (commentId: string) => {
-      if (!user || !isAuthenticated) return
-      const prevData: CommentsWithProfile[] | null | undefined = data ?? []
+      if (!user || !isAuthenticated) {
+        toast.error('로그인이 필요합니다.', {
+          action: {
+            label: '확인',
+            onClick: () => {},
+          },
+        })
+        return
+      }
+      const prevData: ResultType<CommentsWithProfile[]> | null | undefined =
+        data ?? { ok: true, data: [] }
 
       const optimisticUpdate = () => {
-        const list = data ?? []
+        const list = data?.data ?? []
 
-        return list.filter((item) => item.id !== commentId)
+        return {
+          ok: true,
+          data: list.filter((item) => item.id !== commentId),
+        }
       }
 
       await commentsMutation(optimisticUpdate, { revalidate: false })
-      try {
-        await deleteComment(commentId)
 
-        alert('댓글 삭제 성공')
-        await commentsMutation()
-      } catch (error) {
+      const result = await deleteComment(commentId)
+      await commentsMutation()
+
+      if (result.ok) {
+        toast.success(result.message, {
+          action: {
+            label: '확인',
+            onClick: () => {},
+          },
+        })
+      } else {
         await commentsMutation(() => prevData, { revalidate: false })
-        alert(`댓글 삭제 실패 : ${error.message}`)
+        toast.error(result.message, {
+          action: {
+            label: '확인',
+            onClick: () => {},
+          },
+        })
       }
     },
     [commentsMutation, data, isAuthenticated, user]
@@ -141,7 +204,7 @@ export function CommentsProvider({
     return {
       isAdding,
       isLoading,
-      commentsData: data ?? [],
+      commentsData: data ?? { ok: true, data: [] },
       upsertCommentsHandler,
       deleteCommentHandler,
     }
