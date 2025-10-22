@@ -28,7 +28,7 @@ function StudyDetail({
 
   return (
     <div className="detail-container">
-      <BannerSection studyRoomData={studyRoomData} />
+      <BannerSection studyRoomData={studyRoomData} isOwner={isOwner} />
 
       <section className="detail-description">
         <HeadingSection

@@ -52,12 +52,13 @@
 
       .chat-user-message {
         background-color: #cae1f7;
-        word-break: break-all;
       }
     }
   }
 
   .chat-user {
+    inline-size: 100%;
+
     .chat-user-date {
       display: flex;
       gap: 0.3125rem;
@@ -74,13 +75,14 @@
     }
 
     & .chat-user-message {
-      max-inline-size: 75%;
+      inline-size: max-content;
+      max-inline-size: 60%;
       background-color: #eeeeee;
       border-radius: 5px;
       padding: 0.5rem;
       font-size: var(--font-sm);
       line-height: 1.3;
-      word-break: break-all;
+      word-break: break-word;
     }
   }
 }
@@ -107,5 +109,11 @@
   & .chat-message-button {
     padding: 0;
     border: 0;
+    color: #48a0f8;
+
+    &:disabled {
+      color: var(--color-text-tertiary);
+      cursor: not-allowed;
+    }
   }
 }

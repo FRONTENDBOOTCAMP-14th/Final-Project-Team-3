@@ -1,76 +1,45 @@
-/* 배너가 차지하는 비율(0~1). 전역 또는 해당 페이지 범위에 선언 */
-:root {
-  --outside-overhang: 0.5rem; /* 바깥으로 빼낼 정도 (모바일) */
-}
-
-/* 배너가 브레이크포인트마다 폭 비율이 달라지면 여기에 맞춰 값만 바꿔줘 */
-@media (min-width: 48rem) {
-  :root {
-    --banner-scale: 0.72;
-  }
-}
-@media (min-width: 64rem) {
-  /* desktop */
-  :root {
-    --outside-overhang: 0.75rem;
-  }
-}
-
-/* 상단 sticky 바: 컨테이너 폭 + 가운데 정렬 */
 .edit-button-wrap {
-  position: sticky;
-  inset-block-start: 0;
-  z-index: 1000;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  z-index: 100;
 
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
 
-  /* 컨테이너 폭으로 중앙정렬 */
-  inline-size: min(100%, var(--detail-max));
-  max-inline-size: var(--detail-max);
-  margin-inline: auto;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
 
-  /* ⬅️➡️ 좌우 패딩 = (컨테이너폭 - 배너폭)/2 + 여유 여백 */
-  /* (1 - 배너비율) * 컨테이너폭 / 2  */
-  padding-inline: calc(
-    (1 - var(--banner-scale, 1)) * min(100%, var(--detail-max)) / 2 +
-      var(--gutter) + var(--edge-nudge, 0rem)
-  );
-  padding-block: 0.35rem;
-
-  background-color: rgba(255 255 255 / 0.9);
   backdrop-filter: blur(4px);
-  border-block-end: 1px solid var(--light-gray);
 }
 
-/* 버튼/아이콘(기존 유지) */
 .edit-button-link {
-  display: inline-flex;
+  inline-size: 100%;
+  block-size: 100%;
+  display: flex;
   align-items: center;
   justify-content: center;
-  inline-size: 2.4rem;
-
-  block-size: 2.4rem;
   border-radius: 50%;
-  background: var(--color-bg-primary, #fff);
-  border: 1px solid var(--gray);
+  background: var(--color-bg-primary);
   box-shadow: 0 0.15rem 0.3rem rgba(0 0 0 / 10%);
   transition:
     background-color 0.2s,
     transform 0.15s;
   cursor: pointer;
-
-  margin-inline-end: clamp(-0.5rem, -0.5vw, -0.25rem);
+  color: #000;
 }
 .edit-button-link:hover {
-  background: var(--light-gray);
+  background: #83bffa;
+  transform: scale(1.1);
+  color: #fff;
 }
 .edit-button-link:active {
   transform: scale(0.96);
 }
 
 .edit-button-icon {
-  inline-size: 1.2rem;
-  block-size: 1.2rem;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
 }
