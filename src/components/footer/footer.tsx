@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { useId } from 'react'
 
@@ -49,12 +50,12 @@ function A11yLink({
       <a
         className={className}
         href={href}
-        target="_blank"
-        rel="noopener noreferrer"
+        target='_blank'
+        rel='noopener noreferrer'
       >
         {label}
-        <span className="sr-only"> (새 창에서 열림)</span>
-        <span className="external-indicator" aria-hidden="true" />
+        <span className='sr-only'> (새 창에서 열림)</span>
+        <span className='external-indicator' aria-hidden='true' />
       </a>
     )
   }
@@ -75,46 +76,55 @@ export default function SiteFooter() {
   const DISABLE_INTERNAL_LINKS = true
 
   return (
-    <footer className="site-footer" role="contentinfo">
-      <div className="footer-inner">
-        <div className="footer-brand">
-          <Link className="brand-link" href="/" aria-label="홈으로 이동">
-            <span className="brand-text">모이다</span>
+    <footer className='site-footer' role='contentinfo'>
+      <div className='footer-inner'>
+        <div className='footer-brand'>
+          <Link className='brand-link' href='/' aria-label='홈으로 이동'>
+            {/* ✅ 아이콘 추가 */}
+            <Image
+              src='/images/moida-icon.svg'
+              alt='/'
+              width={70}
+              height={70}
+              className='brand-icon'
+            />
+            <span className='brand-text'>모이다</span>
           </Link>
-          <p className="brand-desc">
+
+          <p className='brand-desc'>
             지역 기반 스터디,모임 플랫폼 - &quot;모이다&quot;
           </p>
         </div>
 
         <nav
-          className="footer-nav"
+          className='footer-nav'
           id={navId}
           aria-labelledby={`${navId}-title`}
         >
-          <h2 id={`${navId}-title`} className="sr-only">
+          <h2 id={`${navId}-title`} className='sr-only'>
             푸터 내비게이션
           </h2>
 
           {/* 플랫폼 */}
-          <div className="nav-group" aria-labelledby={platformId}>
-            <h3 id={platformId} className="nav-title">
+          <div className='nav-group' aria-labelledby={platformId}>
+            <h3 id={platformId} className='nav-title'>
               플랫폼
             </h3>
-            <ul className="nav-list">
+            <ul className='nav-list'>
               {linksCompany.map((item) => (
                 <li key={item.href}>
                   {DISABLE_INTERNAL_LINKS ? (
                     <span
-                      role="link"
-                      aria-disabled="true"
+                      role='link'
+                      aria-disabled='true'
                       tabIndex={-1}
-                      className="nav-link disabled"
+                      className='nav-link disabled'
                     >
                       {item.label} (준비중)
                     </span>
                   ) : (
                     <A11yLink
-                      className="nav-link"
+                      className='nav-link'
                       label={item.label}
                       href={item.href}
                     />
@@ -125,25 +135,25 @@ export default function SiteFooter() {
           </div>
 
           {/* 지원 */}
-          <div className="nav-group" aria-labelledby={supportId}>
-            <h3 id={supportId} className="nav-title">
+          <div className='nav-group' aria-labelledby={supportId}>
+            <h3 id={supportId} className='nav-title'>
               지원
             </h3>
-            <ul className="nav-list">
+            <ul className='nav-list'>
               {linksSupport.map((item) => (
                 <li key={item.href}>
                   {DISABLE_INTERNAL_LINKS ? (
                     <span
-                      role="link"
-                      aria-disabled="true"
+                      role='link'
+                      aria-disabled='true'
                       tabIndex={-1}
-                      className="nav-link disabled"
+                      className='nav-link disabled'
                     >
                       {item.label} (준비중)
                     </span>
                   ) : (
                     <A11yLink
-                      className="nav-link"
+                      className='nav-link'
                       label={item.label}
                       href={item.href}
                     />
@@ -154,15 +164,15 @@ export default function SiteFooter() {
           </div>
 
           {/* 소셜 */}
-          <div className="nav-group" aria-labelledby={socialId}>
-            <h3 id={socialId} className="nav-title">
+          <div className='nav-group' aria-labelledby={socialId}>
+            <h3 id={socialId} className='nav-title'>
               소셜
             </h3>
-            <ul className="nav-list">
+            <ul className='nav-list'>
               {linksSocial.map((item) => (
                 <li key={item.href}>
                   <A11yLink
-                    className="nav-link"
+                    className='nav-link'
                     label={item.label}
                     href={item.href}
                     external
@@ -174,8 +184,8 @@ export default function SiteFooter() {
         </nav>
       </div>
 
-      <div className="footer-bottom" aria-label="저작권 정보">
-        <p className="copyright">©2025. 3시세끼. All rights reserved</p>
+      <div className='footer-bottom' aria-label='저작권 정보'>
+        <p className='copyright'>©2025. 3시세끼. All rights reserved</p>
       </div>
     </footer>
   )
