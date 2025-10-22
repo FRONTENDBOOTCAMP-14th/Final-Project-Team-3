@@ -1,6 +1,7 @@
 'use client'
 import type { PropsWithChildren } from 'react'
-import { createContext, useCallback, useMemo } from 'react'
+import { createContext, useCallback, useEffect, useMemo } from 'react'
+import { toast } from 'sonner'
 import useSWR from 'swr'
 
 import { useAuth } from '@/hooks/useAuth'
@@ -10,10 +11,11 @@ import {
   removeBookMarkStudyRoom,
   setBookMarkStudyRoom,
 } from '@/libs/supabase/api/user'
+import type { ResultType } from '@/types/apiResultsType'
 
 export interface BookMarkContextValue {
   isLoading: boolean
-  bookmarkData: Bookmark[] | null
+  bookmarkData: ResultType<Bookmark[]> | null
   isRoomBookmarked: (roomId: string) => boolean
   bookmarkHandler: (studyId: string, userId: string) => Promise<void>
 }
@@ -23,8 +25,8 @@ BookMarkContext.displayName = 'BookMarkContext'
 
 const fetcher = async (
   userId: string,
-  fetchFn: (userId: string) => Promise<Bookmark[] | null>
-): Promise<Bookmark[] | null> => {
+  fetchFn: (userId: string) => Promise<ResultType<Bookmark[]> | null>
+): Promise<ResultType<Bookmark[]> | null> => {
   if (!userId) return null
   return fetchFn(userId)
 }
@@ -48,9 +50,20 @@ export function BookMarkProvider({ children }: PropsWithChildren) {
     }
   )
 
+  useEffect(() => {
+    if (!data?.ok && data !== undefined) {
+      toast.error(data?.message, {
+        action: {
+          label: '확인',
+          onClick: () => {},
+        },
+      })
+    }
+  }, [data])
+
   const isRoomBookmarked = useCallback(
     (studyId: string) => {
-      return !!data?.some((bookmark) => bookmark.room_id === studyId)
+      return !!data?.data?.some((bookmark) => bookmark.room_id === studyId)
     },
     [data]
   )
@@ -59,41 +72,51 @@ export function BookMarkProvider({ children }: PropsWithChildren) {
     async (studyId: string, userId: string) => {
       const isCurrentBookmark = isRoomBookmarked(studyId)
 
-      let prevData: Bookmark[] | undefined | null
+      let prevData: ResultType<Bookmark[]> | undefined | null
 
-      const optimisticUpdate = (data: Bookmark[] | undefined | null) => {
+      const optimisticUpdate = (
+        data: ResultType<Bookmark[]> | undefined | null
+      ) => {
         prevData = data
-        const list = data ?? []
+        const list = data?.data ?? []
 
         if (!isCurrentBookmark) {
-          return [
-            ...list,
-            {
-              id: crypto.randomUUID(),
-              user_id: userId,
-              room_id: studyId,
-              created_at: new Date().toISOString(),
-            },
-          ]
+          return {
+            ok: true,
+            data: [
+              ...list,
+              {
+                id: crypto.randomUUID(),
+                user_id: userId,
+                room_id: studyId,
+                created_at: new Date().toISOString(),
+              },
+            ],
+          }
         } else {
-          return list.filter((item) => item.room_id !== studyId)
+          return {
+            ok: true,
+            data: list.filter((item) => item.room_id !== studyId),
+          }
         }
       }
       await bookmarkMutation(optimisticUpdate, {
         revalidate: false,
       })
 
-      try {
-        if (!isCurrentBookmark) {
-          await setBookMarkStudyRoom(studyId, userId)
-          alert('즐겨찾기에 추가 되었습니다.!')
-        } else {
-          await removeBookMarkStudyRoom(studyId, userId)
-          alert('즐겨찾기에서 삭제 되었습니다.!')
-        }
-      } catch (error) {
+      let result: { ok: boolean; message?: string | undefined }
+
+      if (!isCurrentBookmark) {
+        result = await setBookMarkStudyRoom(studyId, userId)
+      } else {
+        result = await removeBookMarkStudyRoom(studyId, userId)
+      }
+
+      if (result.ok) {
+        toast.success(result.message)
+      } else {
         await bookmarkMutation(() => prevData, { revalidate: false })
-        alert(`즐겨찾기 추가 실패 : ${error.message}`)
+        toast.error(result.message)
       }
     },
     [bookmarkMutation, isRoomBookmarked]
@@ -101,7 +124,7 @@ export function BookMarkProvider({ children }: PropsWithChildren) {
 
   const contextState: BookMarkContextValue = useMemo(
     () => ({
-      bookmarkData: data ?? [],
+      bookmarkData: data ?? { ok: true, data: [] },
       isRoomBookmarked,
       isLoading,
       bookmarkHandler,

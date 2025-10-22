@@ -1,5 +1,7 @@
 'use server'
 
+import type { ResultType } from '@/types/apiResultsType'
+
 import type { Bookmark, Likes, Profile } from '..'
 import { createClient } from '../server'
 
@@ -53,7 +55,7 @@ export async function getUserProfile(userId: string): Promise<Profile | null> {
 
 export async function getMyBookMarkStudyRoom(
   userId: string
-): Promise<Bookmark[]> {
+): Promise<ResultType<Bookmark[]>> {
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -62,16 +64,16 @@ export async function getMyBookMarkStudyRoom(
     .eq('user_id', userId)
 
   if (error) {
-    throw new Error(error.message)
+    return { ok: false, message: '"좋아요" 가져오기 실패...' }
   }
 
-  return data ?? []
+  return { ok: true, data: data ?? [] }
 }
 
 export async function setBookMarkStudyRoom(
   studyId: string,
   userId: string
-): Promise<void> {
+): Promise<ResultType<void>> {
   const supabase = await createClient()
 
   const { error } = await supabase.from('bookmark').insert({
@@ -81,17 +83,19 @@ export async function setBookMarkStudyRoom(
 
   if (error) {
     if (error.code === '23505') {
-      throw new Error('이미 즐겨찾기에 추가 되었습니다.')
+      return { ok: false, message: '이미 즐겨찾기에 추가 되었습니다.' }
     } else {
-      throw new Error(error.message)
+      return { ok: false, message: '즐겨찾기 추가 실패.' }
     }
   }
+
+  return { ok: true, message: '즐겨찾기에 추가 되었습니다..' }
 }
 
 export async function removeBookMarkStudyRoom(
   studyId: string,
   userId: string
-): Promise<void> {
+): Promise<ResultType<void>> {
   const supabase = await createClient()
   const { error } = await supabase
     .from('bookmark')
@@ -99,13 +103,17 @@ export async function removeBookMarkStudyRoom(
     .eq('room_id', studyId)
     .eq('user_id', userId)
 
-  if (error) throw new Error(error.message)
+  if (error) {
+    return { ok: false, message: '즐겨찾기 제거 실패.' }
+  }
+
+  return { ok: true, message: '즐겨찾기가 제거 되었습니다..' }
 }
 
 export async function setLikesStudyRoom(
   studyId: string,
   userId: string
-): Promise<void> {
+): Promise<ResultType<void>> {
   const supabase = await createClient()
 
   const { error } = await supabase.from('likes').insert({
@@ -115,14 +123,18 @@ export async function setLikesStudyRoom(
 
   if (error) {
     if (error.code === '23505') {
-      throw new Error('이미 "좋아요"에 추가 되었습니다.')
+      return { ok: false, message: '이미 "좋아요"에 추가 되었습니다.' }
     } else {
-      throw new Error(error.message)
+      return { ok: false, message: '"좋아요" 추가 실패...' }
     }
   }
+
+  return { ok: true, message: '"좋아요"에 추가 되었습니다..' }
 }
 
-export async function getMyLikesStudyRoom(userId: string): Promise<Likes[]> {
+export async function getMyLikesStudyRoom(
+  userId: string
+): Promise<ResultType<Likes[]>> {
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -131,16 +143,16 @@ export async function getMyLikesStudyRoom(userId: string): Promise<Likes[]> {
     .eq('user_id', userId)
 
   if (error) {
-    throw new Error(error.message)
+    return { ok: false, message: '"좋아요" 가져오기 실패...' }
   }
 
-  return data ?? []
+  return { ok: true, data: data ?? [] }
 }
 
 export async function removeLikesStudyRoom(
   studyId: string,
   userId: string
-): Promise<void> {
+): Promise<ResultType<void>> {
   const supabase = await createClient()
   const { error } = await supabase
     .from('likes')
@@ -148,5 +160,9 @@ export async function removeLikesStudyRoom(
     .eq('room_id', studyId)
     .eq('user_id', userId)
 
-  if (error) throw new Error(error.message)
+  if (error) {
+    return { ok: false, message: '"좋아요" 제거 실패...' }
+  }
+
+  return { ok: true, message: '"좋아요"가 제거 되었습니다.' }
 }

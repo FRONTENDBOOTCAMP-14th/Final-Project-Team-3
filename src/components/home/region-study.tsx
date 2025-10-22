@@ -9,7 +9,7 @@ import StudyCardLists from './study-card-lists'
 import '@/styles/home/region-study.css'
 
 interface Props {
-  studyData: StudyRoom[]
+  studyData: StudyRoom[] | undefined
 }
 
 function RegionStudy({ studyData }: Props) {
@@ -37,7 +37,7 @@ function RegionStudy({ studyData }: Props) {
         </h2>
       </div>
       <div className="region-study-wrapper">
-        {studyData.length === 0 ? (
+        {studyData?.length === 0 ? (
           <p>{studyHeading} 검색 결과가 없습니다.</p>
         ) : (
           <StudyCardLists studyData={studyData} />

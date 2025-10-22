@@ -7,7 +7,7 @@ import '@/styles/home/region-study.css'
 import StudyCard from './study-card'
 
 interface Props {
-  studyData: StudyRoom[]
+  studyData: StudyRoom[] | undefined
 }
 
 const MAX_PRIORITY_COUNT = 10
@@ -16,7 +16,7 @@ function StudyCardLists({ studyData }: Props) {
   const { user } = useAuth()
   return (
     <ul className="region-study-lists">
-      {studyData.map((item, index) => {
+      {studyData?.map((item, index) => {
         return (
           <StudyCard
             key={item.id}
