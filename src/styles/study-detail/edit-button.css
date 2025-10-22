@@ -38,8 +38,3 @@
 .edit-button-link:active {
   transform: scale(0.96);
 }
-
-.edit-button-icon {
-  inline-size: 1.5rem;
-  block-size: 1.5rem;
-}

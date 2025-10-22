@@ -16,10 +16,10 @@ function CommentsSection({ user }: Props) {
   return (
     <section>
       <div className="comment-heading">
-        <h3>댓글 ({commentsData.length})</h3>
+        <h3>댓글 ({commentsData.data?.length})</h3>
       </div>
       <CommentForm userId={user?.id} />
-      <CommentLists commentData={commentsData} user={user} />
+      <CommentLists commentData={commentsData.data} user={user} />
     </section>
   )
 }

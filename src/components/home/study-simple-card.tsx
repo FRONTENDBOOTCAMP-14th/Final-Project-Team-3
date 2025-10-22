@@ -4,13 +4,13 @@ import Link from 'next/link'
 import type { StudyRoom } from '@/libs/supabase'
 
 interface Props {
-  studyData: StudyRoom[]
+  studyData: StudyRoom[] | undefined
 }
 
 function StudyRoomCard({ studyData }: Props) {
   return (
     <ul className="latest-lists">
-      {studyData.map((item) => (
+      {studyData?.map((item) => (
         <li className="latest-lists-item" key={item.id}>
           <Link href={`/study-detail/${item.id}`}>
             <div className="image-wrapper">

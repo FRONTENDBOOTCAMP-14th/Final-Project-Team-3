@@ -1,8 +1,9 @@
 import {
-  filterStudyRoom,
-  getAllStudyRoom,
   getLatestStudyRoom,
+  getQueryStudyRoom,
 } from '@/libs/supabase/api/study-room'
+
+import ToastMessage from '../toast-message/toast-message'
 
 import LatestStudy from './latest-study'
 import RegionStudy from './region-study'
@@ -14,15 +15,24 @@ interface Props {
 }
 
 async function HomeComponents({ region, depth, search }: Props) {
-  const latestData = await getLatestStudyRoom()
+  const {
+    data: latestData,
+    ok: latestOk,
+    message: latestMessage,
+  } = await getLatestStudyRoom()
 
-  const filterData =
-    !region && !depth && !search
-      ? await getAllStudyRoom()
-      : await filterStudyRoom(region, depth, search)
+  const {
+    ok: filterOk,
+    data: filterData,
+    message: filterMessage,
+  } = await getQueryStudyRoom(region, depth, search)
 
   return (
     <>
+      <ToastMessage
+        ok={latestOk && filterOk}
+        message={!latestOk ? latestMessage : filterMessage}
+      />
       <LatestStudy studyData={latestData} />
       <RegionStudy studyData={filterData} />
     </>

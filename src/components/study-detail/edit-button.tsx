@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import Icons from '@/components/icons'
+
 import '@/styles/study-detail/edit-button.css'
 
 interface Props {

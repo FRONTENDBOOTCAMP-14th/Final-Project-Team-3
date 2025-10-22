@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import type { PropsWithChildren } from 'react'
+import { Toaster } from 'sonner'
 
 import SiteFooter from '@/components/footer/footer'
 import Header from '@/components/header'
@@ -40,6 +41,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
               <main className="web-main">{children}</main>
               <SiteFooter />
               <FloatingButton />
+              <Toaster position="top-center" richColors />
             </BookMarkProvider>
           </LikesProvider>
         </AuthProvider>

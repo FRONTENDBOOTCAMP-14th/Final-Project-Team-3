@@ -1,9 +1,14 @@
 'use server'
+import type { ResultType } from '@/types/apiResultsType'
+
 import type { Profile, StudyRoom, StudyRoomRequests } from '..'
 import { createClient } from '../server'
 
-export const getLatestStudyRoom = async (): Promise<StudyRoom[]> => {
+export const getLatestStudyRoom = async (): Promise<
+  ResultType<StudyRoom[]>
+> => {
   const supabase = await createClient()
+
   const { data: studyRoomData, error } = await supabase
     .from('study_room')
     .select('*')
@@ -11,23 +16,13 @@ export const getLatestStudyRoom = async (): Promise<StudyRoom[]> => {
     .limit(15)
 
   if (error) {
-    throw new Error(error.message)
+    return {
+      ok: false,
+      message: '최신 스터디룸 데이터 가져오기 실패',
+    }
   }
 
-  return studyRoomData ?? []
-}
-
-export const getAllStudyRoom = async (): Promise<StudyRoom[]> => {
-  const supabase = await createClient()
-  const { data: studyRoomData, error } = await supabase
-    .from('study_room')
-    .select('*')
-
-  if (error) {
-    throw new Error(error.message)
-  }
-
-  return studyRoomData ?? []
+  return { ok: true, data: studyRoomData ?? [] }
 }
 
 export const getStudyRoomDetail = async (
@@ -47,11 +42,11 @@ export const getStudyRoomDetail = async (
   return studyRoomDetailData
 }
 
-export const filterStudyRoom = async (
+export const getQueryStudyRoom = async (
   region?: string,
   depth?: string,
   search?: string
-): Promise<StudyRoom[]> => {
+): Promise<ResultType<StudyRoom[]>> => {
   const supabase = await createClient()
   let query = supabase.from('study_room').select('*')
 
@@ -73,9 +68,12 @@ export const filterStudyRoom = async (
   const { data: queryData, error } = await query
 
   if (error) {
-    throw new Error(error.message)
+    return {
+      ok: false,
+      message: '스터디룸 데이터 가져오기 실패',
+    }
   }
-  return queryData
+  return { ok: true, data: queryData ?? [] }
 }
 
 export const getOwnerProfile = async (
