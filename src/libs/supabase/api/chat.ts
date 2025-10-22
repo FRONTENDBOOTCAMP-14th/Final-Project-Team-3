@@ -1,6 +1,5 @@
-'use server'
 import type { Chat, Profile } from '..'
-import { createClient } from '../server'
+import supabase from '../client'
 
 export type ChatWithProfile = Chat & {
   profile: Pick<Profile, 'id' | 'nickname' | 'profile_url'>
@@ -9,8 +8,6 @@ export type ChatWithProfile = Chat & {
 export const getChatMessages = async (
   studyId: string
 ): Promise<ChatWithProfile[]> => {
-  const supabase = await createClient()
-
   const { data: chat, error: chatError } = await supabase
     .from('chat')
     .select('*, profile:user_id(id, nickname, profile_url)')
@@ -27,8 +24,6 @@ export const insertMessage = async (
   userId: string,
   message: string
 ): Promise<void> => {
-  const supabase = await createClient()
-
   const { error: chatError } = await supabase.from('chat').insert({
     room_id: studyId,
     user_id: userId,

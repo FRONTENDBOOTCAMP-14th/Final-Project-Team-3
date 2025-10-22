@@ -1,44 +1,64 @@
 'use client'
 import '@/styles/study-detail/chat.css'
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import Icons from '@/components/icons'
 import { useAuth } from '@/hooks/useAuth'
+import { useChat } from '@/hooks/useChat'
+import { useMember } from '@/hooks/useMember'
 import type { ChatWithProfile } from '@/libs/supabase/api/chat'
 import { insertMessage } from '@/libs/supabase/api/chat'
+import { formatDate } from '@/utils/formatDate'
 
 interface Props {
   studyId: string
-  messages: ChatWithProfile[] | []
 }
 
-function ChatModal({ studyId, messages }: Props) {
+function ChatContent({ studyId }: Props) {
   const { user } = useAuth()
+  const { participantsMembersData } = useMember()
+  const { messages, isConnected } = useChat(studyId, user?.id)
   const [newMessage, setNewMessage] = useState<string>('')
   const divRef = useRef<HTMLDivElement | null>(null)
 
-  const onSubmitHandler = async () => {
+  const length = !participantsMembersData?.length
+    ? 1
+    : participantsMembersData?.length + 1
+
+  const onSubmitHandler = async (e: React.FormEvent) => {
+    e.preventDefault()
     if (!user) return
 
     if (!newMessage.trim()) return
 
-    await insertMessage(studyId, user.id, newMessage)
+    try {
+      await insertMessage(studyId, user.id, newMessage)
+      setNewMessage('')
+    } catch (error) {
+      alert(error.message)
+    }
   }
 
   useEffect(() => {
-    if (!divRef.current) return
+    if (!divRef.current || messages.length === 0) return
 
-    divRef.current.scrollTo({
-      top: divRef.current.scrollHeight,
-      behavior: 'smooth',
+    const frameId = requestAnimationFrame(() => {
+      divRef.current?.scrollTo({
+        top: divRef.current.scrollHeight,
+        behavior: 'smooth',
+      })
     })
+
+    return () => {
+      cancelAnimationFrame(frameId)
+    }
   }, [messages])
 
   return (
     <section className="chat-container">
       <div className="chat-heading">
-        <h3>실시간 채팅</h3>
+        <h3>실시간 채팅({length})</h3>
       </div>
 
       <div className="chat-message-contents" ref={divRef} tabIndex={0}>
@@ -62,7 +82,9 @@ function ChatModal({ studyId, messages }: Props) {
                     <span className="chat-username">
                       {isMine ? '본인' : item.profile.nickname}
                     </span>
-                    <span className="chat-date">00:00</span>
+                    <span className="chat-date">
+                      {formatDate(item.created_at)}
+                    </span>
                   </p>
                   <p className="chat-user-message">{item.message}</p>
                 </div>
@@ -73,7 +95,7 @@ function ChatModal({ studyId, messages }: Props) {
       </div>
 
       <div className="chat-message-form-wrapper">
-        <form className="chat-message-form" action={onSubmitHandler}>
+        <form className="chat-message-form" onSubmit={onSubmitHandler}>
           <label htmlFor="chat-message-input" className="sr-only">
             메세지 입력
           </label>
@@ -82,10 +104,17 @@ function ChatModal({ studyId, messages }: Props) {
             id="chat-message-input"
             className="chat-message-input"
             placeholder="채팅 입력"
+            value={newMessage}
+            required
+            autoComplete="off"
             name="message"
             onChange={(e) => setNewMessage(e.target.value)}
           />
-          <button type="submit" className="chat-message-button">
+          <button
+            type="submit"
+            className="chat-message-button"
+            disabled={!newMessage.trim() || !isConnected}
+          >
             <Icons name="navigation" width={26} height={26} />
           </button>
         </form>
@@ -94,4 +123,4 @@ function ChatModal({ studyId, messages }: Props) {
   )
 }
 
-export default ChatModal
+export default ChatContent

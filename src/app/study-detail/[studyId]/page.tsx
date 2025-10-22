@@ -1,5 +1,4 @@
 import StudyDetail from '@/components/study-detail'
-import EditButton from '@/components/study-detail/edit-button'
 import { CommentsProvider } from '@/context/commentsContext'
 import { MemberProvider } from '@/context/memberContext'
 import { ModalContextProvider } from '@/context/modalContext'
@@ -37,7 +36,6 @@ async function StudyDetailPage({ params }: Props) {
 
   return (
     <section>
-      <EditButton studyId={studyId} />
       <MemberProvider studyId={studyId} studyData={studyRoomData}>
         <CommentsProvider studyId={studyId} commentsData={commentsData}>
           <ModalContextProvider>
