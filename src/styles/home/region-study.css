@@ -37,6 +37,7 @@
 }
 
 .region-study-lists-item {
+  position: relative;
   inline-size: 100%;
   border-radius: var(--radius-xs);
   box-shadow: 0 0.125rem 0.25rem #0000000d;
@@ -47,6 +48,13 @@
   &:hover {
     transform: translateY(-0.3125rem);
     box-shadow: 0 0.25rem 0.5rem #0000001a;
+  }
+
+  & .study-card-delete-modal {
+    z-index: 1000;
+    position: absolute;
+    top: 0.625rem;
+    right: 0.625rem;
   }
 
   & a {
