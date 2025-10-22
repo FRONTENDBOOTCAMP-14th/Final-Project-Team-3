@@ -6,7 +6,7 @@ import { useMemo, useState } from 'react'
 import '@/styles/pagination-List/Pagination-List.css'
 
 interface PaginationListProps<T extends { id: string | number }> {
-  items: T[]
+  items: T[] | undefined
   itemsPerPage?: number
   renderItem: (item: T) => ReactNode
   className?: string
@@ -20,11 +20,11 @@ export default function PaginationList<T extends { id: string | number }>({
 }: PaginationListProps<T>) {
   const [currentPage, setCurrentPage] = useState(0)
 
-  const totalPages = Math.ceil(items.length / itemsPerPage)
+  const totalPages = Math.ceil(items?.length ?? 0 / itemsPerPage)
 
   const currentItems = useMemo(() => {
     const startIndex = currentPage * itemsPerPage
-    return items.slice(startIndex, startIndex + itemsPerPage)
+    return items?.slice(startIndex, startIndex + itemsPerPage)
   }, [items, currentPage, itemsPerPage])
 
   const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 0))
@@ -47,7 +47,7 @@ export default function PaginationList<T extends { id: string | number }>({
       </button>
 
       <ul className="pagination-list">
-        {currentItems.map((item) => (
+        {currentItems?.map((item) => (
           <li key={item.id} className="pagination-item">
             {renderItem(item)}
           </li>
@@ -58,7 +58,7 @@ export default function PaginationList<T extends { id: string | number }>({
         className="pagination-arrow pagination-next"
         onClick={handleNextPage}
         aria-label="다음 페이지"
-        disabled={currentPage === totalPages - 1}
+        disabled={currentPage === (totalPages <= 0 ? 1 : totalPages) - 1}
       >
         ▶
       </button>
