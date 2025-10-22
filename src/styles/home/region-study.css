@@ -108,3 +108,30 @@
     }
   }
 }
+
+.image-wrapper {
+  position: relative;
+}
+
+.study-delete-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-full);
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  z-index: 5;
+}
+
+.study-delete-btn:hover {
+  background: var(--color-cancel);
+}
