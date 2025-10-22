@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { useId } from 'react'
 
@@ -79,8 +80,17 @@ export default function SiteFooter() {
       <div className="footer-inner">
         <div className="footer-brand">
           <Link className="brand-link" href="/" aria-label="홈으로 이동">
+            {/* ✅ 아이콘 추가 */}
+            <Image
+              src="/images/moida-icon.svg"
+              alt="/"
+              width={70}
+              height={70}
+              className="brand-icon"
+            />
             <span className="brand-text">모이다</span>
           </Link>
+
           <p className="brand-desc">
             지역 기반 스터디,모임 플랫폼 - &quot;모이다&quot;
           </p>

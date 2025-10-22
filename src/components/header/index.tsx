@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -67,7 +68,17 @@ function Header() {
       <header className="main-header">
         <div className="header-logo" hidden={searchVisible ? true : undefined}>
           <h2>
-            <Link href={'/'}>모이다</Link>
+            <Link href={'/'}>
+              {/* 아이콘 추가 */}
+              <Image
+                src="/images/moida-icon.svg"
+                alt="모이다 로고 아이콘"
+                width={50}
+                height={50}
+                className="brand-icon"
+              />
+              모이다
+            </Link>
           </h2>
         </div>
         {isDesktop ? (
