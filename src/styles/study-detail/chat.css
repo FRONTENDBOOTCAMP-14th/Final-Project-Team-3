@@ -27,6 +27,23 @@
   gap: 0.625rem;
 }
 
+.chat-date-separator {
+  font-size: var(--font-xs);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  margin-block: 0.9375rem;
+
+  & span {
+    background-color: #1e8af7;
+    padding-block: 0.625rem;
+    padding-inline: 1.25rem;
+    border-radius: 1.875rem;
+  }
+}
+
 .chat-user-contents {
   inline-size: 100%;
   display: flex;

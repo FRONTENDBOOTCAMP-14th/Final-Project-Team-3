@@ -1,11 +1,12 @@
 'use client'
-import '@/styles/home/region-study.css'
 import { useSearchParams } from 'next/navigation'
 
 import Icons from '@/components/icons'
 import type { StudyRoom } from '@/libs/supabase'
 
 import StudyCardLists from './study-card-lists'
+
+import '@/styles/home/region-study.css'
 
 interface Props {
   studyData: StudyRoom[]
