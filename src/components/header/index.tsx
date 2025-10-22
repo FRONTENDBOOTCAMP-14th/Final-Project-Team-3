@@ -65,17 +65,17 @@ function Header() {
 
   return (
     <>
-      <header className="main-header">
-        <div className="header-logo" hidden={searchVisible ? true : undefined}>
+      <header className='main-header'>
+        <div className='header-logo' hidden={searchVisible ? true : undefined}>
           <h2>
             <Link href={'/'}>
               {/* 아이콘 추가 */}
               <Image
-                src="/images/moida-icon.svg"
-                alt="모이다 로고 아이콘"
+                src='/images/moida-icon.svg'
+                alt='모이다 로고 아이콘'
                 width={50}
                 height={50}
-                className="brand-icon"
+                className='brand-icon'
               />
               모이다
             </Link>
