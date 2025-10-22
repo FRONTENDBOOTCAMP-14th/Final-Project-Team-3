@@ -1,0 +1,147 @@
+/* Loading / Error / Alert – Fullscreen Overlay */
+
+.loading-page,
+.error-page,
+.alert-page {
+  min-block-size: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-sm);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  animation: fade-in 0.3s ease-out;
+}
+
+/* 카드 컨테이너 */
+.status-card {
+  inline-size: min(30rem, 92vi);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  box-shadow: 0 0.625rem 1.875rem rgba(0 0 0 / 0.15);
+  padding: var(--space-lg);
+  display: grid;
+  gap: var(--space-sm);
+  place-items: center;
+  animation: pop-in 0.25s ease-out both;
+}
+
+/* Icons */
+
+.status-info-icon {
+  font-size: var(--font-2xl);
+  color: var(--color-primary);
+  animation: pop-in 0.25s ease-out both;
+}
+
+.status-error-icon {
+  font-size: var(--font-2xl);
+  color: var(--color-cancel);
+  animation: shake 0.4s ease-in-out;
+}
+
+/* 로딩 스피너 */
+.status-spinner {
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.status-button {
+  padding: var(--space-s) var(--space-md);
+  border: none;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary);
+  color: #fff;
+  cursor: pointer;
+  font-size: var(--font-md);
+}
+.status-button:hover {
+  background-color: var(--color-secondary);
+}
+
+/* ===========================
+   Keyframes
+   =========================== */
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translateX(-2px);
+  }
+  20%,
+  80% {
+    transform: translateX(3px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-4px);
+  }
+  40%,
+  60% {
+    transform: translateX(4px);
+  }
+}
+
+@media screen and (width >= 48rem) {
+  .status-card {
+    inline-size: min(28rem, 90vi);
+    padding: var(--space-xl);
+    gap: var(--space-md);
+  }
+
+  .status-info-icon,
+  .status-error-icon {
+    font-size: var(--font-3xl);
+  }
+
+  .status-button {
+    font-size: var(--font-lg);
+  }
+}
+
+@media screen and (width >= 64rem) {
+  .status-card {
+    inline-size: 32rem;
+    padding: var(--space-2xl);
+  }
+
+  .status-info-icon,
+  .status-error-icon {
+    font-size: var(--font-3xl);
+  }
+
+  .status-button {
+    font-size: var(--font-xl);
+  }
+}

@@ -8,11 +8,12 @@ import StudyCard from './study-card'
 
 interface Props {
   studyData: StudyRoom[] | undefined
+  type?: 'MYSTUDY'
 }
 
 const MAX_PRIORITY_COUNT = 10
 
-function StudyCardLists({ studyData }: Props) {
+function StudyCardLists({ studyData, type }: Props) {
   const { user } = useAuth()
   return (
     <ul className="region-study-lists">
@@ -23,6 +24,7 @@ function StudyCardLists({ studyData }: Props) {
             item={item}
             userId={user?.id}
             isPriority={index < MAX_PRIORITY_COUNT}
+            type={type}
           />
         )
       })}
