@@ -27,7 +27,7 @@ export const getLatestStudyRoom = async (): Promise<
 
 export const getStudyRoomDetail = async (
   studyRoomId: string
-): Promise<StudyRoom> => {
+): Promise<ResultType<StudyRoom>> => {
   const supabase = await createClient()
   const { data: studyRoomDetailData, error } = await supabase
     .from('study_room')
@@ -36,10 +36,10 @@ export const getStudyRoomDetail = async (
     .single()
 
   if (error) {
-    throw new Error(error.message)
+    return { ok: false, message: '스터디룸 정보 조회 실패...' }
   }
 
-  return studyRoomDetailData
+  return { ok: true, data: studyRoomDetailData }
 }
 
 export const getQueryStudyRoom = async (
@@ -78,7 +78,7 @@ export const getQueryStudyRoom = async (
 
 export const getOwnerProfile = async (
   studyRoomId: string
-): Promise<Profile> => {
+): Promise<ResultType<Profile>> => {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('study_room')
@@ -86,12 +86,8 @@ export const getOwnerProfile = async (
     .eq('id', studyRoomId)
     .single()
 
-  if (error) {
-    throw new Error(error.message)
-  }
-
-  if (!data.owner_id) {
-    throw new Error('모임장의 정보가 없습니다.')
+  if (error || !data.owner_id) {
+    return { ok: false, message: '모임장 정보 가져오기 실패...' }
   }
 
   const { data: profileData, error: profileError } = await supabase
@@ -101,15 +97,15 @@ export const getOwnerProfile = async (
     .single()
 
   if (profileError) {
-    throw new Error(profileError.message)
+    return { ok: false, message: '프로필 정보 가져오기 실패...' }
   }
 
-  return profileData as Profile
+  return { ok: true, data: profileData as Profile }
 }
 
 export const getStudyRoomRequests = async (
   studyId: string
-): Promise<StudyRoomRequests[]> => {
+): Promise<ResultType<StudyRoomRequests[]>> => {
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -118,16 +114,16 @@ export const getStudyRoomRequests = async (
     .eq('room_id', studyId)
 
   if (error) {
-    throw new Error(error.message)
+    return { ok: false, message: '신청 정보 가져오기 실패...' }
   }
 
-  return data ?? []
+  return { ok: true, data }
 }
 
 export const studyRoomRequestCancel = async (
   studyId: string,
   userId: string
-): Promise<void> => {
+): Promise<ResultType<void>> => {
   const supabase = await createClient()
 
   const { error } = await supabase
@@ -137,15 +133,17 @@ export const studyRoomRequestCancel = async (
     .eq('user_id', userId)
 
   if (error) {
-    throw new Error(error.message)
+    return { ok: false, message: '취소 실패...' }
   }
+
+  return { ok: true, message: '참가 신청이 취소 되었습니다.' }
 }
 
 export const StudyRoomRequestsFn = async (
   studyId: string,
   userId: string,
   status: 'PENDING' | 'REJECTED' | 'APPROVED' | 'DEPORTATION'
-): Promise<StudyRoomRequests | null> => {
+): Promise<ResultType<StudyRoomRequests> | null> => {
   if (!studyId || !userId) return null
 
   const supabase = await createClient()
@@ -166,10 +164,14 @@ export const StudyRoomRequestsFn = async (
         .single()
 
       if (error) {
-        throw new Error(error.message)
+        return { ok: false, message: '참가 신청 실패...' }
       }
 
-      return data as StudyRoomRequests
+      return {
+        ok: true,
+        data: data as StudyRoomRequests,
+        message: '참가 신청 되었습니다.',
+      }
     }
 
     case 'REJECTED': {
@@ -185,10 +187,14 @@ export const StudyRoomRequestsFn = async (
         .single()
 
       if (error) {
-        throw new Error(error.message)
+        return { ok: false, message: '승인 거절 실패...' }
       }
 
-      return data as StudyRoomRequests
+      return {
+        ok: true,
+        data: data as StudyRoomRequests,
+        message: '승인이 거절 되었습니다.',
+      }
     }
 
     case 'APPROVED': {
@@ -204,16 +210,16 @@ export const StudyRoomRequestsFn = async (
         .single()
 
       if (requestsError) {
-        throw new Error(requestsError.message)
+        return { ok: false, message: '참가 승인 실패...' }
       }
 
       if (!requestsData) {
         return null
       }
 
-      if (requestsData.status !== 'APPROVED') {
-        return requestsData as StudyRoomRequests
-      }
+      // if (requestsData.status !== 'APPROVED') {
+      //   return requestsData as StudyRoomRequests
+      // }
 
       const { error: participantError } = await supabase
         .from('study_participants')
@@ -225,11 +231,12 @@ export const StudyRoomRequestsFn = async (
         ])
 
       if (participantError) {
-        new Error(participantError.message)
-        return requestsData
+        // new Error(participantError.message)
+        // return requestsData
+        return { ok: false, message: '참가자 정보 가져오기 실패...' }
       }
 
-      return requestsData
+      return { ok: true, data: requestsData, message: '승인 되었습니다.' }
     }
 
     case 'DEPORTATION': {
@@ -240,7 +247,7 @@ export const StudyRoomRequestsFn = async (
         .eq('user_id', userId)
 
       if (error) {
-        throw new Error(error.message)
+        return { ok: false, message: '추방 실패...' }
       }
 
       const { data: requestsData, error: requestsError } = await supabase
@@ -255,10 +262,10 @@ export const StudyRoomRequestsFn = async (
         .single()
 
       if (requestsError) {
-        throw new Error(requestsError.message)
+        return { ok: false, message: '추방 정보 업데이트 실패...' }
       }
 
-      return requestsData
+      return { ok: true, data: requestsData, message: '추방 되었습니다.' }
     }
 
     default:
@@ -268,10 +275,10 @@ export const StudyRoomRequestsFn = async (
 
 export const studyRoomRequestsLists = async (
   studyId: string
-): Promise<Profile[]> => {
+): Promise<ResultType<Profile[]>> => {
   const supabase = await createClient()
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('study_requests')
     .select('profile(*)')
     .eq('room_id', studyId)
@@ -279,12 +286,16 @@ export const studyRoomRequestsLists = async (
 
   const profileLists = data?.map((item) => item.profile)
 
-  return profileLists ?? []
+  if (error) {
+    return { ok: false, message: '프로필 정보 조회 실패...' }
+  }
+
+  return { ok: true, data: profileLists ?? [] }
 }
 
 export const getStudyRoomParticipants = async (
   studyId: string
-): Promise<Profile[]> => {
+): Promise<ResultType<Profile[]>> => {
   const supabase = await createClient()
 
   const { data, error: participantsError } = await supabase
@@ -293,10 +304,27 @@ export const getStudyRoomParticipants = async (
     .eq('room_id', studyId)
 
   if (participantsError) {
-    throw new Error(participantsError.message)
+    return { ok: false, message: '프로필 정보 가져오기 실패...' }
   }
 
   const profileLists = data.map((item) => item.profile)
 
-  return profileLists ?? []
+  return { ok: true, data: profileLists ?? [] }
+}
+
+export const deleteStudyRoom = async (
+  studyId: string
+): Promise<ResultType<void>> => {
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('study_room')
+    .delete()
+    .eq('room_id', studyId)
+
+  if (error) {
+    return { ok: false, message: '스터디룸 삭제 실패...' }
+  }
+
+  return { ok: true, message: '스터디룸이 삭제 되었습니다.' }
 }

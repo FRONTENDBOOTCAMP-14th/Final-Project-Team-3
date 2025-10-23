@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useState } from 'react'
+import { toast } from 'sonner'
 
 import Icons from '@/components/icons'
 import CategoryUI from '@/components/ui/category-ui'
@@ -34,7 +35,12 @@ function StudyCard({ item, userId, isPriority, type }: Props) {
     e.preventDefault()
     e.stopPropagation()
     if (!userId) {
-      alert('로그인이 필요합니다. : BookMark')
+      toast.error('로그인이 필요 합니다.', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
       return
     }
     setIsDisabled(true)
@@ -48,7 +54,12 @@ function StudyCard({ item, userId, isPriority, type }: Props) {
     e.preventDefault()
     e.stopPropagation()
     if (!userId) {
-      alert('로그인이 필요합니다. : Likes')
+      toast.error('로그인이 필요 합니다.', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
       return
     }
     setIsDisabled(true)

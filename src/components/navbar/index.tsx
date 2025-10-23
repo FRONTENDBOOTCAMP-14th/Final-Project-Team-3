@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import type { Dispatch, SetStateAction } from 'react'
 import React, { useRef, useState } from 'react'
+import { toast } from 'sonner'
 
 import Icons from '@/components/icons'
 import { useAuth } from '@/hooks/useAuth'
@@ -62,10 +63,22 @@ function NavBar({
           setUserProfile(null)
           router.refresh()
 
-          alert('로그아웃에 성공 하였습니다.')
+          toast.success('로그아웃 되었습니다.', {
+            action: {
+              label: '닫기',
+              onClick: () => {},
+            },
+          })
         }
       })
-      .catch((e: Error) => alert(`로그아웃에 실패 하였습니다. ${e.message}`))
+      .catch((e: Error) =>
+        toast.error(`로그아웃 실패... ${e.message}`, {
+          action: {
+            label: '닫기',
+            onClick: () => {},
+          },
+        })
+      )
       .finally(() => {
         setIsLoading(false)
       })

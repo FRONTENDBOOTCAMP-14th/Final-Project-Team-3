@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import type { PropsWithChildren } from 'react'
+import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
+import { Suspense, type PropsWithChildren } from 'react'
 import { Toaster } from 'sonner'
 
 import SiteFooter from '@/components/footer/footer'
@@ -11,6 +12,8 @@ import { LikesProvider } from '@/context/likesContext'
 import { createClient } from '@/libs/supabase/server'
 
 import '@/styles/common/index.css'
+import Error from './error'
+import Loading from './loading'
 
 // --------------------------------------------------------------------------
 // 메타데이터
@@ -34,17 +37,21 @@ export default async function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="ko-KR">
       <body>
-        <AuthProvider user={user}>
-          <LikesProvider>
-            <BookMarkProvider>
-              <Header />
-              <main className="web-main">{children}</main>
-              <SiteFooter />
-              <FloatingButton />
-              <Toaster position="top-center" richColors />
-            </BookMarkProvider>
-          </LikesProvider>
-        </AuthProvider>
+        <ErrorBoundary errorComponent={Error}>
+          <Suspense fallback={<Loading />}>
+            <AuthProvider user={user}>
+              <LikesProvider>
+                <BookMarkProvider>
+                  <Header />
+                  <main className="web-main">{children}</main>
+                  <SiteFooter />
+                  <FloatingButton />
+                  <Toaster position="top-center" richColors />
+                </BookMarkProvider>
+              </LikesProvider>
+            </AuthProvider>
+          </Suspense>
+        </ErrorBoundary>
       </body>
     </html>
   )

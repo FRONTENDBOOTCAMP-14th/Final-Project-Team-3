@@ -104,10 +104,10 @@ export function LikesProvider({ children }: PropsWithChildren) {
 
       if (!isCurrentLikes) {
         result = await setLikesStudyRoom(studyId, userId)
-        await mutate(['study_room_data', studyId])
+        await mutate([`study_room_data_${studyId}`])
       } else {
         result = await removeLikesStudyRoom(studyId, userId)
-        await mutate(['study_room_data', studyId])
+        await mutate([`study_room_data_${studyId}`])
       }
 
       if (result.ok) {

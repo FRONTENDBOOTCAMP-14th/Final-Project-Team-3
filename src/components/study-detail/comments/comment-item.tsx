@@ -1,9 +1,11 @@
+'use client'
 import '@/styles/study-detail/comment.css'
 import type { User } from '@supabase/supabase-js'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 
 import { useComments } from '@/hooks/useComments'
+import { useWindowResize } from '@/hooks/useWindowResize'
 import type { CommentsWithProfile } from '@/libs/supabase/api/comments'
 
 import CommentForm from './comment-form'
@@ -19,12 +21,13 @@ function CommentItem({ commentData, user }: Props) {
   const [modifyComment, setModifyComment] = useState<boolean>(false)
   const pRef = useRef<HTMLParagraphElement | null>(null)
   const { deleteCommentHandler } = useComments()
+  const size = useWindowResize()
 
   useEffect(() => {
     if (!pRef.current) return
 
     setBtnVisibled(pRef.current.scrollHeight > pRef.current.clientHeight)
-  }, [])
+  }, [size])
 
   const showCommentHandler = () => {
     setIsShow((prev) => !prev)

@@ -45,7 +45,7 @@ function MembersSection({ ownerProfile }: Props) {
         </div>
       </div>
       <ul className="member-image-wrapper">
-        {participantsMembersData?.map((member) => (
+        {participantsMembersData?.data?.map((member) => (
           <li className="member-image" key={member.id}>
             <Image
               src={member.profile_url ?? '/images/default-avatar.png'}

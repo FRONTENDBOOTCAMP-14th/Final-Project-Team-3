@@ -1,5 +1,6 @@
 import type { User } from '@supabase/supabase-js'
 import { useState, useTransition } from 'react'
+import { toast } from 'sonner'
 
 import { useMember } from '@/hooks/useMember'
 import type { StudyRoom, StudyRoomRequests } from '@/libs/supabase'
@@ -24,25 +25,47 @@ function RequestBtn({ studyRoomRequestsData, studyId, user }: Props) {
   const [isPending, startTransition] = useTransition()
 
   const handleRequestClick = async () => {
-    if (!user) alert('로그인이 필요합니다.')
+    if (!user) {
+      toast.error('로그인이 필요 합니다...', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
+
+      return
+    }
 
     if (!studyId || !user?.id) return
 
-    const data = await requestsHandler(user?.id, 'PENDING')
+    startTransition(async () => {
+      const result = await requestsHandler(user?.id, 'PENDING')
 
-    setRequestData(data)
+      setRequestData(result?.data)
+    })
   }
 
   const handleRequestCancelClick = () => {
     startTransition(async () => {
-      try {
-        if (!studyId || !user?.id) return
+      if (!studyId || !user?.id) return
 
-        await studyRoomRequestCancel(studyId, user?.id)
+      const result = await studyRoomRequestCancel(studyId, user?.id)
+
+      if (result.ok) {
         setRequestData(null)
-        alert('신청 취소 되었습니다.')
-      } catch (e) {
-        alert(`취소 에러 ${e.message}`)
+        toast.success(result.message, {
+          action: {
+            label: '닫기',
+            onClick: () => {},
+          },
+        })
+      } else {
+        toast.error(result.message, {
+          action: {
+            label: '닫기',
+            onClick: () => {},
+          },
+        })
       }
     })
   }

@@ -2,6 +2,7 @@
 import '@/styles/study-detail/comment.css'
 import type { Dispatch, SetStateAction } from 'react'
 import { useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 
 import { useComments } from '@/hooks/useComments'
 
@@ -44,7 +45,12 @@ function CommentForm({
     const comment = formData.get('comment') as string
 
     if (!comment.trim()) {
-      alert('최소 한 글자 이상 적어주세요...')
+      toast.warning('최소 한 글자 이상 적어주세요...', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
       return
     }
 

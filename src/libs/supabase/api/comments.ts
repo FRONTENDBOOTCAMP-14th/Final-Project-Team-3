@@ -38,7 +38,9 @@ export const addComments = async (
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) throw new Error('로그인이 필요합니다.')
+  if (!user) {
+    return { ok: false, message: '로그인이 필요합니다...' }
+  }
 
   const commentIdObject = commentId ? { id: commentId } : {}
 
