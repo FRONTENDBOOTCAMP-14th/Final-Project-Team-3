@@ -14,7 +14,7 @@ interface Props {
   setUserProfile: Dispatch<SetStateAction<Profile | null>>
   selectCategory: string
   hidden: boolean
-  profile: Profile | null
+  profile: Profile | null | undefined
 }
 
 function HeaderContent({

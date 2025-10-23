@@ -2,6 +2,7 @@
 import '@/styles/study-detail/chat.css'
 import Image from 'next/image'
 import React, { useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 
 import Icons from '@/components/icons'
 import { useAuth } from '@/hooks/useAuth'
@@ -22,9 +23,9 @@ function ChatContent({ studyId }: Props) {
   const [newMessage, setNewMessage] = useState<string>('')
   const divRef = useRef<HTMLDivElement | null>(null)
 
-  const length = !participantsMembersData?.length
+  const length = !participantsMembersData?.data?.length
     ? 1
-    : participantsMembersData?.length + 1
+    : participantsMembersData?.data?.length + 1
 
   const onSubmitHandler = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,11 +33,17 @@ function ChatContent({ studyId }: Props) {
 
     if (!newMessage.trim()) return
 
-    try {
-      await insertMessage(studyId, user.id, newMessage)
+    const result = await insertMessage(studyId, user.id, newMessage)
+
+    if (result.ok) {
       setNewMessage('')
-    } catch (error) {
-      alert(error.message)
+    } else {
+      toast.error(result.message, {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
     }
   }
 

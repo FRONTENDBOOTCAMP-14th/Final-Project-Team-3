@@ -113,10 +113,20 @@ export function BookMarkProvider({ children }: PropsWithChildren) {
       }
 
       if (result.ok) {
-        toast.success(result.message)
+        toast.success(result.message, {
+          action: {
+            label: '닫기',
+            onClick: () => {},
+          },
+        })
       } else {
         await bookmarkMutation(() => prevData, { revalidate: false })
-        toast.error(result.message)
+        toast.error(result.message, {
+          action: {
+            label: '닫기',
+            onClick: () => {},
+          },
+        })
       }
     },
     [bookmarkMutation, isRoomBookmarked]

@@ -2,6 +2,7 @@ import StudyDetail from '@/components/study-detail'
 import { CommentsProvider } from '@/context/commentsContext'
 import { MemberProvider } from '@/context/memberContext'
 import { ModalContextProvider } from '@/context/modalContext'
+import type { Profile, StudyRoom, StudyRoomRequests } from '@/libs/supabase'
 import { getComments } from '@/libs/supabase/api/comments'
 import {
   getOwnerProfile,
@@ -40,9 +41,11 @@ async function StudyDetailPage({ params }: Props) {
         <CommentsProvider studyId={studyId} commentsData={commentsData}>
           <ModalContextProvider>
             <StudyDetail
-              studyRoomData={studyRoomData}
-              ownerProfile={ownerProfileData}
-              studyRoomRequestsData={studyRoomRequestsData}
+              studyRoomData={studyRoomData?.data as StudyRoom}
+              ownerProfile={ownerProfileData?.data as Profile}
+              studyRoomRequestsData={
+                studyRoomRequestsData?.data as StudyRoomRequests[]
+              }
               user={user}
             />
           </ModalContextProvider>

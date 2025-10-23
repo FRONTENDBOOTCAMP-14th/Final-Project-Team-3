@@ -1,6 +1,7 @@
 'use client'
 import type { User } from '@supabase/supabase-js'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 import Icons from '@/components/icons'
 import { useBookMark } from '@/hooks/useBookmark'
@@ -29,7 +30,12 @@ function IconsButtonGroup({ user, studyRoomData }: Props) {
     e.preventDefault()
 
     if (!user) {
-      alert('로그인이 필요합니다. : Bookmark')
+      toast.error('로그인이 필요 합니다...', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
       return
     }
     setIsDisabled(true)
@@ -43,7 +49,12 @@ function IconsButtonGroup({ user, studyRoomData }: Props) {
     e.preventDefault()
 
     if (!user) {
-      alert('로그인이 필요합니다. : Likes')
+      toast.error('로그인이 필요 합니다...', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
       return
     }
     setIsDisabled(true)
@@ -60,7 +71,7 @@ function IconsButtonGroup({ user, studyRoomData }: Props) {
 
     const isChecked =
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      participantsMembersData?.some((item) => item.id === user.id) ||
+      participantsMembersData?.data?.some((item) => item.id === user.id) ||
       studyRoomData.owner_id === user.id
 
     return isChecked

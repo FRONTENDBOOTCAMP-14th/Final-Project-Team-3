@@ -6,11 +6,12 @@ import type { Chat } from '@/libs/supabase'
 import { getChatMessages, type ChatWithProfile } from '@/libs/supabase/api/chat'
 import { getUserProfile } from '@/libs/supabase/api/user'
 import supabase from '@/libs/supabase/client'
+import type { ResultType } from '@/types/apiResultsType'
 
 const fetcher = async (
   studyId: string,
-  fetchFn: (studyId: string) => Promise<ChatWithProfile[] | null>
-): Promise<ChatWithProfile[] | null> => {
+  fetchFn: (studyId: string) => Promise<ResultType<ChatWithProfile[]> | null>
+): Promise<ResultType<ChatWithProfile[]> | null> => {
   if (!studyId) return null
   return fetchFn(studyId)
 }
@@ -27,7 +28,7 @@ export function useChat(studyId: string, userId: string | undefined) {
     if (!studyId) return
 
     const initialSetup = async () => {
-      setMessages(data ?? [])
+      setMessages(data?.data ?? [])
     }
 
     initialSetup()
@@ -51,9 +52,9 @@ export function useChat(studyId: string, userId: string | undefined) {
           const chatWithProfile: ChatWithProfile = {
             ...newMessage,
             profile: {
-              id: data?.id as string,
-              nickname: data?.nickname as string,
-              profile_url: data?.profile_url as string,
+              id: data?.data?.id as string,
+              nickname: data?.data?.nickname as string,
+              profile_url: data?.data?.profile_url as string,
             },
           }
 

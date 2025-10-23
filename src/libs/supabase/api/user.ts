@@ -11,7 +11,9 @@ interface SignUpData {
   nickname: string
 }
 
-export async function signUpAndCreateProfile(data: SignUpData): Promise<void> {
+export async function signUpAndCreateProfile(
+  data: SignUpData
+): Promise<ResultType<void>> {
   const supabase = await createClient()
 
   const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -19,9 +21,11 @@ export async function signUpAndCreateProfile(data: SignUpData): Promise<void> {
     password: data.password,
   })
 
-  if (authError) throw authError
+  if (authError || !authData.user) {
+    return { ok: false, message: '회원가입 실패...' }
+  }
+
   const user = authData.user
-  if (!user) throw new Error('회원가입 후 사용자 정보를 불러올 수 없습니다.')
 
   const { error: profileError } = await supabase.from('profile').insert([
     {
@@ -32,10 +36,16 @@ export async function signUpAndCreateProfile(data: SignUpData): Promise<void> {
     },
   ])
 
-  if (profileError) throw profileError
+  if (profileError) {
+    return { ok: false, message: '프로파일 업데이트 실패...' }
+  }
+
+  return { ok: true }
 }
 
-export async function getUserProfile(userId: string): Promise<Profile | null> {
+export async function getUserProfile(
+  userId: string
+): Promise<ResultType<Profile> | null> {
   const supabase = await createClient()
 
   if (!userId) return null
@@ -47,10 +57,10 @@ export async function getUserProfile(userId: string): Promise<Profile | null> {
     .single()
 
   if (profileError) {
-    throw new Error(profileError.message)
+    return { ok: false, message: '프로필 정보 조회 실패...' }
   }
 
-  return profileData
+  return { ok: true, data: profileData }
 }
 
 export async function getMyBookMarkStudyRoom(

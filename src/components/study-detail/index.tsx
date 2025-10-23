@@ -1,8 +1,8 @@
 import type { User } from '@supabase/supabase-js'
 
-import type { Profile, StudyRoom, StudyRoomRequests } from '@/libs/supabase'
-
 import '@/styles/study-detail/study-detail.css'
+
+import type { Profile, StudyRoom, StudyRoomRequests } from '@/libs/supabase'
 
 import BannerSection from './banner-section'
 import CommentsSection from './comments'
@@ -24,7 +24,7 @@ function StudyDetail({
   studyRoomRequestsData,
   user,
 }: Props) {
-  const isOwner = user?.id === studyRoomData.owner_id
+  const isOwner = user?.id === studyRoomData?.owner_id
 
   return (
     <div className="detail-container">

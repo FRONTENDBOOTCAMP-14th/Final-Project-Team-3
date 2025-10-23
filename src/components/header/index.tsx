@@ -29,7 +29,9 @@ function Header() {
   )
   const [isDesktop, setIsDesktop] = useState<boolean>(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
-  const [userProfile, setUserProfile] = useState<Profile | null>(null)
+  const [userProfile, setUserProfile] = useState<Profile | null | undefined>(
+    null
+  )
 
   useEffect(() => {
     const media = window.matchMedia('(min-width: 64rem)')
@@ -51,7 +53,7 @@ function Header() {
     const fetchProfile = async () => {
       if (user) {
         const profileData = await getUserProfile(user.id)
-        setUserProfile(profileData)
+        setUserProfile(profileData?.data)
       }
     }
 
@@ -65,17 +67,17 @@ function Header() {
 
   return (
     <>
-      <header className='main-header'>
-        <div className='header-logo' hidden={searchVisible ? true : undefined}>
+      <header className="main-header">
+        <div className="header-logo" hidden={searchVisible ? true : undefined}>
           <h2>
             <Link href={'/'}>
               {/* 아이콘 추가 */}
               <Image
-                src='/images/moida-icon.svg'
-                alt='모이다 로고 아이콘'
+                src="/images/moida-icon.svg"
+                alt="모이다 로고 아이콘"
                 width={50}
                 height={50}
-                className='brand-icon'
+                className="brand-icon"
               />
               모이다
             </Link>

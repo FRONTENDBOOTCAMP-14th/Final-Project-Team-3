@@ -37,12 +37,12 @@ function MemberLists({ isOwner, type }: Props) {
     <>
       <h2 className="member-list-heading">
         {type === 'MEMBER'
-          ? `멤버 (${participantsMembersData?.length ?? 0})`
-          : `신청 멤버 (${requestMembersData?.length ?? 0})`}
+          ? `멤버 (${participantsMembersData?.data?.length ?? 0})`
+          : `신청 멤버 (${requestMembersData?.data?.length ?? 0})`}
       </h2>
       <ul className="member-lists" tabIndex={0}>
-        {type === 'MEMBER' && participantsMembersData?.length !== 0
-          ? participantsMembersData?.map((member) => (
+        {type === 'MEMBER' && participantsMembersData?.data?.length !== 0
+          ? participantsMembersData?.data?.map((member) => (
               <li className="member-list-wrapper" key={member.id}>
                 <Image
                   src={member.profile_url ?? '/images/no-image.png'}
@@ -73,8 +73,8 @@ function MemberLists({ isOwner, type }: Props) {
                 </div>
               </li>
             ))
-          : type === 'APPLICANT' && requestMembersData?.length !== 0
-            ? requestMembersData?.map((member) => (
+          : type === 'APPLICANT' && requestMembersData?.data?.length !== 0
+            ? requestMembersData?.data?.map((member) => (
                 <li className="member-list-wrapper" key={member.id}>
                   <Image
                     src={member.profile_url ?? '/images/no-image.png'}
