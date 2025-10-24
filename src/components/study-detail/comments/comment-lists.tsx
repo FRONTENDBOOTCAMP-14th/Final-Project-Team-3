@@ -10,15 +10,21 @@ import CommentItem from './comment-item'
 interface Props {
   commentData: CommentsWithProfile[] | undefined
   user: User | null
+  ownerId: string
 }
 
-function CommentLists({ commentData, user }: Props) {
+function CommentLists({ commentData, user, ownerId }: Props) {
   return (
     <div className="comment-lists-wrapper">
       {commentData?.length !== 0 ? (
         <ul className="comment-lists">
           {commentData?.map((item) => (
-            <CommentItem commentData={item} key={item.id} user={user} />
+            <CommentItem
+              commentData={item}
+              key={item.id}
+              user={user}
+              ownerId={ownerId}
+            />
           ))}
         </ul>
       ) : (

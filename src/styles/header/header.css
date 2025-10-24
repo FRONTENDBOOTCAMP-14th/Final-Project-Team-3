@@ -25,7 +25,6 @@
     & a {
       display: inline-flex; /* 아이콘 + 텍스트 가로 정렬 */
       align-items: center;
-      gap: var(--space-sm);
 
       color: var(--color-text-primary);
       text-decoration: none;

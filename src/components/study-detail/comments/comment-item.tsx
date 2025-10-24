@@ -4,6 +4,7 @@ import type { User } from '@supabase/supabase-js'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 
+import Icons from '@/components/icons'
 import { useComments } from '@/hooks/useComments'
 import { useWindowResize } from '@/hooks/useWindowResize'
 import type { CommentsWithProfile } from '@/libs/supabase/api/comments'
@@ -13,9 +14,10 @@ import CommentForm from './comment-form'
 interface Props {
   commentData: CommentsWithProfile
   user: User | null
+  ownerId: string
 }
 
-function CommentItem({ commentData, user }: Props) {
+function CommentItem({ commentData, user, ownerId }: Props) {
   const [isShow, setIsShow] = useState<boolean>(false)
   const [btnVisibled, setBtnVisibled] = useState<boolean>(false)
   const [modifyComment, setModifyComment] = useState<boolean>(false)
@@ -52,6 +54,14 @@ function CommentItem({ commentData, user }: Props) {
           width={50}
           height={50}
         />
+        {ownerId === commentData.user_id && (
+          <Icons
+            className="owner-icon"
+            name="star-blue-fill"
+            width={18}
+            height={18}
+          />
+        )}
       </div>
       <div className="comment-info">
         <div>

@@ -8,9 +8,10 @@ import CommentLists from './comment-lists'
 
 interface Props {
   user: User | null
+  ownerId: string
 }
 
-function CommentsSection({ user }: Props) {
+function CommentsSection({ user, ownerId }: Props) {
   const { commentsData } = useComments()
 
   return (
@@ -19,7 +20,11 @@ function CommentsSection({ user }: Props) {
         <h3>댓글 ({commentsData.data?.length})</h3>
       </div>
       <CommentForm userId={user?.id} />
-      <CommentLists commentData={commentsData.data} user={user} />
+      <CommentLists
+        commentData={commentsData.data}
+        user={user}
+        ownerId={ownerId}
+      />
     </section>
   )
 }

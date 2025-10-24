@@ -70,9 +70,16 @@
 
 .comment-lists-user {
   min-inline-size: 3.75rem;
+  position: relative;
 
   & img {
     border-radius: 50%;
+  }
+
+  & .owner-icon {
+    position: absolute;
+    bottom: -0.0625rem;
+    right: 0.75rem;
   }
 }
 

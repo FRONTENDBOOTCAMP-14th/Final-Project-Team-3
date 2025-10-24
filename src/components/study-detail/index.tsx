@@ -41,7 +41,7 @@ function StudyDetail({
 
         <MembersSection ownerProfile={ownerProfile} />
       </section>
-      <CommentsSection user={user} />
+      <CommentsSection user={user} ownerId={studyRoomData.owner_id} />
 
       <DetailModal
         isOwner={isOwner}
