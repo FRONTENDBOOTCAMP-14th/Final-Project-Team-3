@@ -21,6 +21,8 @@ function CommentItem({ commentData, user, ownerId }: Props) {
   const [isShow, setIsShow] = useState<boolean>(false)
   const [btnVisibled, setBtnVisibled] = useState<boolean>(false)
   const [modifyComment, setModifyComment] = useState<boolean>(false)
+  const [childCommentForm, setChildCommentForm] = useState<boolean>(false)
+  const [childComment, setChildComment] = useState<boolean>(false)
   const pRef = useRef<HTMLParagraphElement | null>(null)
   const { deleteCommentHandler } = useComments()
   const size = useWindowResize()
@@ -43,6 +45,14 @@ function CommentItem({ commentData, user, ownerId }: Props) {
 
   const modifyCommentHandler = () => {
     setModifyComment((prev) => !prev)
+  }
+
+  const childCommentFormHandler = () => {
+    setChildCommentForm((prev) => !prev)
+  }
+
+  const childCommentHandler = () => {
+    setChildComment((prev) => !prev)
   }
 
   return (
@@ -99,10 +109,36 @@ function CommentItem({ commentData, user, ownerId }: Props) {
           </p>
         )}
 
-        {btnVisibled && !modifyComment && (
-          <button className="comment-more" onClick={showCommentHandler}>
-            {isShow ? '접기' : '더보기'}
-          </button>
+        <div className="comment-info-button-group">
+          <div className="child-comment-show-btn">
+            <button type="button" onClick={childCommentHandler}>
+              {childComment ? '답글 접기' : '답글 보기'}
+            </button>
+          </div>
+          <div className="comment-etc-btn-group">
+            <button
+              type="button"
+              className="child-commnet-form-btn"
+              onClick={childCommentFormHandler}
+            >
+              {childCommentForm ? '닫기' : '답글'}
+            </button>
+            {btnVisibled && !modifyComment && (
+              <button
+                type="button"
+                className="comment-more"
+                onClick={showCommentHandler}
+              >
+                {isShow ? '접기' : '더보기'}
+              </button>
+            )}
+          </div>
+        </div>
+        {childCommentForm && <CommentForm userId={user?.id} />}
+        {childComment && (
+          <ul>
+            <li>대댓글 내용</li>
+          </ul>
         )}
       </div>
     </li>

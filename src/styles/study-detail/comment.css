@@ -138,17 +138,37 @@
     }
   }
 
-  .comment-more {
+  .comment-info-button-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-block-start: 0.3125rem;
-    align-self: flex-end;
-    border: 0;
-    padding: 0;
-    font-size: var(--font-sm);
-    font-weight: 600;
-    color: var(--color-primary);
 
-    &:hover {
-      color: var(--color-tertiary);
+    & button {
+      padding: 0;
+      border: 0;
+
+      font-size: var(--font-sm);
+      color: var(--color-primary);
+      font-weight: 600;
+
+      &:hover {
+        color: var(--color-tertiary);
+      }
+    }
+
+    & .comment-etc-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    & .comment-more {
+      color: var(--color-text-secondary);
+
+      &:hover {
+        color: var(--color-text-tertiary);
+      }
     }
   }
 }
