@@ -1,6 +1,7 @@
 // app/study-create/page.tsx
 import { redirect } from 'next/navigation'
 
+import '@/styles/study-create/study-create.css'
 import StudyCreateForm from '@/components/study-create/studycreateform'
 import { createClient } from '@/libs/supabase/server'
 

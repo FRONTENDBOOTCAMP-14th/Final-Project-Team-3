@@ -1,7 +1,7 @@
 'use client'
 
-import { STUDY_CATEGORIES } from '../../../types/categories'
-import InlineSelect from '../ui/InlineSelect'
+import InlineSelect from '@/components/study-create/ui/InlineSelect'
+import { STUDY_CATEGORIES } from '@/types/categories'
 
 interface Props {
   value: string
