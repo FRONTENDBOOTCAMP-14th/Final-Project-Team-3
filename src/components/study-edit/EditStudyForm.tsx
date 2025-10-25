@@ -1,16 +1,17 @@
 'use client'
 
-import '@/styles/study-create/study-create.css'
 import { useRouter } from 'next/navigation'
-import { useActionState, useState } from 'react'
+import { useActionState, useEffect, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 
 import BannerUploader from '@/components/study-create/fields/BannerUploader'
 import CategoryField from '@/components/study-create/fields/CategoryField'
 import RegionField from '@/components/study-create/fields/RegionField'
-
-import type { StudyActionResult, StudyDetail } from './actions'
-import { updateStudyAction } from './actions'
+import type {
+  StudyActionResult,
+  StudyDetail,
+} from '@/libs/supabase/api/study-update-edit'
+import { updateStudyAction } from '@/libs/supabase/api/study-update-edit'
 
 function SubmitButton() {
   const { pending } = useFormStatus()
@@ -24,27 +25,26 @@ function SubmitButton() {
 export default function EditStudyForm({ initial }: { initial: StudyDetail }) {
   const router = useRouter()
 
-  // UI 로컬 상태
+  // 로컬 상태 (미리보기/선택 값)
   const [bannerFile, setBannerFile] = useState<File | null>(null)
   const [category, setCategory] = useState(initial.category ?? '')
   const [region, setRegion] = useState(initial.region ?? '')
   const [regionDepth, setRegionDepth] = useState(initial.region_depth ?? '')
 
-  // 서버 액션 훅
-  const [result, formAction] = (
-    useActionState as unknown as <T>(
-      fn: (prev: T, fd: FormData) => Promise<T> | T,
-      init: T
-    ) => [T, (fd: FormData) => void]
-  )(async (prev: StudyActionResult | null, fd: FormData) => {
-    const res = await updateStudyAction(prev, fd)
-    if (res.ok) router.push(`/study-detail/${res.id}`)
-    return res
-  }, null)
+  // ✅ 서버 액션을 직접 연결 (래퍼 X)
+  const [result, formAction] = useActionState<
+    StudyActionResult | null,
+    FormData
+  >(updateStudyAction, null)
+
+  // ✅ 성공 시 라우팅
+  useEffect(() => {
+    if (result?.ok) router.push(`/study-detail/${result.id}`)
+  }, [result, router])
 
   return (
     <form className="study-form" action={formAction}>
-      {/* 레코드 식별자 */}
+      {/* 🔑 수정에 필요한 hidden 값 */}
       <input type="hidden" name="id" value={initial.id} />
       <input
         type="hidden"

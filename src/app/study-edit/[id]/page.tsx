@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 
-import { fetchStudyDetail } from '@/components/study-edit/actions'
 import EditStudyForm from '@/components/study-edit/EditStudyForm'
+import '@/styles/study-create/study-create.css'
 
 import { createClient } from '../../../libs/supabase/server'
 
