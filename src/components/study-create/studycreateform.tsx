@@ -1,15 +1,17 @@
 'use client'
 
-import '@/styles/study-create/study-create.css'
 import { useRouter } from 'next/navigation'
-import { useActionState, useState } from 'react'
+import { useActionState, useEffect, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 
-import { createStudyAction, type StudyActionResult } from './actions'
-import BannerUploader from './fields/BannerUploader'
-import CategoryField from './fields/CategoryField'
-import DescriptionField from './fields/DescriptionField'
-import RegionField from './fields/RegionField'
+import BannerUploader from '@/components/study-create/fields/BannerUploader'
+import CategoryField from '@/components/study-create/fields/CategoryField'
+import DescriptionField from '@/components/study-create/fields/DescriptionField'
+import RegionField from '@/components/study-create/fields/RegionField'
+import {
+  createStudyAction,
+  type StudyActionResult,
+} from '@/libs/supabase/api/study-update-edit'
 
 function SubmitButton() {
   const { pending } = useFormStatus()
@@ -23,23 +25,21 @@ function SubmitButton() {
 export default function StudyCreateForm() {
   const router = useRouter()
 
-  // UI 표시용 로컬 상태(선택값/미리보기)
+  // 로컬 상태
   const [bannerFile, setBannerFile] = useState<File | null>(null)
   const [category, setCategory] = useState('')
   const [region, setRegion] = useState('')
   const [regionDepth, setRegionDepth] = useState('')
 
-  // 서버 액션 훅
-  const [result, formAction] = (
-    useActionState as unknown as <T>(
-      fn: (prev: T, fd: FormData) => Promise<T> | T,
-      init: T
-    ) => [T, (fd: FormData) => void]
-  )(async (prev: StudyActionResult | null, fd: FormData) => {
-    const res = await createStudyAction(prev, fd)
-    if (res.ok) router.push(`/study-detail/${res.id}`)
-    return res
-  }, null)
+  // 서버 액션을 직접 연결
+  const [result, formAction] = useActionState<
+    StudyActionResult | null,
+    FormData
+  >(createStudyAction, null)
+
+  useEffect(() => {
+    if (result?.ok) router.push(`/study-detail/${result.id}`)
+  }, [result, router])
 
   return (
     <form className="study-form" action={formAction}>
@@ -57,7 +57,7 @@ export default function StudyCreateForm() {
         />
       </div>
 
-      {/* 배너 (미리보기는 state, 전송은 input[name=banner]) */}
+      {/* 배너 (미리보기는 state, 전송은 name=banner) */}
       <BannerUploader value={bannerFile} onChange={setBannerFile} />
 
       {/* 카테고리/지역 */}

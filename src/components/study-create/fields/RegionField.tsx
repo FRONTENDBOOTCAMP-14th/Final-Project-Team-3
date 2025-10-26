@@ -1,8 +1,7 @@
 'use client'
 
+import InlineSelect from '@/components/study-create/ui/InlineSelect'
 import REGION_DATA from '@/types/region'
-
-import InlineSelect from '../ui/InlineSelect'
 
 interface Props {
   region: string
