@@ -45,7 +45,8 @@ export const getStudyRoomDetail = async (
 export const getQueryStudyRoom = async (
   region?: string,
   depth?: string,
-  search?: string
+  search?: string,
+  sort_by?: string
 ): Promise<ResultType<StudyRoom[]>> => {
   const supabase = await createClient()
   let query = supabase.from('study_room').select('*')
@@ -63,6 +64,33 @@ export const getQueryStudyRoom = async (
     )
   } else if (region && depth && !search) {
     query = query.eq('region', region).eq('region_depth', depth)
+  }
+  if (sort_by) {
+    let sortColumn: string | null = null
+    let ascending: boolean | null = null
+
+    console.log(region, depth, search, sort_by)
+    switch (sort_by) {
+      case 'latest':
+        sortColumn = 'created_at'
+        ascending = false
+        break
+      case 'members':
+        sortColumn = 'member_count'
+        ascending = false
+        break
+      case 'likes':
+        sortColumn = 'likes_count'
+        ascending = false
+        break
+
+      default:
+        break
+    }
+
+    if (sortColumn !== null && ascending !== null) {
+      query = query.order(sortColumn, { ascending })
+    }
   }
 
   const { data: queryData, error } = await query

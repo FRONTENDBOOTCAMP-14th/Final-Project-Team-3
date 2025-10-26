@@ -12,9 +12,10 @@ interface Props {
   region?: string
   depth?: string
   search?: string
+  sort_by?: string
 }
 
-async function HomeComponents({ region, depth, search }: Props) {
+async function HomeComponents({ region, depth, search, sort_by }: Props) {
   const {
     data: latestData,
     ok: latestOk,
@@ -25,7 +26,7 @@ async function HomeComponents({ region, depth, search }: Props) {
     ok: filterOk,
     data: filterData,
     message: filterMessage,
-  } = await getQueryStudyRoom(region, depth, search)
+  } = await getQueryStudyRoom(region, depth, search, sort_by)
 
   return (
     <>

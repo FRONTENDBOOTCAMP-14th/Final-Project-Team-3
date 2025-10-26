@@ -3,15 +3,25 @@ import HomeComponents from '@/components/home'
 import '@/styles/floating-button/floating-button.css'
 
 interface Props {
-  searchParams: Promise<{ region?: string; depth?: string; search?: string }>
+  searchParams: Promise<{
+    region?: string
+    depth?: string
+    search?: string
+    sort_by?: string
+  }>
 }
 
 export default async function HomePage({ searchParams }: Props) {
-  const { region, depth, search } = await searchParams
+  const { region, depth, search, sort_by } = await searchParams
 
   return (
     <section>
-      <HomeComponents region={region} depth={depth} search={search} />
+      <HomeComponents
+        region={region}
+        depth={depth}
+        search={search}
+        sort_by={sort_by}
+      />
     </section>
   )
 }
