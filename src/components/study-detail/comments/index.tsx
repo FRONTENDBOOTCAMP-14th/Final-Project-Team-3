@@ -8,18 +8,23 @@ import CommentLists from './comment-lists'
 
 interface Props {
   user: User | null
+  ownerId: string
 }
 
-function CommentsSection({ user }: Props) {
-  const { commentsData } = useComments()
+function CommentsSection({ user, ownerId }: Props) {
+  const { commentsData, upsertCommentsHandler, isAdding } = useComments()
 
   return (
     <section>
       <div className="comment-heading">
         <h3>댓글 ({commentsData.data?.length})</h3>
       </div>
-      <CommentForm userId={user?.id} />
-      <CommentLists commentData={commentsData.data} user={user} />
+      <CommentForm
+        userId={user?.id}
+        onCommentsHandler={upsertCommentsHandler}
+        isAdding={isAdding}
+      />
+      <CommentLists user={user} ownerId={ownerId} commentsData={commentsData} />
     </section>
   )
 }

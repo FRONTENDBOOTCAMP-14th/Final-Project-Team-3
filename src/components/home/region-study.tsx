@@ -1,5 +1,6 @@
 'use client'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import type { ChangeEvent } from 'react'
 
 import Icons from '@/components/icons'
 import type { StudyRoom } from '@/libs/supabase'
@@ -13,10 +14,12 @@ interface Props {
 }
 
 function RegionStudy({ studyData }: Props) {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const region = searchParams.get('region')
   const depth = searchParams.get('depth')
   const search = searchParams.get('search')
+  const currentSortValue = searchParams.get('sort_by') ?? ''
 
   let studyHeading = '전체 스터디'
 
@@ -28,6 +31,20 @@ function RegionStudy({ studyData }: Props) {
     studyHeading = `${search} 스터디`
   }
 
+  const selectedHandler = (e: ChangeEvent<HTMLSelectElement>) => {
+    const sortValue = e.target.value
+
+    const params = new URLSearchParams(searchParams.toString())
+
+    if (sortValue === '') {
+      params.delete('sort_by')
+    } else {
+      params.set('sort_by', sortValue)
+    }
+
+    router.push(`/?${params.toString()}`)
+  }
+
   return (
     <div className="region-study-container">
       <div className="region-study-header">
@@ -35,6 +52,21 @@ function RegionStudy({ studyData }: Props) {
           <Icons name="map-pin" width={24} height={24} aria-hidden="true" />
           <span>{studyHeading}</span>
         </h2>
+        <label htmlFor="study-select" className="sr-only">
+          정렬 기준 선택
+        </label>
+        <select
+          name="sort"
+          id="study-sort"
+          className="study-sort"
+          value={currentSortValue}
+          onChange={selectedHandler}
+        >
+          <option value="">정렬 기준</option>
+          <option value="latest">최신순</option>
+          <option value="members">멤버순</option>
+          <option value="likes">좋아요순</option>
+        </select>
       </div>
       <div className="region-study-wrapper">
         {studyData?.length === 0 ? (

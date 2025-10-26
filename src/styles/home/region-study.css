@@ -4,6 +4,10 @@
 
 .region-study-header {
   margin-block-end: 0.625rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
   & h2 {
     display: flex;
@@ -15,6 +19,13 @@
       margin-left: 0.3125rem;
     }
   }
+}
+
+.study-sort {
+  text-align: end;
+  padding: 0.1875rem;
+  border-radius: 0.3125rem;
+  cursor: pointer;
 }
 
 .region-study-wrapper {
