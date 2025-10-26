@@ -91,6 +91,7 @@ export interface Database {
       }
       comments: {
         Row: {
+          child_comments_count: number
           comment: string
           created_at: string
           id: string
@@ -99,6 +100,7 @@ export interface Database {
           user_id: string
         }
         Insert: {
+          child_comments_count?: number
           comment: string
           created_at?: string
           id?: string
@@ -107,6 +109,7 @@ export interface Database {
           user_id: string
         }
         Update: {
+          child_comments_count?: number
           comment?: string
           created_at?: string
           id?: string

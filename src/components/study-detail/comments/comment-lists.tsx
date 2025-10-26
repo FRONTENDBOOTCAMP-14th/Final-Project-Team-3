@@ -4,26 +4,29 @@ import '@/styles/study-detail/comment.css'
 import type { User } from '@supabase/supabase-js'
 
 import type { CommentsWithProfile } from '@/libs/supabase/api/comments'
+import type { ResultType } from '@/types/apiResultsType'
 
 import CommentItem from './comment-item'
 
 interface Props {
-  commentData: CommentsWithProfile[] | undefined
   user: User | null
   ownerId: string
+  commentsData: ResultType<CommentsWithProfile[]> | null | undefined
 }
 
-function CommentLists({ commentData, user, ownerId }: Props) {
+function CommentLists({ user, ownerId, commentsData }: Props) {
   return (
     <div className="comment-lists-wrapper">
-      {commentData?.length !== 0 ? (
+      {commentsData?.data?.length !== 0 ? (
         <ul className="comment-lists">
-          {commentData?.map((item) => (
+          {commentsData?.data?.map((item) => (
             <CommentItem
               commentData={item}
               key={item.id}
               user={user}
               ownerId={ownerId}
+              parentId={item.parent_comment_Id ?? undefined}
+              commentsLength={commentsData?.data?.length}
             />
           ))}
         </ul>

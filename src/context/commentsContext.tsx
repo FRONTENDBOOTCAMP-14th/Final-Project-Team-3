@@ -2,7 +2,7 @@
 import type { PropsWithChildren } from 'react'
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
 
 import { useAuth } from '@/hooks/useAuth'
 import {
@@ -20,13 +20,16 @@ export interface CommentsContextValue {
   upsertCommentsHandler: (
     comment: string,
     commentId?: string,
-    type?: 'MODIFY'
+    option?: {
+      type?: 'MODIFY' | 'CHILD_MODIFY'
+    }
   ) => Promise<void>
-  deleteCommentHandler: (commentId: string) => Promise<void>
+  deleteCommentHandler: (commentId: string, parentId: string) => Promise<void>
 }
 
 export const CommentsContex = createContext<CommentsContextValue | null>(null)
 CommentsContex.displayName = 'CommentsContex'
+
 const fetcher = async (
   studyId: string,
   fetchFn: (
@@ -70,7 +73,11 @@ export function CommentsProvider({
   }, [data])
 
   const upsertCommentsHandler = useCallback(
-    async (comment: string, commentId?: string, type?: 'MODIFY') => {
+    async (
+      comment: string,
+      commentId?: string,
+      options?: { type?: 'MODIFY' | 'CHILD_MODIFY'; parentId?: string }
+    ) => {
       if (!user || !isAuthenticated) {
         toast.error('로그인이 필요합니다.', {
           action: {
@@ -87,7 +94,7 @@ export function CommentsProvider({
       const optimisticUpdate = () => {
         const list = data?.data ?? []
 
-        if (comment && type === 'MODIFY') {
+        if (comment && options?.type === 'MODIFY' && !options.parentId) {
           const modifyComment = list.map((item) =>
             item.id === commentId ? { ...item, comment } : item
           )
@@ -95,6 +102,15 @@ export function CommentsProvider({
           return {
             ok: true,
             data: [...modifyComment],
+          }
+        } else if (
+          comment &&
+          options?.type === 'CHILD_MODIFY' &&
+          options.parentId
+        ) {
+          return {
+            ok: true,
+            data: [...list],
           }
         } else {
           const newComment: CommentsWithProfile = {
@@ -108,6 +124,8 @@ export function CommentsProvider({
               nickname: user?.user_metadata.full_name,
               profile_url: user?.user_metadata.avatar_url,
             },
+            parent_comment_Id: options?.parentId ?? null,
+            child_comments_count: 0,
           }
 
           return {
@@ -123,12 +141,18 @@ export function CommentsProvider({
 
       let result: { ok: boolean; message?: string | undefined }
 
-      if (type === 'MODIFY') {
-        result = await addComments(studyId, comment, commentId)
+      if (options?.type === 'MODIFY') {
+        result = await addComments(studyId, comment, { commentId })
+      } else if (options?.type === 'CHILD_MODIFY') {
+        result = await addComments(studyId, comment, {
+          commentId,
+          parentId: options.parentId,
+        })
       } else {
         result = await addComments(studyId, comment)
       }
       await commentsMutation()
+      await mutate([`commentsChild_${studyId}_${options?.parentId}`])
 
       if (result.ok) {
         toast.success(result.message, {
@@ -153,7 +177,7 @@ export function CommentsProvider({
   )
 
   const deleteCommentHandler = useCallback(
-    async (commentId: string) => {
+    async (commentId: string, parentId: string) => {
       if (!user || !isAuthenticated) {
         toast.error('로그인이 필요합니다.', {
           action: {
@@ -163,8 +187,10 @@ export function CommentsProvider({
         })
         return
       }
-      const prevData: ResultType<CommentsWithProfile[]> | null | undefined =
-        data ?? { ok: true, data: [] }
+      const prevData: ResultType<CommentsWithProfile[]> = data ?? {
+        ok: true,
+        data: [],
+      }
 
       const optimisticUpdate = () => {
         const list = data?.data ?? []
@@ -177,8 +203,11 @@ export function CommentsProvider({
 
       await commentsMutation(optimisticUpdate, { revalidate: false })
 
+      setIsAdding(true)
+
       const result = await deleteComment(commentId)
       await commentsMutation()
+      await mutate([`commentsChild_${studyId}_${parentId}`])
 
       if (result.ok) {
         toast.success(result.message, {
@@ -196,8 +225,10 @@ export function CommentsProvider({
           },
         })
       }
+
+      setIsAdding(false)
     },
-    [commentsMutation, data, isAuthenticated, user]
+    [commentsMutation, data, isAuthenticated, studyId, user]
   )
 
   const contextState: CommentsContextValue = useMemo(() => {

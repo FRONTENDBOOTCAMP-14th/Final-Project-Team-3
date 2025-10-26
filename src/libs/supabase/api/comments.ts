@@ -18,6 +18,7 @@ export const getComments = async (
     .from('comments')
     .select('*, profile:user_id(id, nickname, profile_url)')
     .eq('room_id', studyId)
+    .is('parent_comment_Id', null)
     .order('created_at', { ascending: false })
 
   if (commentError) {
@@ -30,7 +31,10 @@ export const getComments = async (
 export const addComments = async (
   studyId: string,
   comment: string,
-  commentId?: string
+  option?: {
+    commentId?: string
+    parentId?: string | null
+  }
 ): Promise<ResultType<CommentsWithProfile>> => {
   const supabase = await createClient()
 
@@ -42,7 +46,7 @@ export const addComments = async (
     return { ok: false, message: '로그인이 필요합니다...' }
   }
 
-  const commentIdObject = commentId ? { id: commentId } : {}
+  const commentIdObject = option?.commentId ? { id: option?.commentId } : {}
 
   const { data: commentData, error: commentError } = await supabase
     .from('comments')
@@ -51,6 +55,7 @@ export const addComments = async (
       room_id: studyId,
       user_id: user.id,
       comment,
+      parent_comment_Id: option?.parentId ?? null,
     })
     .select('*, profile:user_id(id, nickname, profile_url)')
     .single()
@@ -62,7 +67,9 @@ export const addComments = async (
   return {
     ok: true,
     data: commentData,
-    message: commentId ? '댓글이 수정 되었습니다.' : '댓글이 추가 되었습니다.',
+    message: option?.commentId
+      ? '댓글이 수정 되었습니다.'
+      : '댓글이 추가 되었습니다.',
   }
 }
 
@@ -78,4 +85,24 @@ export const deleteComment = async (
   }
 
   return { ok: true, message: '댓글이 삭제 되었습니다.' }
+}
+
+export const getChildComments = async (
+  studyId: string,
+  parentId: string
+): Promise<ResultType<CommentsWithProfile[]>> => {
+  const supabase = await createClient()
+
+  const { data: childCommentData, error: commentError } = await supabase
+    .from('comments')
+    .select('*, profile:user_id(id, nickname, profile_url)')
+    .eq('room_id', studyId)
+    .eq('parent_comment_Id', parentId)
+    .order('created_at', { ascending: false })
+
+  if (commentError) {
+    return { ok: false, message: '댓글을 가져오지 못했습니다...' }
+  }
+
+  return { ok: true, data: childCommentData ?? [] }
 }

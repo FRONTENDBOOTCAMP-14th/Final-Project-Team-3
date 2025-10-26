@@ -12,19 +12,19 @@ interface Props {
 }
 
 function CommentsSection({ user, ownerId }: Props) {
-  const { commentsData } = useComments()
+  const { commentsData, upsertCommentsHandler, isAdding } = useComments()
 
   return (
     <section>
       <div className="comment-heading">
         <h3>댓글 ({commentsData.data?.length})</h3>
       </div>
-      <CommentForm userId={user?.id} />
-      <CommentLists
-        commentData={commentsData.data}
-        user={user}
-        ownerId={ownerId}
+      <CommentForm
+        userId={user?.id}
+        onCommentsHandler={upsertCommentsHandler}
+        isAdding={isAdding}
       />
+      <CommentLists user={user} ownerId={ownerId} commentsData={commentsData} />
     </section>
   )
 }

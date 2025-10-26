@@ -4,30 +4,34 @@ import type { Dispatch, SetStateAction } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
-import { useComments } from '@/hooks/useComments'
-
 interface Props {
   userId?: string | null
   commentId?: string
   comment?: string
-  type?: 'MODIFY'
   setModifyComment?: Dispatch<SetStateAction<boolean>>
+  parentId?: string | null
+  onCommentsHandler: (
+    comment: string,
+    commentId?: string,
+    options?: { type?: 'MODIFY' | 'CHILD_MODIFY'; parentId?: string | null }
+  ) => Promise<void>
+  isAdding: boolean
 }
 
 function CommentForm({
   userId,
-  type,
   commentId,
   comment,
   setModifyComment,
+  parentId,
+  onCommentsHandler,
+  isAdding,
 }: Props) {
   const formRef = useRef<HTMLFormElement | null>(null)
   const [inputValue, setInputValue] = useState<string>(
-    type === 'MODIFY' && comment && userId ? comment : ''
+    comment && userId ? comment : ''
   )
   const [debounceValue, setDebounceValue] = useState<string>('')
-
-  const { upsertCommentsHandler, isAdding } = useComments()
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -54,9 +58,12 @@ function CommentForm({
       return
     }
 
-    await upsertCommentsHandler(comment, commentId, type)
+    await onCommentsHandler(comment, commentId, {
+      type: parentId ? 'CHILD_MODIFY' : 'MODIFY',
+      parentId,
+    })
 
-    if (type === 'MODIFY' && setModifyComment) setModifyComment(false)
+    if (setModifyComment) setModifyComment(false)
     setInputValue('')
   }
 
@@ -83,7 +90,7 @@ function CommentForm({
               comment !== inputValue &&
               userId && (
                 <>
-                  {!type && !comment && (
+                  {!comment && (
                     <button
                       type="button"
                       className="comment-form-btn cancel-btn"
@@ -100,7 +107,7 @@ function CommentForm({
                     className="comment-form-btn"
                     disabled={isAdding}
                   >
-                    {comment && type === 'MODIFY'
+                    {comment
                       ? isAdding
                         ? '수정 중...'
                         : '수정'

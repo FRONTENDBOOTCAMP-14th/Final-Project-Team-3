@@ -9,22 +9,30 @@ import { useComments } from '@/hooks/useComments'
 import { useWindowResize } from '@/hooks/useWindowResize'
 import type { CommentsWithProfile } from '@/libs/supabase/api/comments'
 
+import { ChildCommentsProvider } from '../../../context/childCommentsContext'
+
+import ChildCommentsContainer from './comment-child'
 import CommentForm from './comment-form'
 
 interface Props {
   commentData: CommentsWithProfile
   user: User | null
   ownerId: string
+  parentId?: string | null
+  commentsLength?: number
 }
 
-function CommentItem({ commentData, user, ownerId }: Props) {
+function CommentItem({ commentData, user, ownerId, parentId }: Props) {
   const [isShow, setIsShow] = useState<boolean>(false)
   const [btnVisibled, setBtnVisibled] = useState<boolean>(false)
   const [modifyComment, setModifyComment] = useState<boolean>(false)
   const [childCommentForm, setChildCommentForm] = useState<boolean>(false)
   const [childComment, setChildComment] = useState<boolean>(false)
+  const [isDelete, setIsDelete] = useState<boolean>(false)
   const pRef = useRef<HTMLParagraphElement | null>(null)
-  const { deleteCommentHandler } = useComments()
+  const { deleteCommentHandler, upsertCommentsHandler, isAdding } =
+    useComments()
+
   const size = useWindowResize()
 
   useEffect(() => {
@@ -37,10 +45,17 @@ function CommentItem({ commentData, user, ownerId }: Props) {
     setIsShow((prev) => !prev)
   }
 
-  const deleteHandler = () => {
+  const deleteHandler = async () => {
     if (!user) return
 
-    deleteCommentHandler(commentData.id)
+    setIsDelete(true)
+
+    await deleteCommentHandler(
+      commentData.id,
+      commentData.parent_comment_Id as string
+    )
+
+    setIsDelete(false)
   }
 
   const modifyCommentHandler = () => {
@@ -89,8 +104,9 @@ function CommentItem({ commentData, user, ownerId }: Props) {
                 type="button"
                 className="comment-btn delete"
                 onClick={deleteHandler}
+                disabled={isDelete}
               >
-                삭제
+                {isDelete ? '삭제 중...' : '삭제'}
               </button>
             </>
           )}
@@ -99,9 +115,11 @@ function CommentItem({ commentData, user, ownerId }: Props) {
           <CommentForm
             userId={user?.id}
             setModifyComment={setModifyComment}
-            type="MODIFY"
             commentId={commentData.id}
             comment={commentData.comment}
+            parentId={commentData.parent_comment_Id}
+            onCommentsHandler={upsertCommentsHandler}
+            isAdding={isAdding}
           />
         ) : (
           <p className={isShow ? 'active' : ''} ref={pRef}>
@@ -111,18 +129,24 @@ function CommentItem({ commentData, user, ownerId }: Props) {
 
         <div className="comment-info-button-group">
           <div className="child-comment-show-btn">
-            <button type="button" onClick={childCommentHandler}>
-              {childComment ? '답글 접기' : '답글 보기'}
-            </button>
+            {commentData.child_comments_count > 0 && (
+              <button type="button" onClick={childCommentHandler}>
+                {childComment
+                  ? '답글 접기'
+                  : `답글 보기 (${commentData.child_comments_count})`}
+              </button>
+            )}
           </div>
           <div className="comment-etc-btn-group">
-            <button
-              type="button"
-              className="child-commnet-form-btn"
-              onClick={childCommentFormHandler}
-            >
-              {childCommentForm ? '닫기' : '답글'}
-            </button>
+            {!parentId && (
+              <button
+                type="button"
+                className="child-commnet-form-btn"
+                onClick={childCommentFormHandler}
+              >
+                {childCommentForm ? '닫기' : '답글'}
+              </button>
+            )}
             {btnVisibled && !modifyComment && (
               <button
                 type="button"
@@ -134,12 +158,27 @@ function CommentItem({ commentData, user, ownerId }: Props) {
             )}
           </div>
         </div>
-        {childCommentForm && <CommentForm userId={user?.id} />}
-        {childComment && (
-          <ul>
-            <li>대댓글 내용</li>
-          </ul>
+        {childCommentForm && (
+          <CommentForm
+            userId={user?.id}
+            onCommentsHandler={upsertCommentsHandler}
+            isAdding={isAdding}
+            parentId={commentData.id}
+          />
         )}
+        <ChildCommentsProvider
+          studyId={commentData.room_id}
+          parentId={commentData.id}
+        >
+          {commentData.child_comments_count > 0 && childComment && (
+            <ChildCommentsContainer
+              user={user}
+              ownerId={ownerId}
+              childCommentForm={childCommentForm}
+              parentId={commentData.id}
+            />
+          )}
+        </ChildCommentsProvider>
       </div>
     </li>
   )
