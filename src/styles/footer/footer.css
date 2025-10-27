@@ -59,7 +59,7 @@
 
 .nav-title {
   font-size: var(--font-sm);
-  color: var(--color-text-secondary);
+  color: var( --color-text-primary);
   font-weight: 600;
 }
 
@@ -74,7 +74,8 @@
 .nav-link {
   color: var(--color-text-primary);
   text-decoration: none;
-  font-size: var(--font-md);
+  font-size: var(--font-sm);
+  font-weight: 600;
 }
 
 .nav-link:hover,

@@ -1,0 +1,48 @@
+/* Reusable Spinner */
+.ui-spinner,
+.status-spinner {
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: ui-spin 0.8s linear infinite;
+  box-sizing: border-box;
+}
+
+/* ≥768px (태블릿 이상) */
+@media (min-width: 48rem) {
+  .ui-spinner,
+  .status-spinner {
+    inline-size: 4rem;   
+    block-size: 4rem;
+    border-width: 5px;     
+    animation-duration: 0.7s; 
+  }
+}
+
+/* ≥1024px (데스크톱 이상) */
+@media (min-width: 64rem) {
+  .ui-spinner,
+  .status-spinner {
+    inline-size: 6rem;     
+    block-size: 6rem;
+    border-width: 6px;   
+    animation-duration: 0.6s; 
+  }
+}
+
+/* 모션 최소화 */
+@media (prefers-reduced-motion: reduce) {
+  .ui-spinner,
+  .status-spinner {
+    animation: none;
+  }
+}
+
+/* 회전 애니메이션 */
+@keyframes ui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
