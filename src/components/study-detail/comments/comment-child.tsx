@@ -1,5 +1,6 @@
 import type { User } from '@supabase/supabase-js'
 
+import Spinner from '@/components/ui/spinner'
 import { useCommentsChild } from '@/hooks/useCommentsChild'
 
 import CommentLists from './comment-lists'
@@ -12,7 +13,11 @@ interface Props {
 }
 
 function ChildCommentsContainer({ user, ownerId }: Props) {
-  const { commentsChildData } = useCommentsChild()
+  const { commentsChildData, isLoading } = useCommentsChild()
+
+  if (isLoading) {
+    return <Spinner />
+  }
 
   return (
     <>

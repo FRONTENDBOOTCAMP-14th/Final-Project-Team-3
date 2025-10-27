@@ -99,7 +99,6 @@ function RegionCategories({
                     type="button"
                     onClick={() => {
                       setSelectedRegion(region)
-                      // handleRegionSelect(region)
                     }}
                     tabIndex={categoryVisible ? 0 : -1}
                     aria-disabled={!categoryVisible}

@@ -22,6 +22,8 @@ export interface MemberContextValue {
     memberId: string,
     status: 'REJECTED' | 'APPROVED' | 'DEPORTATION' | 'PENDING'
   ) => Promise<ResultType<StudyRoomRequests> | null | undefined>
+  isRequestsLoading: boolean
+  isParticipantsLoading: boolean
 }
 
 export const MemberContext = createContext<MemberContextValue | null>(null)
@@ -68,17 +70,25 @@ export function MemberProvider({
     }
   )
 
-  const { data: requestMembersData, mutate: requestMemberDataMutation } =
-    useSWR(swrMemberKey, () => memberFetcher(studyId, studyRoomRequestsLists), {
+  const {
+    data: requestMembersData,
+    mutate: requestMemberDataMutation,
+    isLoading: isRequestsLoading,
+  } = useSWR(
+    swrMemberKey,
+    () => memberFetcher(studyId, studyRoomRequestsLists),
+    {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
       refreshInterval: 0,
       dedupingInterval: 10000,
-    })
+    }
+  )
 
   const {
     data: participantsMembersData,
     mutate: participantsMemberDataMutation,
+    isLoading: isParticipantsLoading,
   } = useSWR(
     swrApplicantKey,
     () => participantsFetcher(studyId, getStudyRoomParticipants),
@@ -206,8 +216,12 @@ export function MemberProvider({
       requestMembersData,
       studyRoomData,
       participantsMembersData,
+      isRequestsLoading,
+      isParticipantsLoading,
     }),
     [
+      isParticipantsLoading,
+      isRequestsLoading,
       participantsMembersData,
       requestMembersData,
       requestsHandler,

@@ -92,7 +92,7 @@ export default function ProfileImgUploader({
           }}
           aria-label="이미지 삭제"
         >
-          ×
+          <span>x</span>
         </button>
       )}
 

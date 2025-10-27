@@ -1,10 +1,10 @@
 import '@/styles/ui/spinner.css'
 
 interface SpinnerProps {
-  sizeRem?: number; 
-  strokePx?: number;
-  label?: string;
-  className?: string;
+  sizeRem?: number
+  strokePx?: number
+  label?: string
+  className?: string
 }
 
 export default function Spinner({

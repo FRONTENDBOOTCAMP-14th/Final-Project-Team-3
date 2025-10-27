@@ -13,7 +13,7 @@ interface PaginationListProps<T extends { id: string | number }> {
 
 export default function PaginationList<T extends { id: string | number }>({
   items,
-  itemsPerPage = 10,
+  itemsPerPage = 8,
   renderItem,
   className = '',
 }: PaginationListProps<T>) {
