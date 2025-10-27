@@ -5,6 +5,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import React from 'react'
 
 import Icons from '@/components/icons'
+import { useProfile } from '@/hooks/useProfile'
 import type { Profile } from '@/libs/supabase'
 
 interface Props {
@@ -26,6 +27,7 @@ function HeaderContent({
   profile,
 }: Props) {
   const router = useRouter()
+  const { avatarUrl } = useProfile()
 
   return (
     <div className="header-content-group" hidden={hidden}>
@@ -56,7 +58,7 @@ function HeaderContent({
         >
           {profile.profile_url ? (
             <Image
-              src={profile.profile_url}
+              src={avatarUrl ?? '/images/default-avatar.png'}
               alt={profile.nickname ?? '프로필 이미지'}
               width={24}
               height={24}

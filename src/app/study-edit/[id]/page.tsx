@@ -1,19 +1,31 @@
+import type { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 
 import EditStudyForm from '@/components/study-edit/EditStudyForm'
+import { getStudyRoomDetail } from '@/libs/supabase/api/study-room'
 import { fetchStudyDetail } from '@/libs/supabase/api/study-update-edit'
-import '@/styles/study-create/study-create.css'
-
 import { createClient } from '@/libs/supabase/server'
 
-export const revalidate = 0
+import '@/styles/study-create/study-create.css'
 
-export default async function Page({
-  params,
-}: {
-  // ✅ Promise 사용 (프로젝트 설정과 일치)
+interface Props {
   params: Promise<{ id: string }>
-}) {
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params
+  const response = await getStudyRoomDetail(id)
+  if (!response.ok) {
+    throw new Error(response.message)
+  }
+
+  return {
+    title: `${response.data?.title}`,
+    description: `${response.data?.title} | ${response.data?.description}`,
+  }
+}
+
+export default async function Page({ params }: Props) {
   const { id } = await params // ✅ 반드시 await
 
   // 1) 세션

@@ -82,15 +82,7 @@ function RegionStudy({ studyData, totalCount }: Props) {
       return
     }
 
-    setInitialData((prev) => {
-      const uniqueDataMap = new Map()
-
-      prev.forEach((item) => uniqueDataMap.set(item.id, item))
-
-      filterData.forEach((item) => uniqueDataMap.set(item.id, item))
-
-      return Array.from(uniqueDataMap.values())
-    })
+    setInitialData((prev) => [...prev, ...filterData])
 
     if (filterData.length < LIMIT) {
       setIsHasData(false)

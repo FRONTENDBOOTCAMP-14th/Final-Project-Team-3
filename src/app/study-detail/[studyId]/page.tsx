@@ -13,18 +13,23 @@ import {
 } from '@/libs/supabase/api/study-room'
 import { createClient } from '@/libs/supabase/server'
 
-export const revalidate = 0
 export const dynamic = 'force-dynamic'
 
 interface Props {
   params: Promise<{ studyId: string }>
 }
 
-export const metadata: Metadata = {
-  title: '% |모이다(MOIDA) - 스터디 모집 플랫폼',
-  description:
-    '모이다(MOIDA) 스터디 모집 플랫폼과 함께 가까운 지역, 관심 분야 등 나와 가장 잘 맞는 스터디 멤버를 꾸려 함께 성장해 보세요.',
-  icons: { icon: '/images/moida-icon.svg' },
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { studyId } = await params
+  const response = await getStudyRoomDetail(studyId)
+  if (!response.ok) {
+    throw new Error(response.message)
+  }
+
+  return {
+    title: `${response.data?.title}`,
+    description: `${response.data?.title} | ${response.data?.description}`,
+  }
 }
 
 async function StudyDetailPage({ params }: Props) {

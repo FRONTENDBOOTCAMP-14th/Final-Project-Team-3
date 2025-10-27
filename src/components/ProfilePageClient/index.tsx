@@ -1,62 +1,43 @@
 'use client'
-
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import StudyCardLists from '@/components/home/study-card-lists'
 import PaginationList from '@/components/ui/PaginationList'
+import { useProfile } from '@/hooks/useProfile'
 import type { Profile, StudyRoom } from '@/libs/supabase'
-import supabase from '@/libs/supabase/client'
 
-import '@/styles/page-profile/profile-img/profile-img-uploader.css'
+import '@/styles/page-profile/profile-img/profile-upload.css'
 import '@/styles/page-profile/profile-page.css'
 import '@/styles/page-profile/user-info/user-info-section.css'
+
+import MoreButton from '../ui/more-button'
 
 import ProfileImgUploader from './user-info-section'
 
 interface Props {
   user: Profile
-  studies: StudyRoom[] | undefined
+  studies: StudyRoom[]
   favorites: StudyRoom[]
 }
 
 export default function ProfilePageClient({ user, studies, favorites }: Props) {
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(
-    user.profile_url ?? null
-  )
-  const [_avatarFile, _setAvatarFile] = useState<File | null>(null)
+  const { handleAvatarUpload, avatarUrl, _avatarFile } = useProfile()
+  const [isDesktop, setIsDesktop] = useState<boolean>(false)
 
-  const handleAvatarUpload = async (file: File | null) => {
-    if (!user) return
-    if (!file) return 
-
-    // ✅ 이미지 업로드 로직
-   const filePath = `profile/${user.id}/${file.name}`
-
-    const { error: uploadError } = await supabase.storage
-      .from('profile')
-      .upload(filePath, file, { upsert: true })
-
-    if (uploadError) {
-      alert('이미지 업로드 실패!')
-      return
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 64rem)')
+    const resizeHandler = (e: MediaQueryListEvent) => {
+      setIsDesktop(e.matches)
     }
 
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from('profile').getPublicUrl(filePath)
+    setIsDesktop(media.matches)
 
-    const { error: updateError } = await supabase
-      .from('profile')
-      .update({ profile_url: publicUrl })
-      .eq('id', user.id)
+    media.addEventListener('change', resizeHandler)
 
-    if (updateError) {
-      alert('프로필 정보 업데이트 실패!')
-      return
+    return () => {
+      media.removeEventListener('change', resizeHandler)
     }
-
-    setAvatarUrl(publicUrl)
-  }
+  }, [])
 
   return (
     <section className="profile-page">
@@ -80,20 +61,34 @@ export default function ProfilePageClient({ user, studies, favorites }: Props) {
       <div style={{ marginBlockEnd: 'var(--space-xl)' }} />
 
       <h3 className="section-subtitle">내 스터디</h3>
-      <PaginationList
-        items={studies}
-        itemsPerPage={10}
-        renderItem={(pageItems) => (
-          <StudyCardLists studyData={pageItems} type="MYSTUDY" />
-        )}
-      />
+      {isDesktop ? (
+        <PaginationList
+          items={studies}
+          itemsPerPage={8}
+          renderItem={(pageItems) => (
+            <StudyCardLists studyData={pageItems} type="MYSTUDY" />
+          )}
+        />
+      ) : (
+        <>
+          <StudyCardLists studyData={studies} type="MYSTUDY" />
+          <MoreButton isLoading={true} />
+        </>
+      )}
 
       <h3 className="section-subtitle">즐겨찾기</h3>
-      <PaginationList
-        items={favorites}
-        itemsPerPage={10}
-        renderItem={(pageItems) => <StudyCardLists studyData={pageItems} />}
-      />
+      {isDesktop ? (
+        <PaginationList
+          items={favorites}
+          itemsPerPage={8}
+          renderItem={(pageItems) => <StudyCardLists studyData={pageItems} />}
+        />
+      ) : (
+        <>
+          <StudyCardLists studyData={favorites} />
+          <MoreButton isLoading={true} />
+        </>
+      )}
     </section>
   )
 }

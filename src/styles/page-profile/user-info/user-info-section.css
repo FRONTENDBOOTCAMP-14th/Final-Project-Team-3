@@ -9,7 +9,6 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   inline-size: 100%;
   max-inline-size: 65rem;
-  margin-inline: auto;
   margin-block: var(--space-sm);
   min-block-size: 14rem;
 }

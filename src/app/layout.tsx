@@ -9,9 +9,11 @@ import FloatingButton from '@/components/ui/floating-button'
 import { AuthProvider } from '@/context/authContext'
 import { BookMarkProvider } from '@/context/bookmarkContext'
 import { LikesProvider } from '@/context/likesContext'
+import { ProfileProvider } from '@/context/profileContext'
 import { createClient } from '@/libs/supabase/server'
 
 import '@/styles/common/index.css'
+
 import Error from './error'
 import Loading from './loading'
 
@@ -44,15 +46,17 @@ export default async function RootLayout({ children }: PropsWithChildren) {
         <ErrorBoundary errorComponent={Error}>
           <Suspense fallback={<Loading />}>
             <AuthProvider user={user}>
-              <LikesProvider>
-                <BookMarkProvider>
-                  <Header />
-                  <main className="web-main">{children}</main>
-                  <SiteFooter />
-                  <FloatingButton />
-                  <Toaster position="top-center" richColors />
-                </BookMarkProvider>
-              </LikesProvider>
+              <ProfileProvider>
+                <LikesProvider>
+                  <BookMarkProvider>
+                    <Header />
+                    <main className="web-main">{children}</main>
+                    <SiteFooter />
+                    <FloatingButton />
+                    <Toaster position="top-center" richColors />
+                  </BookMarkProvider>
+                </LikesProvider>
+              </ProfileProvider>
             </AuthProvider>
           </Suspense>
         </ErrorBoundary>
