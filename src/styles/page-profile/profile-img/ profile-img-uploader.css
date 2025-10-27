@@ -1,0 +1,156 @@
+.profile-banner-wrapper {
+  position: relative;
+  inline-size: 100%;
+  aspect-ratio: 16 / 4;
+  max-block-size: 14rem;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-secondary);
+}
+
+.banner-dropzone {
+  position: relative;
+  inline-size: 100%;
+  block-size: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-secondary);
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.banner-dropzone.is-dragging {
+  border-color: var(--color-primary);
+  background-color: color-mix(
+    in srgb,
+    var(--color-primary) 8%,
+    var(--color-bg-secondary)
+  );
+}
+
+.banner-image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  border-radius: var(--radius-lg);
+}
+
+.banner-actions {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.banner-confirm-btn,
+.banner-delete-btn {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-s);
+  border: none;
+  font-size: var(--font-sm);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.banner-confirm-btn {
+  background-color: var(--color-primary);
+}
+
+.banner-confirm-btn:hover {
+  background-color: var(--color-secondary);
+}
+
+.banner-delete-btn {
+  background-color: var(--color-cancel);
+}
+
+.banner-delete-btn:hover {
+  background-color: #d32f2f;
+}
+
+.user-avatar-wrapper {
+  position: relative;
+  inline-size: 6rem;
+  block-size: 6rem;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  cursor: pointer;
+  background-color: var(--color-bg-secondary);
+  transition:
+    outline 0.2s ease,
+    transform 0.2s ease;
+}
+
+.user-avatar-wrapper:hover {
+  transform: scale(1.02);
+}
+
+.user-avatar {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+  display: block;
+  background-color: var(--color-bg-secondary);
+}
+
+.avatar-upload-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  border-radius: 50%;
+}
+
+.user-avatar-wrapper:hover .avatar-upload-icon {
+  opacity: 1;
+}
+
+.uploader-clear-btn {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  inline-size: 1.6rem;
+  block-size: 1.6rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.uploader-clear-btn:hover {
+  background: var(--color-cancel);
+  transform: scale(1.1);
+}
+
+.user-avatar-wrapper.dragging {
+  outline: 2px dashed var(--color-primary);
+  outline-offset: 3px;
+}

@@ -74,7 +74,7 @@ function StudyCard({ item, userId, isPriority, type }: Props) {
               setDeleteModal(true)
             }}
           >
-            버튼
+            x
           </button>
         )}
         <Link href={`/study-detail/${item.id}`}>
