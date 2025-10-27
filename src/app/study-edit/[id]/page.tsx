@@ -1,9 +1,10 @@
 import { notFound, redirect } from 'next/navigation'
 
 import EditStudyForm from '@/components/study-edit/EditStudyForm'
+import { fetchStudyDetail } from '@/libs/supabase/api/study-update-edit'
 import '@/styles/study-create/study-create.css'
 
-import { createClient } from '../../../libs/supabase/server'
+import { createClient } from '@/libs/supabase/server'
 
 export const revalidate = 0
 

@@ -14,10 +14,10 @@
 @media (min-width: 48rem) {
   .ui-spinner,
   .status-spinner {
-    inline-size: 4rem;   
+    inline-size: 4rem;
     block-size: 4rem;
-    border-width: 5px;     
-    animation-duration: 0.7s; 
+    border-width: 5px;
+    animation-duration: 0.7s;
   }
 }
 
@@ -25,10 +25,10 @@
 @media (min-width: 64rem) {
   .ui-spinner,
   .status-spinner {
-    inline-size: 6rem;     
+    inline-size: 6rem;
     block-size: 6rem;
-    border-width: 6px;   
-    animation-duration: 0.6s; 
+    border-width: 6px;
+    animation-duration: 0.6s;
   }
 }
 

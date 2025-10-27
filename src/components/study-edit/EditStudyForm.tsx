@@ -7,11 +7,11 @@ import { useFormStatus } from 'react-dom'
 import BannerUploader from '@/components/study-create/fields/BannerUploader'
 import CategoryField from '@/components/study-create/fields/CategoryField'
 import RegionField from '@/components/study-create/fields/RegionField'
+import { updateStudyAction } from '@/libs/supabase/api/study-update-edit'
 import type {
   StudyActionResult,
   StudyDetail,
 } from '@/libs/supabase/api/study-update-edit'
-import { updateStudyAction } from '@/libs/supabase/api/study-update-edit'
 
 function SubmitButton() {
   const { pending } = useFormStatus()
@@ -44,7 +44,7 @@ export default function EditStudyForm({ initial }: { initial: StudyDetail }) {
 
   return (
     <form className="study-form" action={formAction}>
-      {/* 🔑 수정에 필요한 hidden 값 */}
+      {/* hidden */}
       <input type="hidden" name="id" value={initial.id} />
       <input
         type="hidden"
@@ -68,7 +68,7 @@ export default function EditStudyForm({ initial }: { initial: StudyDetail }) {
       </div>
 
       {/* 배너: 새 파일을 올리면 교체, 아니면 유지 */}
-      <BannerUploader value={bannerFile} onChange={setBannerFile} />
+      <BannerUploader isEdit value={bannerFile} onChange={setBannerFile} />
 
       {/* 카테고리/지역 */}
       <CategoryField value={category} onChange={setCategory} />
