@@ -26,6 +26,7 @@ async function HomeComponents({ region, depth, search, sort_by }: Props) {
     ok: filterOk,
     data: filterData,
     message: filterMessage,
+    count: totalCount,
   } = await getQueryStudyRoom(region, depth, search, sort_by)
 
   return (
@@ -35,7 +36,7 @@ async function HomeComponents({ region, depth, search, sort_by }: Props) {
         message={!latestOk ? latestMessage : filterMessage}
       />
       <LatestStudy studyData={latestData} />
-      <RegionStudy studyData={filterData} />
+      <RegionStudy studyData={filterData} totalCount={totalCount ?? 0} />
     </>
   )
 }

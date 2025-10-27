@@ -1,0 +1,23 @@
+.more-button {
+  --color-text-primary: #fff;
+
+  border: 0;
+  inline-size: 100%;
+  background-color: var(--color-primary);
+  margin-block: 1.25rem;
+  border-radius: 0.625rem;
+  padding-block: 0.9375rem;
+  font-size: var(--font-lg);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+
+  & .more-button-spinner {
+    inline-size: 1.8rem;
+    block-size: 1.8rem;
+
+    border-top-color: var(--color-text-primary);
+  }
+}
