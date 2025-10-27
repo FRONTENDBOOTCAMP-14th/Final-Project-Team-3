@@ -30,9 +30,6 @@ export default function ProfilePageClient({ user, studies, favorites }: Props) {
 
     const filePath = `profile/${user.id}/${file.name}`
 
-    console.log('file', file)
-    console.log('filePath', filePath)
-
     const { error: uploadError } = await supabase.storage
       .from('profile')
       .upload(filePath, file, { upsert: true })
@@ -46,7 +43,6 @@ export default function ProfilePageClient({ user, studies, favorites }: Props) {
       data: { publicUrl },
     } = supabase.storage.from('profile').getPublicUrl(filePath)
 
-    console.log('publicUrl', publicUrl)
     const { error: updateError } = await supabase
       .from('profile')
       .update({ profile_url: publicUrl })

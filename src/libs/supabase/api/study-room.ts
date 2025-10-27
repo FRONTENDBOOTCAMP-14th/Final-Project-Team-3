@@ -44,13 +44,15 @@ export const getStudyRoomDetail = async (
 }
 
 export const getQueryStudyRoom = async (
-  region?: string,
-  depth?: string,
-  search?: string,
-  sort_by?: string
+  region?: string | null,
+  depth?: string | null,
+  search?: string | null,
+  sort_by?: string | null,
+  limit: number = 12,
+  page: number = 1
 ): Promise<ResultType<StudyRoom[]>> => {
   const supabase = await createClient()
-  let query = supabase.from('study_room').select('*')
+  let query = supabase.from('study_room').select('*', { count: 'exact' })
 
   if (region && depth && search) {
     query = query
@@ -89,11 +91,21 @@ export const getQueryStudyRoom = async (
     }
 
     if (sortColumn !== null && ascending !== null) {
-      query = query.order(sortColumn, { ascending })
+      query = query.order(sortColumn, { ascending }).limit(limit)
     }
   }
 
-  const { data: queryData, error } = await query
+  const from = (page - 1) * limit
+  const to = from + limit - 1
+  query = query.range(from, to)
+
+  const {
+    data: queryData,
+    error,
+    count,
+  } = await query.order('id', {
+    ascending: false,
+  })
 
   if (error) {
     return {
@@ -101,7 +113,7 @@ export const getQueryStudyRoom = async (
       message: '스터디룸 데이터 가져오기 실패',
     }
   }
-  return { ok: true, data: queryData ?? [] }
+  return { ok: true, data: queryData ?? [], count: count ?? 0 }
 }
 
 export const getOwnerProfile = async (
