@@ -1,3 +1,6 @@
+// app/not-found.tsx
+import '@/styles/not-found/not-found.css'
+
 export default function NotFound() {
-  return <div>페이지를 찾을 수 없습니다.</div>
+  return <main className="not-found" />
 }

@@ -5,8 +5,9 @@ import EditStudyForm from '@/components/study-edit/EditStudyForm'
 import { getStudyRoomDetail } from '@/libs/supabase/api/study-room'
 import { fetchStudyDetail } from '@/libs/supabase/api/study-update-edit'
 import { createClient } from '@/libs/supabase/server'
-
 import '@/styles/study-create/study-create.css'
+
+export const revalidate = 0
 
 interface Props {
   params: Promise<{ id: string }>
