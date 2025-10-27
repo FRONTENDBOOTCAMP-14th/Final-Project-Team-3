@@ -5,7 +5,9 @@ import { useState } from 'react'
 import StudyCardLists from '@/components/home/study-card-lists'
 import PaginationList from '@/components/ui/PaginationList'
 import type { Profile, StudyRoom } from '@/libs/supabase'
-import createClient from '@/libs/supabase/client'
+import supabase from '@/libs/supabase/client'
+
+import '@/styles/page-profile/profile-img/profile-img-uploader.css'
 import '@/styles/page-profile/profile-page.css'
 import '@/styles/page-profile/user-info/user-info-section.css'
 
@@ -18,17 +20,17 @@ interface Props {
 }
 
 export default function ProfilePageClient({ user, studies, favorites }: Props) {
-  const supabase = createClient
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
-    user.profile_url ?? ''
+    user.profile_url ?? null
   )
   const [_avatarFile, _setAvatarFile] = useState<File | null>(null)
 
   const handleAvatarUpload = async (file: File | null) => {
-    if (!file) return
     if (!user) return
+    if (!file) return 
 
-    const filePath = `profile/${user.id}/${file.name}`
+    // ✅ 이미지 업로드 로직
+   const filePath = `profile/${user.id}/${file.name}`
 
     const { error: uploadError } = await supabase.storage
       .from('profile')
@@ -75,7 +77,7 @@ export default function ProfilePageClient({ user, studies, favorites }: Props) {
         </div>
       </div>
 
-      <div style={{ marginBlockEnd: 'var(--space-xl)' }}></div>
+      <div style={{ marginBlockEnd: 'var(--space-xl)' }} />
 
       <h3 className="section-subtitle">내 스터디</h3>
       <PaginationList

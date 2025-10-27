@@ -21,51 +21,6 @@
   justify-content: center;
 }
 
-.user-avatar-wrapper {
-  position: relative;
-  inline-size: 10rem;
-  block-size: 10rem;
-  border-radius: 50%;
-  background-color: var(--color-bg-secondary);
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.user-avatar-wrapper:hover {
-  transform: scale(1.03);
-}
-
-.user-avatar {
-  inline-size: 100%;
-  block-size: 100%;
-  object-fit: cover;
-}
-
-.uploader-clear-btn {
-  position: absolute;
-  top: 0.4rem;
-  right: 0.4rem;
-  background: rgba(0, 0, 0, 0.6);
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  inline-size: 1.8rem;
-  block-size: 1.8rem;
-  font-size: 1.4rem;
-  text-align: center;
-  cursor: pointer;
-  z-index: 5;
-  transition: background 0.2s ease;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.uploader-clear-btn:hover {
-  background: var(--color-cancel);
-}
-
 .user-info-right {
   display: flex;
   flex-direction: column;
