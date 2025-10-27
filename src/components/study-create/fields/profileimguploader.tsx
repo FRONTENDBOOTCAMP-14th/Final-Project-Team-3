@@ -48,12 +48,15 @@ export default function ProfileImgUploader({
     if (!file) {
       onChange(null)
       if (inputRef.current) inputRef.current.value = ''
+      setPreviewUrl('')
       return
     }
+
     if (!validate(file)) {
       if (inputRef.current) inputRef.current.value = ''
       return
     }
+
     onChange(file)
   }
 
