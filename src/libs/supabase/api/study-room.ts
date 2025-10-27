@@ -1,9 +1,9 @@
 'use server'
 
+import type { ResultType } from '@/types/apiResultsType'
+
 import type { Profile, StudyRoom, StudyRoomRequests } from '..'
 import { createClient } from '../server'
-
-import type { ResultType } from '@/types/apiResultsType'
 
 export const getLatestStudyRoom = async (): Promise<
   ResultType<StudyRoom[]>
@@ -70,7 +70,6 @@ export const getQueryStudyRoom = async (
     let sortColumn: string | null = null
     let ascending: boolean | null = null
 
-    console.log(region, depth, search, sort_by)
     switch (sort_by) {
       case 'latest':
         sortColumn = 'created_at'
@@ -342,22 +341,6 @@ export const getStudyRoomParticipants = async (
 }
 
 export const deleteStudyRoom = async (
-  studyId: string
-): Promise<ResultType<void>> => {
-  const supabase = await createClient()
-
-  const { error } = await supabase
-    .from('study_room')
-    .delete()
-    .eq('room_id', studyId)
-
-  if (error) {
-    return { ok: false, message: '스터디룸 삭제 실패...' }
-  }
-
-  return { ok: true, message: '스터디룸이 삭제 되었습니다.' }
-}
-export const deleteStudyRoom = async (
   studyId: string,
   userId?: string
 ): Promise<{ ok: boolean; message: string }> => {
@@ -393,7 +376,6 @@ export const deleteStudyRoom = async (
     .eq('id', studyId)
 
   if (deleteError) {
-    console.error('❌ 스터디 삭제 실패:', deleteError.message)
     return {
       ok: false,
       message: '스터디 삭제 중 오류가 발생했습니다.',

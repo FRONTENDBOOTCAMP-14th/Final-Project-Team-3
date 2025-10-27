@@ -4,6 +4,10 @@
 
 .latest-header {
   margin-block-end: 0.625rem;
+
+  & h2 {
+    font-size: var(--font-lg);
+  }
 }
 
 .latest-lists {
@@ -66,8 +70,8 @@
 
   @media screen and (width >= 48rem) {
     & .image-wrapper {
-      inline-size: 12.5rem;
-      block-size: 12.5rem;
+      inline-size: 11.25rem;
+      block-size: 11.25rem;
     }
 
     & h3 {
@@ -77,8 +81,8 @@
 
   @media screen and (width >= 64rem) {
     & .image-wrapper {
-      inline-size: 15.625rem;
-      block-size: 15.625rem;
+      inline-size: 12.5rem;
+      block-size: 12.5rem;
     }
 
     & h3 {

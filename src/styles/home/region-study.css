@@ -6,8 +6,10 @@
   margin-block-end: 0.625rem;
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.9375rem;
 
   & h2 {
     display: flex;
@@ -17,15 +19,25 @@
 
     & span {
       margin-left: 0.3125rem;
+      font-size: var(--font-lg);
     }
+  }
+
+  @media screen and (width >= 64rem) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
   }
 }
 
 .study-sort {
+  align-self: flex-end;
   text-align: end;
   padding: 0.1875rem;
   border-radius: 0.3125rem;
   cursor: pointer;
+  font-size: var(--font-sm);
 }
 
 .region-study-wrapper {
@@ -36,14 +48,16 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.25rem;
+  justify-items: start;
 
   @media screen and (width >= 48rem) {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 2fr));
-    gap: 1.875rem;
+    grid-template-columns: minmax(18.75rem, 1fr) minmax(18.75rem, 1fr);
   }
 
   @media screen and (width >= 64rem) {
-    grid-template-columns: repeat(auto-fit, minmax(350px, 4fr));
+    grid-template-columns:
+      minmax(21.875rem, 1fr) minmax(21.875rem, 1fr)
+      minmax(21.875rem, 1fr) minmax(21.875rem, 1fr);
   }
 }
 

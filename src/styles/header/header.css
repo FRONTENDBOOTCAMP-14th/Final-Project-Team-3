@@ -53,6 +53,8 @@
     border-radius: var(--radius-xs);
     background-color: var(--color-primary);
     color: var(--color-text-primary);
+    padding: 0.625rem;
+    font-size: var(--font-sm);
 
     &:hover {
       background-color: var(--color-secondary);
@@ -215,7 +217,6 @@
   display: flex;
   align-items: center;
   gap: 0.3125rem;
-  font-size: var(--font-lg);
 }
 
 .region-entire {

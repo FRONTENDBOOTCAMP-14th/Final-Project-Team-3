@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 
 import ProfilePageClient from '@/components/ProfilePageClient'
-import type { StudyRoom } from '@/libs/supabase'
+import type { Profile, StudyRoom } from '@/libs/supabase'
 import { getUserBookmarks } from '@/libs/supabase/api/bookmark'
 import { getQueryStudyRoom } from '@/libs/supabase/api/study-room'
 import { getUserProfile } from '@/libs/supabase/api/user'
@@ -32,6 +32,10 @@ export default async function MyProfilePage({ params }: PageProps) {
   const favorites = (await getUserBookmarks(userId)) ?? []
 
   return (
-    <ProfilePageClient user={profile} studies={studies} favorites={favorites} />
+    <ProfilePageClient
+      user={profile?.data as Profile}
+      studies={studies}
+      favorites={favorites?.data as StudyRoom[]}
+    />
   )
 }

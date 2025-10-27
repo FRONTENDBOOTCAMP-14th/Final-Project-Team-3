@@ -1,3 +1,5 @@
+import type { Metadata } from 'next'
+
 import StudyDetail from '@/components/study-detail'
 import { CommentsProvider } from '@/context/commentsContext'
 import { MemberProvider } from '@/context/memberContext'
@@ -16,6 +18,13 @@ export const dynamic = 'force-dynamic'
 
 interface Props {
   params: Promise<{ studyId: string }>
+}
+
+export const metadata: Metadata = {
+  title: '% |모이다(MOIDA) - 스터디 모집 플랫폼',
+  description:
+    '모이다(MOIDA) 스터디 모집 플랫폼과 함께 가까운 지역, 관심 분야 등 나와 가장 잘 맞는 스터디 멤버를 꾸려 함께 성장해 보세요.',
+  icons: { icon: '/images/moida-icon.svg' },
 }
 
 async function StudyDetailPage({ params }: Props) {

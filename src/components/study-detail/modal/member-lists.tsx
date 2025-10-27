@@ -3,14 +3,21 @@ import { useState } from 'react'
 
 import { useMember } from '@/hooks/useMember'
 
+import Spinner from '../../ui/spinner'
+
 interface Props {
   isOwner: boolean
   type: 'MEMBER' | 'APPLICANT'
 }
 
 function MemberLists({ isOwner, type }: Props) {
-  const { requestsHandler, requestMembersData, participantsMembersData } =
-    useMember()
+  const {
+    requestsHandler,
+    requestMembersData,
+    participantsMembersData,
+    isRequestsLoading,
+    isParticipantsLoading,
+  } = useMember()
   const [userId, setUserId] = useState<string[]>([])
 
   const [isPending, setIsPending] = useState(false)
@@ -41,8 +48,13 @@ function MemberLists({ isOwner, type }: Props) {
           : `신청 멤버 (${requestMembersData?.data?.length ?? 0})`}
       </h2>
       <ul className="member-lists" tabIndex={0}>
-        {type === 'MEMBER' && participantsMembersData?.data?.length !== 0
-          ? participantsMembersData?.data?.map((member) => (
+        {type === 'MEMBER' && participantsMembersData?.data?.length !== 0 ? (
+          type === 'MEMBER' && isParticipantsLoading ? (
+            <div className="member-spinner-wrapper">
+              <Spinner />
+            </div>
+          ) : (
+            participantsMembersData?.data?.map((member) => (
               <li className="member-list-wrapper" key={member.id}>
                 <Image
                   src={member.profile_url ?? '/images/no-image.png'}
@@ -73,62 +85,71 @@ function MemberLists({ isOwner, type }: Props) {
                 </div>
               </li>
             ))
-          : type === 'APPLICANT' && requestMembersData?.data?.length !== 0
-            ? requestMembersData?.data?.map((member) => (
-                <li className="member-list-wrapper" key={member.id}>
-                  <Image
-                    src={member.profile_url ?? '/images/no-image.png'}
-                    alt="no-image"
-                    width={80}
-                    height={80}
-                  />
-                  <div className="member-info">
-                    <div className="info-wrapper">
-                      <span className="info-name">{member.nickname}</span>
-                      <div className="request-button-group">
-                        {isOwner && type === 'APPLICANT' && (
-                          <>
-                            <button
-                              className="rejected-btn"
-                              onClick={() => handler(member.id, 'REJECTED')}
-                              disabled={
-                                isPending &&
-                                status === 'REJECTED' &&
-                                userId.includes(member.id)
-                              }
-                            >
-                              {isPending &&
+          )
+        ) : type === 'APPLICANT' && requestMembersData?.data?.length !== 0 ? (
+          type === 'APPLICANT' && isRequestsLoading ? (
+            <div className="member-spinner-wrapper">
+              <Spinner />
+            </div>
+          ) : (
+            requestMembersData?.data?.map((member) => (
+              <li className="member-list-wrapper" key={member.id}>
+                <Image
+                  src={member.profile_url ?? '/images/no-image.png'}
+                  alt="no-image"
+                  width={80}
+                  height={80}
+                />
+                <div className="member-info">
+                  <div className="info-wrapper">
+                    <span className="info-name">{member.nickname}</span>
+                    <div className="request-button-group">
+                      {isOwner && type === 'APPLICANT' && (
+                        <>
+                          <button
+                            className="rejected-btn"
+                            onClick={() => handler(member.id, 'REJECTED')}
+                            disabled={
+                              isPending &&
                               status === 'REJECTED' &&
                               userId.includes(member.id)
-                                ? '거절 중...'
-                                : '거절'}
-                            </button>
-                            <button
-                              className="approved-btn"
-                              onClick={() => handler(member.id, 'APPROVED')}
-                              disabled={
-                                isPending &&
-                                status === 'APPROVED' &&
-                                userId.includes(member.id)
-                              }
-                            >
-                              {isPending &&
+                            }
+                          >
+                            {isPending &&
+                            status === 'REJECTED' &&
+                            userId.includes(member.id)
+                              ? '거절 중...'
+                              : '거절'}
+                          </button>
+                          <button
+                            className="approved-btn"
+                            onClick={() => handler(member.id, 'APPROVED')}
+                            disabled={
+                              isPending &&
                               status === 'APPROVED' &&
                               userId.includes(member.id)
-                                ? '승인 중...'
-                                : '승인'}
-                            </button>
-                          </>
-                        )}
-                      </div>
+                            }
+                          >
+                            {isPending &&
+                            status === 'APPROVED' &&
+                            userId.includes(member.id)
+                              ? '승인 중...'
+                              : '승인'}
+                          </button>
+                        </>
+                      )}
                     </div>
-                    <p className="info-bio">
-                      {member.bio ?? '자기소개 글이 없습니다..'}
-                    </p>
                   </div>
-                </li>
-              ))
-            : RenderType({ type })}
+                  <p className="info-bio">
+                    {member.bio ?? '자기소개 글이 없습니다..'}
+                  </p>
+                </div>
+              </li>
+            ))
+          )
+        ) : (
+          RenderType({ type })
+        )}
       </ul>
     </>
   )
