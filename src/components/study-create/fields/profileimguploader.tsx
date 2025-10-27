@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 
 const ALLOWED = new Set(['image/jpeg', 'image/png'])
 const MAX_SIZE = 5 * 1024 * 1024
@@ -34,11 +35,21 @@ export default function ProfileImgUploader({
 
   const validate = (f: File) => {
     if (!ALLOWED.has(f.type)) {
-      alert('JPG, PNG 형식만 가능합니다.')
+      toast.warning('JPG, PNG 형식만 가능합니다.', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
       return false
     }
     if (f.size > MAX_SIZE) {
-      alert('최대 5MB까지 업로드할 수 있습니다.')
+      toast.warning('최대 5MB까지 업로드할 수 있습니다.', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
       return false
     }
     return true

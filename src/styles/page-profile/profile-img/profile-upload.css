@@ -86,7 +86,7 @@
   outline-offset: 3px;
 }
 
-@media screen and (max-width: 47.9375rem) {
+@media screen and (max-width: 48rem) {
   .user-avatar-wrapper {
     inline-size: 7rem;
     block-size: 7rem;

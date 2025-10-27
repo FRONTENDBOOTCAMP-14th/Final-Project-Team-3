@@ -40,7 +40,7 @@ export async function signUpAndCreateProfile(
     return { ok: false, message: '프로파일 업데이트 실패...' }
   }
 
-  return { ok: true }
+  return { ok: true, message: '회원가입 성공! 이메일을 확인해주세요 📧' }
 }
 
 export async function getUserProfile(
@@ -175,4 +175,55 @@ export async function removeLikesStudyRoom(
   }
 
   return { ok: true, message: '"좋아요"가 제거 되었습니다.' }
+}
+
+export async function avatarUpload(
+  userId: string,
+  file: File | null
+): Promise<ResultType<string> | null> {
+  const supabase = await createClient()
+
+  if (!userId) {
+    return { ok: false, message: '로그인이 필요 합니다...' }
+  }
+  if (!file) {
+    // DB의 프로필 URL 기본 이미지로 변경
+
+    const { error: updateError } = await supabase
+      .from('profile')
+      .update({ profile_url: '/images/default-avatar.png' })
+      .eq('id', userId)
+
+    if (updateError) {
+      return { ok: false, message: '프로필 업로드 실패...' }
+    }
+
+    return null
+  }
+
+  // ✅ 이미지 업로드 로직
+  const filePath = `profile/${userId}/${file.name}`
+
+  const { error: uploadError } = await supabase.storage
+    .from('profile')
+    .upload(filePath, file, { upsert: true })
+
+  if (uploadError) {
+    return { ok: false, message: '이미지 업로드 실패...' }
+  }
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from('profile').getPublicUrl(filePath)
+
+  const { error: updateError } = await supabase
+    .from('profile')
+    .update({ profile_url: publicUrl })
+    .eq('id', userId)
+
+  if (updateError) {
+    return { ok: false, message: '프로필 이미지 수정 실패...' }
+  }
+
+  return { ok: true, data: publicUrl, message: '프로필 이미지 수정 실패...' }
 }

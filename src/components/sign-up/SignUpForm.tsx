@@ -3,9 +3,11 @@
 import '@/styles/sign-up/sign-up.css'
 import type { ChangeEvent } from 'react'
 import { useActionState, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 import Button from '@/components/ui/button'
 import { signUpAndCreateProfile } from '@/libs/supabase/api/user'
+import type { ResultType } from '@/types/apiResultsType'
 import { validatePassword } from '@/utils/validatePassword'
 
 interface PasswordHintProps {
@@ -55,24 +57,20 @@ const InputField: React.FC<InputFieldProps> = ({
         borderRadius: '4px',
       }}
       name={name}
+      autoComplete={type === 'password' ? 'off' : ''}
     />
   </div>
 )
 
-interface FormState {
-  message: string | null
-  success: boolean
-}
-
-const initialFormState: FormState = {
-  message: null,
-  success: false,
+const initialFormState: ResultType<void> = {
+  message: '',
+  ok: false,
 }
 
 async function signUpAction(
-  prevState: FormState,
+  _prevState: ResultType<void>,
   formData: FormData
-): Promise<FormState> {
+): Promise<ResultType<void>> {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
   const confirmPassword = formData.get('confirmPassword') as string
@@ -81,26 +79,23 @@ async function signUpAction(
   const valid = validatePassword(password)
 
   if (!valid) {
-    return { message: '비밀번호 규칙을 확인해주세요.', success: false }
+    toast.error('비밀번호 규칙을 확인해주세요.')
+    return { ok: false }
   }
 
   if (password !== confirmPassword) {
-    return { message: '비밀번호가 일치하지 않습니다.', success: false }
+    toast.error('비밀번호가 일치하지 않습니다.')
+
+    return { ok: false }
   }
 
-  try {
-    await signUpAndCreateProfile({ email, password, nickname })
+  const res = await signUpAndCreateProfile({
+    email,
+    password,
+    nickname,
+  })
 
-    return {
-      message: '회원가입 성공! 이메일을 확인해주세요 📧',
-      success: true,
-    }
-  } catch (error) {
-    return {
-      message: `회원가입 실패: ${error.message ?? '알 수 없는 오류'}`,
-      success: false,
-    }
-  }
+  return { ok: res.ok, message: res.message }
 }
 
 export default function SignUpForm() {
@@ -113,14 +108,19 @@ export default function SignUpForm() {
   const [state, formAction] = useActionState(signUpAction, initialFormState)
 
   useEffect(() => {
-    if (state.success) {
-      alert(state.message)
+    if (state.ok) {
+      toast.success(state.message, {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
       setEmail('')
       setPassword('')
       setNickname('')
       setConfirmPassword('')
     }
-  }, [state.message, state.success])
+  }, [state.message, state.ok])
 
   return (
     <form className="sign-up-form" action={formAction}>

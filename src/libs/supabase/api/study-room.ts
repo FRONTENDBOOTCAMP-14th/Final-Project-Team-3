@@ -355,7 +355,7 @@ export const getStudyRoomParticipants = async (
 export const deleteStudyRoom = async (
   studyId: string,
   userId?: string
-): Promise<{ ok: boolean; message: string }> => {
+): Promise<ResultType<void>> => {
   const supabase = await createClient()
 
   // 1) 이 스터디의 owner_id 가져오기 (권한 체크용)
@@ -398,4 +398,21 @@ export const deleteStudyRoom = async (
     ok: true,
     message: '스터디가 삭제되었습니다.',
   }
+}
+
+export const getMyStudyRoom = async (
+  ownerId: string
+): Promise<ResultType<StudyRoom[]>> => {
+  const supabase = await createClient()
+
+  const { data: studyData, error: studyError } = await supabase
+    .from('study_room')
+    .select('*')
+    .eq('owner_id', ownerId)
+
+  if (studyError) {
+    return { ok: false, message: '스터디 정보 조회 실패...' }
+  }
+
+  return { ok: true, data: studyData ?? [] }
 }

@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 
 const ALLOWED = new Set(['image/jpeg', 'image/png', 'image/gif'])
 const MAX_SIZE = 10 * 1024 * 1024 // 10MB
@@ -46,11 +47,21 @@ export default function BannerUploader({
 
   const validate = (f: File) => {
     if (!ALLOWED.has(f.type)) {
-      alert('JPEG, PNG, GIF 파일만 업로드할 수 있습니다.')
+      toast.error('JPEG, PNG, GIF 파일만 업로드할 수 있습니다.', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
       return false
     }
     if (f.size > MAX_SIZE) {
-      alert('파일 용량은 최대 10MB까지 업로드할 수 있습니다.')
+      toast.error('파일 용량은 최대 10MB까지 업로드할 수 있습니다.', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
       return false
     }
     return true

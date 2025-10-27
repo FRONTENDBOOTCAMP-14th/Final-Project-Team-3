@@ -1,28 +1,24 @@
-'use client'
-
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 
 import SignUpForm from '@/components/sign-up/SignUpForm'
-import supabase from '@/libs/supabase/client'
+import { createClient } from '@/libs/supabase/server'
 
-export default function SignUpPage() {
-  const router = useRouter()
+export const metadata: Metadata = {
+  title: '모이다(MOIDA)에 회원가입 해주세요.',
+  description:
+    '간단하게 모이다(MOIDA) 스터디 모집 플랫폼에 회원가입 해주세요. ',
+}
 
-  useEffect(() => {
-    async function checkUser() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
+export default async function SignUpPage() {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-      if (user) {
-        alert('이미 로그인된 상태에서는 회원가입 페이지에 접근할 수 없습니다.')
-        router.replace('/')
-      }
-    }
-
-    checkUser()
-  }, [router])
+  if (user) {
+    redirect('/')
+  }
 
   return (
     <main className="sign-up-wrapper">
