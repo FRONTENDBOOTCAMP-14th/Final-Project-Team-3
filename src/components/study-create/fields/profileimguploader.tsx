@@ -8,23 +8,29 @@ const MAX_SIZE = 5 * 1024 * 1024
 interface Props {
   value: File | null
   onChange: (f: File | null) => void
+  externalPreview?: string
 }
 
-export default function ProfileImgUploader({ value, onChange }: Props) {
+export default function ProfileImgUploader({
+  value,
+  onChange,
+  externalPreview,
+}: Props) {
   const [previewUrl, setPreviewUrl] = useState<string>('')
   const [isDragging, setIsDragging] = useState(false)
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
-    if (!value) {
+    if (value) {
+      const url = URL.createObjectURL(value)
+      setPreviewUrl(url)
+      return () => URL.revokeObjectURL(url)
+    } else if (externalPreview) {
+      setPreviewUrl(externalPreview)
+    } else {
       setPreviewUrl('')
-      return
     }
-
-    const url = URL.createObjectURL(value)
-    setPreviewUrl(url)
-    return () => URL.revokeObjectURL(url)
-  }, [value])
+  }, [value, externalPreview])
 
   const validate = (f: File) => {
     if (!ALLOWED.has(f.type)) {
@@ -44,12 +50,10 @@ export default function ProfileImgUploader({ value, onChange }: Props) {
       if (inputRef.current) inputRef.current.value = ''
       return
     }
-
     if (!validate(file)) {
       if (inputRef.current) inputRef.current.value = ''
       return
     }
-
     onChange(file)
   }
 
@@ -61,10 +65,7 @@ export default function ProfileImgUploader({ value, onChange }: Props) {
         e.preventDefault()
         setIsDragging(true)
       }}
-      onDragLeave={(e) => {
-        e.preventDefault()
-        setIsDragging(false)
-      }}
+      onDragLeave={() => setIsDragging(false)}
       onDrop={(e) => {
         e.preventDefault()
         setIsDragging(false)
@@ -74,16 +75,12 @@ export default function ProfileImgUploader({ value, onChange }: Props) {
       tabIndex={0}
     >
       {previewUrl ? (
-        <img src={previewUrl} alt="프로필 미리보기" className="user-avatar" />
+        <img src={previewUrl} alt="이미지 미리보기" className="user-avatar" />
       ) : (
-        <div className="user-avatar">
+        <div className="avatar-placeholder">
           <span className="avatar-upload-icon">📷</span>
         </div>
       )}
-
-      <div className="avatar-upload-icon" aria-hidden="true">
-        📷
-      </div>
 
       {previewUrl && (
         <button
@@ -93,7 +90,7 @@ export default function ProfileImgUploader({ value, onChange }: Props) {
             e.stopPropagation()
             handleFile(null)
           }}
-          aria-label="프로필 이미지 삭제"
+          aria-label="이미지 삭제"
         >
           ×
         </button>

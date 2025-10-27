@@ -1,8 +1,9 @@
 'use server'
-import type { ResultType } from '@/types/apiResultsType'
 
 import type { Profile, StudyRoom, StudyRoomRequests } from '..'
 import { createClient } from '../server'
+
+import type { ResultType } from '@/types/apiResultsType'
 
 export const getLatestStudyRoom = async (): Promise<
   ResultType<StudyRoom[]>
@@ -355,4 +356,52 @@ export const deleteStudyRoom = async (
   }
 
   return { ok: true, message: '스터디룸이 삭제 되었습니다.' }
+}
+export const deleteStudyRoom = async (
+  studyId: string,
+  userId?: string
+): Promise<{ ok: boolean; message: string }> => {
+  const supabase = await createClient()
+
+  // 1) 이 스터디의 owner_id 가져오기 (권한 체크용)
+  const { data: roomData, error: roomError } = await supabase
+    .from('study_room')
+    .select('owner_id')
+    .eq('id', studyId)
+    .single()
+
+  if (roomError || !roomData) {
+    return {
+      ok: false,
+      message: '스터디 정보를 불러올 수 없습니다.',
+    }
+  }
+
+  // 2) 만약 userId를 전달받았다면, 여기서 한 번 더 서버에서 검사
+  //    (클라이언트에서도 막고 있지만 서버에서도 막아야 안전)
+  if (userId && roomData.owner_id !== userId) {
+    return {
+      ok: false,
+      message: '모임장만 삭제할 수 있습니다.',
+    }
+  }
+
+  // 3) 실제 삭제
+  const { error: deleteError } = await supabase
+    .from('study_room')
+    .delete()
+    .eq('id', studyId)
+
+  if (deleteError) {
+    console.error('❌ 스터디 삭제 실패:', deleteError.message)
+    return {
+      ok: false,
+      message: '스터디 삭제 중 오류가 발생했습니다.',
+    }
+  }
+
+  return {
+    ok: true,
+    message: '스터디가 삭제되었습니다.',
+  }
 }

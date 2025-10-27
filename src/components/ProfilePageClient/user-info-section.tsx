@@ -32,87 +32,76 @@ export default function ProfileImgUploader({
     }
   }, [value, externalPreview])
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    if (!ALLOWED.has(file.type)) {
-      alert('JPEG 또는 PNG 파일만 업로드할 수 있습니다.')
-      return
+  const validate = (f: File) => {
+    if (!ALLOWED.has(f.type)) {
+      alert('JPG, PNG 형식만 가능합니다.')
+      return false
     }
-    if (file.size > MAX_SIZE) {
-      alert('파일 크기는 5MB 이하여야 합니다.')
-      return
+    if (f.size > MAX_SIZE) {
+      alert('최대 5MB까지 업로드할 수 있습니다.')
+      return false
     }
-
-    onChange(file)
+    return true
   }
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    setIsDragging(false)
-    const file = e.dataTransfer.files?.[0]
-    if (!file) return
-
-    if (!ALLOWED.has(file.type)) {
-      alert('JPEG 또는 PNG 파일만 업로드할 수 있습니다.')
+  const handleFile = (file: File | null) => {
+    if (!file) {
+      onChange(null)
+      if (inputRef.current) inputRef.current.value = ''
       return
     }
-    if (file.size > MAX_SIZE) {
-      alert('파일 크기는 5MB 이하여야 합니다.')
+    if (!validate(file)) {
+      if (inputRef.current) inputRef.current.value = ''
       return
     }
-
     onChange(file)
-  }
-
-  const handleRemove = () => {
-    onChange(null)
-    setPreviewUrl('')
-    if (inputRef.current) inputRef.current.value = ''
   }
 
   return (
     <div
-      className={`profile-img-uploader ${isDragging ? 'dragging' : ''}`}
+      className={`user-avatar-wrapper ${isDragging ? 'dragging' : ''}`}
+      onClick={() => inputRef.current?.click()}
       onDragOver={(e) => {
         e.preventDefault()
         setIsDragging(true)
       }}
       onDragLeave={() => setIsDragging(false)}
-      onDrop={handleDrop}
+      onDrop={(e) => {
+        e.preventDefault()
+        setIsDragging(false)
+        handleFile(e.dataTransfer.files?.[0] ?? null)
+      }}
+      role="button"
+      tabIndex={0}
     >
       {previewUrl ? (
-        <div className="preview-wrapper">
-          <img src={previewUrl} alt="미리보기" className="preview-img" />
-          <button
-            type="button"
-            className="remove-btn"
-            onClick={handleRemove}
-            aria-label="이미지 제거"
-          >
-            ✕
-          </button>
-        </div>
+        <img src={previewUrl} alt="이미지 미리보기" className="user-avatar" />
       ) : (
-        <div
-          className="upload-placeholder"
-          onClick={() => inputRef.current?.click()}
-        >
-          <p>
-            프로필 이미지를 업로드하거나
-            <br />
-            드래그해서 추가하세요
-          </p>
+        <div className="avatar-placeholder">
+          <span className="avatar-upload-icon">📷</span>
         </div>
       )}
 
+      {previewUrl && (
+        <button
+          type="button"
+          className="uploader-clear-btn"
+          onClick={(e) => {
+            e.stopPropagation()
+            handleFile(null)
+          }}
+          aria-label="이미지 삭제"
+        >
+          ×
+        </button>
+      )}
+
       <input
+        ref={inputRef}
         type="file"
         accept="image/jpeg,image/png"
-        ref={inputRef}
         style={{ display: 'none' }}
-        onChange={handleFileChange}
+        onChange={(e) => handleFile(e.currentTarget.files?.[0] ?? null)}
       />
     </div>
   )
