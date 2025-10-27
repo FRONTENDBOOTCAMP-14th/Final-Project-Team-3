@@ -221,6 +221,31 @@ textarea:focus-visible {
   pointer-events: none; /* 클릭 영역은 버튼에만 */
 }
 
+.edit-banner-notice {
+  background-color: color-mix(in oklab, var(--color-cancel) 12%, transparent);
+  color: var(--color-cancel);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  padding-block: var(--space-xs);
+  padding-inline: var(--space-sm);
+  border: 1px solid var(--color-cancel-secondary);
+  border-radius: var(--radius-sm);
+  margin-block-end: var(--space-sm);
+  text-align: center;
+  animation: fade-in 0.2s ease-out both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ========== 제출 버튼 ========== */
 .submit-row {
   display: flex;

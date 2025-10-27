@@ -59,7 +59,7 @@
 
 .nav-title {
   font-size: var(--font-sm);
-  color: var( --color-text-primary);
+  color: var(--color-text-primary);
   font-weight: 600;
 }
 
