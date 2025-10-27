@@ -8,7 +8,6 @@ import BannerUploader from '@/components/study-create/fields/BannerUploader'
 import CategoryField from '@/components/study-create/fields/CategoryField'
 import DescriptionField from '@/components/study-create/fields/DescriptionField'
 import RegionField from '@/components/study-create/fields/RegionField'
-import ToastMessage from '@/components/ui/toast-message'
 import {
   createStudyAction,
   type StudyActionResult,
