@@ -1,9 +1,11 @@
 'use client'
 import { useRouter, useSearchParams } from 'next/navigation'
-import type { ChangeEvent } from 'react'
+import { useEffect, useState, type ChangeEvent } from 'react'
 
 import Icons from '@/components/icons'
+import MoreButton from '@/components/ui/more-button'
 import type { StudyRoom } from '@/libs/supabase'
+import { getQueryStudyRoom } from '@/libs/supabase/api/study-room'
 
 import StudyCardLists from './study-card-lists'
 
@@ -11,15 +13,24 @@ import '@/styles/home/region-study.css'
 
 interface Props {
   studyData: StudyRoom[] | undefined
+  totalCount: number
 }
 
-function RegionStudy({ studyData }: Props) {
+function RegionStudy({ studyData, totalCount }: Props) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const region = searchParams.get('region')
   const depth = searchParams.get('depth')
   const search = searchParams.get('search')
   const currentSortValue = searchParams.get('sort_by') ?? ''
+
+  const LIMIT = 12
+  const [initialData, setInitialData] = useState<StudyRoom[]>(studyData ?? [])
+  const [isLoading, setIsLoading] = useState(false)
+  const [isHasData, setIsHasData] = useState(
+    (studyData?.length ?? 0) < totalCount
+  )
+  const [page, setPage] = useState<number>(1)
 
   let studyHeading = '전체 스터디'
 
@@ -30,6 +41,12 @@ function RegionStudy({ studyData }: Props) {
   } else if (!region && !depth && search) {
     studyHeading = `${search} 스터디`
   }
+
+  useEffect(() => {
+    setPage(1)
+    setInitialData(studyData ?? [])
+    setIsHasData((studyData?.length ?? 0) < totalCount)
+  }, [region, depth, search, currentSortValue, studyData, totalCount])
 
   const selectedHandler = (e: ChangeEvent<HTMLSelectElement>) => {
     const sortValue = e.target.value
@@ -43,6 +60,44 @@ function RegionStudy({ studyData }: Props) {
     }
 
     router.push(`/?${params.toString()}`)
+  }
+
+  const moreButtonHandler = async () => {
+    setIsLoading(true)
+
+    const nextPage = page + 1
+
+    const { ok: filterOk, data: filterData } = await getQueryStudyRoom(
+      region,
+      depth,
+      search,
+      currentSortValue,
+      LIMIT,
+      nextPage
+    )
+
+    if (!filterOk || !filterData?.length) {
+      setIsHasData(false)
+      setIsLoading(false)
+      return
+    }
+
+    setInitialData((prev) => {
+      const uniqueDataMap = new Map()
+
+      prev.forEach((item) => uniqueDataMap.set(item.id, item))
+
+      filterData.forEach((item) => uniqueDataMap.set(item.id, item))
+
+      return Array.from(uniqueDataMap.values())
+    })
+
+    if (filterData.length < LIMIT) {
+      setIsHasData(false)
+    }
+
+    setPage(nextPage)
+    setIsLoading(false)
   }
 
   return (
@@ -69,12 +124,15 @@ function RegionStudy({ studyData }: Props) {
         </select>
       </div>
       <div className="region-study-wrapper">
-        {studyData?.length === 0 ? (
+        {initialData?.length === 0 ? (
           <p>{studyHeading} 검색 결과가 없습니다.</p>
         ) : (
-          <StudyCardLists studyData={studyData} />
+          <StudyCardLists studyData={initialData} />
         )}
       </div>
+      {isHasData && (
+        <MoreButton isLoading={isLoading} onClick={moreButtonHandler} />
+      )}
     </div>
   )
 }

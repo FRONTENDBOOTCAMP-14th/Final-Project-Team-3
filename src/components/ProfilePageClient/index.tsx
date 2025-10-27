@@ -27,26 +27,10 @@ export default function ProfilePageClient({ user, studies, favorites }: Props) {
 
   const handleAvatarUpload = async (file: File | null) => {
     if (!user) return
-
-    if (!file) {
-      const { error: updateError } = await supabase
-        .from('profile')
-        .update({ profile_url: '/images/default-avatar.png' })
-        .eq('id', user.id)
-
-      if (updateError) {
-        console.error(updateError)
-        alert('프로필 이미지 삭제 실패!')
-        return
-      }
-
-      setAvatarUrl('/images/default-avatar.png')
-      _setAvatarFile(null)
-      return
-    }
+    if (!file) return 
 
     // ✅ 이미지 업로드 로직
-    const filePath = `profile/${user.id}/${file.name}`
+   const filePath = `profile/${user.id}/${file.name}`
 
     const { error: uploadError } = await supabase.storage
       .from('profile')
