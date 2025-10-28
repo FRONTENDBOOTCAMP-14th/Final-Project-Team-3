@@ -46,7 +46,7 @@ function HeaderContent({
           setSearchVisible(true)
         }}
       >
-        <Icons name="search" width={32} height={32} aria-hidden />
+        <Icons name="search" width={24} height={24} aria-hidden />
       </button>
       {profile && (
         <button
@@ -66,7 +66,7 @@ function HeaderContent({
               style={{ borderRadius: '50%' }}
             />
           ) : (
-            <Icons name="user" width={32} height={32} aria-hidden />
+            <Icons name="user" width={24} height={24} aria-hidden />
           )}
         </button>
       )}
@@ -77,7 +77,7 @@ function HeaderContent({
           setNavVisible(true)
         }}
       >
-        <Icons name="list" width={32} height={32} aria-hidden />
+        <Icons name="list" width={24} height={24} aria-hidden />
       </button>
     </div>
   )

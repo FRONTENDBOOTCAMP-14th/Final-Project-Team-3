@@ -14,7 +14,7 @@
 
 /* 카드 컨테이너 */
 .status-card {
-  inline-size: min(30rem, 92vi);
+  inline-size: 100%;
   border-radius: var(--radius-lg);
   background-color: var(--color-bg-secondary);
   color: var(--color-text-primary);
