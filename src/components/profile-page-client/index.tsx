@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 
 import StudyCardLists from '@/components/home/study-card-lists'
 import Icon from '@/components/icons'
-import PaginationList from '@/components/ui/PaginationList'
+import PaginationList from '@/components/ui/pagination-list'
 import { useProfile } from '@/hooks/useProfile'
 import type { Profile, StudyRoom } from '@/libs/supabase'
 import { updateUserProfile } from '@/libs/supabase/api/user'

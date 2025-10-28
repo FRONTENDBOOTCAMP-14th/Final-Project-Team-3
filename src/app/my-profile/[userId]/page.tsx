@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
-import ProfilePageClient from '@/components/ProfilePageClient'
+import ProfilePageClient from '@/components/profile-page-client'
 import type { Profile, StudyRoom } from '@/libs/supabase'
 import { getUserBookmarks } from '@/libs/supabase/api/bookmark'
 import { getMyStudyRoom } from '@/libs/supabase/api/study-room'
