@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 
 import StudyCardLists from '@/components/home/study-card-lists'
+import Icon from '@/components/icons'
 import PaginationList from '@/components/ui/PaginationList'
 import { useProfile } from '@/hooks/useProfile'
 import type { Profile, StudyRoom } from '@/libs/supabase'
@@ -23,6 +24,8 @@ interface Props {
 export default function ProfilePageClient({ user, studies, favorites }: Props) {
   const { handleAvatarUpload, avatarUrl, _avatarFile } = useProfile()
   const [isDesktop, setIsDesktop] = useState<boolean>(false)
+  const [editing, setEditing] = useState(false)
+  const [bio, setIntro] = useState(user?.bio ?? '')
 
   useEffect(() => {
     const media = window.matchMedia('(min-width: 64rem)')
@@ -31,7 +34,6 @@ export default function ProfilePageClient({ user, studies, favorites }: Props) {
     }
 
     setIsDesktop(media.matches)
-
     media.addEventListener('change', resizeHandler)
 
     return () => {
@@ -55,6 +57,36 @@ export default function ProfilePageClient({ user, studies, favorites }: Props) {
         <div className="user-info-right">
           <p className="user-name">{user?.nickname ?? '닉네임 없음'}</p>
           <p className="user-email">{user?.email}</p>
+
+          <div className="user-intro">
+            {editing ? (
+              // 수정 모드일 때
+              <input
+                type="text"
+                value={bio}
+                onChange={(e) => setIntro(e.target.value)}
+                onBlur={() => setEditing(false)} // 포커스 해제 시 닫힘
+                className="intro-input"
+                placeholder="한 줄 자기소개를 입력하세요"
+                autoFocus
+              />
+            ) : (
+              // 일반 모드일 때
+              <>
+                <p className="intro-text">
+                  {bio || '한 줄 자기소개를 작성해보세요'}
+                </p>
+                <button
+                  type="button"
+                  className="intro-edit-btn"
+                  aria-label="자기소개 수정"
+                  onClick={() => setEditing(true)}
+                >
+                  <Icon name="edit" width={16} height={16} />
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
