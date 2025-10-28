@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 
 import type { StudyRoom } from '@/libs/supabase'
+
 import '@/styles/pagination-list/pagination-list.css'
 
 import MoreButton from './more-button'
