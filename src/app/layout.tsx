@@ -10,6 +10,7 @@ import { AuthProvider } from '@/context/authContext'
 import { BookMarkProvider } from '@/context/bookmarkContext'
 import { LikesProvider } from '@/context/likesContext'
 import { ProfileProvider } from '@/context/profileContext'
+import { notoSansKR, spoqaHandSansNeo } from '@/fonts'
 import { createClient } from '@/libs/supabase/server'
 
 import '@/styles/common/index.css'
@@ -40,9 +41,11 @@ export default async function RootLayout({ children }: PropsWithChildren) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  const fontVariables = `${notoSansKR.variable} ${spoqaHandSansNeo.variable}`
+
   return (
     <html lang="ko-KR">
-      <body>
+      <body className={fontVariables}>
         <ErrorBoundary errorComponent={Error}>
           <Suspense fallback={<Loading />}>
             <AuthProvider user={user}>

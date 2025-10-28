@@ -77,9 +77,39 @@
 
   & .study-card-delete-modal {
     z-index: 1000;
+    padding: 0;
     position: absolute;
-    top: 0.625rem;
-    right: 0.625rem;
+    top: 0.4375rem;
+    right: 0.4375rem;
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    inline-size: 1.8rem;
+    block-size: 1.8rem;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    z-index: 5;
+    transition:
+      background 0.2s ease,
+      transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & span {
+      display: inline-block;
+      inline-size: 100%;
+      block-size: 100%;
+      line-height: 1.6;
+    }
+
+    &:hover {
+      background: var(--color-cancel);
+      transform: scale(1.1);
+    }
   }
 
   & a {

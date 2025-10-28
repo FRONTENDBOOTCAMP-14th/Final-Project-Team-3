@@ -95,6 +95,22 @@ async function signUpAction(
     nickname,
   })
 
+  if (res.ok) {
+    toast.success(res.message, {
+      action: {
+        label: '닫기',
+        onClick: () => {},
+      },
+    })
+  } else {
+    toast.error(res.message, {
+      action: {
+        label: '닫기',
+        onClick: () => {},
+      },
+    })
+  }
+
   return { ok: res.ok, message: res.message }
 }
 

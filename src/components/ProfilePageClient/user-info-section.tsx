@@ -60,12 +60,12 @@ export default function ProfileImgUploader({
       onChange(null)
       if (inputRef.current) inputRef.current.value = ''
       return
-    }
-    if (!validate(file)) {
+    } else if (!validate(file)) {
       if (inputRef.current) inputRef.current.value = ''
       return
+    } else {
+      onChange(file)
     }
-    onChange(file)
   }
 
   return (
@@ -100,7 +100,6 @@ export default function ProfileImgUploader({
           onClick={(e) => {
             e.stopPropagation()
             handleFile(null)
-            onChange(null)
           }}
           aria-label="이미지 삭제"
         >
