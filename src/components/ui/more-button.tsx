@@ -6,7 +6,7 @@ import type { ButtonHTMLAttributes, PropsWithChildren } from 'react'
 import Spinner from './spinner'
 
 interface Props {
-  isLoading: boolean
+  isLoading?: boolean
 }
 
 type MoreButtonProps = PropsWithChildren<

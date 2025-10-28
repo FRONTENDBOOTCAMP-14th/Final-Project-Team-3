@@ -2,8 +2,7 @@
   position: relative;
   inline-size: 10rem;
   block-size: 10rem;
-  border-radius: 50%;
-  background-color: var(--color-bg-secondary);
+  background-color: transparent;
   cursor: pointer;
   transition: transform 0.2s ease;
   display: flex;
@@ -54,10 +53,11 @@
 }
 
 .uploader-clear-btn {
+  padding: 0;
   position: absolute;
-  top: 0.4rem;
-  right: 0.4rem;
-  background: rgba(0, 0, 0, 0.6);
+  top: 0.1875rem;
+  right: 0.1875rem;
+  background: var(--color-primary);
   color: #fff;
   border: none;
   border-radius: 50%;
@@ -74,6 +74,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  & span {
+    display: inline-block;
+    inline-size: 100%;
+    block-size: 100%;
+    line-height: 1.6;
+  }
 }
 
 .uploader-clear-btn:hover {

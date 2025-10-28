@@ -36,11 +36,16 @@ export async function signUpAndCreateProfile(
     },
   ])
 
-  if (profileError) {
+  if (profileError?.code === '23505') {
+    return {
+      ok: false,
+      message: '이미 가입된 이메일 주소 입니다.',
+    }
+  } else if (profileError) {
     return { ok: false, message: '프로파일 업데이트 실패...' }
+  } else {
+    return { ok: true, message: '회원가입 성공! 이메일을 확인해주세요 📧' }
   }
-
-  return { ok: true, message: '회원가입 성공! 이메일을 확인해주세요 📧' }
 }
 
 export async function getUserProfile(
@@ -180,7 +185,7 @@ export async function removeLikesStudyRoom(
 export async function avatarUpload(
   userId: string,
   file: File | null
-): Promise<ResultType<string> | null> {
+): Promise<ResultType<string>> {
   const supabase = await createClient()
 
   if (!userId) {
@@ -197,8 +202,7 @@ export async function avatarUpload(
     if (updateError) {
       return { ok: false, message: '프로필 업로드 실패...' }
     }
-
-    return null
+    return { ok: true, message: '기본 프로필 이미지로 수정 되었습니다.' }
   }
 
   // ✅ 이미지 업로드 로직
@@ -225,5 +229,33 @@ export async function avatarUpload(
     return { ok: false, message: '프로필 이미지 수정 실패...' }
   }
 
-  return { ok: true, data: publicUrl, message: '프로필 이미지 수정 실패...' }
+  return {
+    ok: true,
+    data: publicUrl,
+    message: '프로필 이미지가 변경 되었습니다.',
+  }
+}
+
+export async function updateUserProfile(
+  userId: string,
+  bio: string | null
+): Promise<ResultType<Profile> | null> {
+  const supabase = await createClient()
+
+  if (!userId) return null
+
+  const { data: profileData, error: profileError } = await supabase
+    .from('profile')
+    .update({
+      bio,
+    })
+    .eq('id', userId)
+    .select('*')
+    .single()
+
+  if (profileError) {
+    return { ok: false, message: '프로필 수정 실패...' }
+  }
+
+  return { ok: true, data: profileData, message: '프로필을 수정 하였습니다.' }
 }

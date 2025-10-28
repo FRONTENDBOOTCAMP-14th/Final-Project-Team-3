@@ -6,6 +6,10 @@
 
 @import './_theme.css' layer(theme);
 
+body {
+  font-family: var(--spoqa-han-sans-neo), var(--noto-sans-kr), sans-serif;
+}
+
 .web-main {
   padding-block-start: 5.3125rem;
   padding-inline: var(--space-ml);
