@@ -1,5 +1,7 @@
 'use server'
 
+import type { ResultType } from '@/types/apiResultsType'
+
 import type { Bookmark, Likes, Profile } from '..'
 import { createClient } from '../server'
 
@@ -9,7 +11,9 @@ interface SignUpData {
   nickname: string
 }
 
-export async function signUpAndCreateProfile(data: SignUpData): Promise<void> {
+export async function signUpAndCreateProfile(
+  data: SignUpData
+): Promise<ResultType<void>> {
   const supabase = await createClient()
 
   const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -17,9 +21,11 @@ export async function signUpAndCreateProfile(data: SignUpData): Promise<void> {
     password: data.password,
   })
 
-  if (authError) throw authError
+  if (authError || !authData.user) {
+    return { ok: false, message: '회원가입 실패...' }
+  }
+
   const user = authData.user
-  if (!user) throw new Error('회원가입 후 사용자 정보를 불러올 수 없습니다.')
 
   const { error: profileError } = await supabase.from('profile').insert([
     {
@@ -30,10 +36,21 @@ export async function signUpAndCreateProfile(data: SignUpData): Promise<void> {
     },
   ])
 
-  if (profileError) throw profileError
+  if (profileError?.code === '23505') {
+    return {
+      ok: false,
+      message: '이미 가입된 이메일 주소 입니다.',
+    }
+  } else if (profileError) {
+    return { ok: false, message: '프로파일 업데이트 실패...' }
+  } else {
+    return { ok: true, message: '회원가입 성공! 이메일을 확인해주세요 📧' }
+  }
 }
 
-export async function getUserProfile(userId: string): Promise<Profile | null> {
+export async function getUserProfile(
+  userId: string
+): Promise<ResultType<Profile> | null> {
   const supabase = await createClient()
 
   if (!userId) return null
@@ -45,15 +62,15 @@ export async function getUserProfile(userId: string): Promise<Profile | null> {
     .single()
 
   if (profileError) {
-    throw new Error(profileError.message)
+    return { ok: false, message: '프로필 정보 조회 실패...' }
   }
 
-  return profileData
+  return { ok: true, data: profileData }
 }
 
 export async function getMyBookMarkStudyRoom(
   userId: string
-): Promise<Bookmark[]> {
+): Promise<ResultType<Bookmark[]>> {
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -62,16 +79,16 @@ export async function getMyBookMarkStudyRoom(
     .eq('user_id', userId)
 
   if (error) {
-    throw new Error(error.message)
+    return { ok: false, message: '"좋아요" 가져오기 실패...' }
   }
 
-  return data ?? []
+  return { ok: true, data: data ?? [] }
 }
 
 export async function setBookMarkStudyRoom(
   studyId: string,
   userId: string
-): Promise<void> {
+): Promise<ResultType<void>> {
   const supabase = await createClient()
 
   const { error } = await supabase.from('bookmark').insert({
@@ -81,17 +98,19 @@ export async function setBookMarkStudyRoom(
 
   if (error) {
     if (error.code === '23505') {
-      throw new Error('이미 즐겨찾기에 추가 되었습니다.')
+      return { ok: false, message: '이미 즐겨찾기에 추가 되었습니다.' }
     } else {
-      throw new Error(error.message)
+      return { ok: false, message: '즐겨찾기 추가 실패.' }
     }
   }
+
+  return { ok: true, message: '즐겨찾기에 추가 되었습니다..' }
 }
 
 export async function removeBookMarkStudyRoom(
   studyId: string,
   userId: string
-): Promise<void> {
+): Promise<ResultType<void>> {
   const supabase = await createClient()
   const { error } = await supabase
     .from('bookmark')
@@ -99,13 +118,17 @@ export async function removeBookMarkStudyRoom(
     .eq('room_id', studyId)
     .eq('user_id', userId)
 
-  if (error) throw new Error(error.message)
+  if (error) {
+    return { ok: false, message: '즐겨찾기 제거 실패.' }
+  }
+
+  return { ok: true, message: '즐겨찾기가 제거 되었습니다..' }
 }
 
 export async function setLikesStudyRoom(
   studyId: string,
   userId: string
-): Promise<void> {
+): Promise<ResultType<void>> {
   const supabase = await createClient()
 
   const { error } = await supabase.from('likes').insert({
@@ -115,14 +138,18 @@ export async function setLikesStudyRoom(
 
   if (error) {
     if (error.code === '23505') {
-      throw new Error('이미 "좋아요"에 추가 되었습니다.')
+      return { ok: false, message: '이미 "좋아요"에 추가 되었습니다.' }
     } else {
-      throw new Error(error.message)
+      return { ok: false, message: '"좋아요" 추가 실패...' }
     }
   }
+
+  return { ok: true, message: '"좋아요"에 추가 되었습니다..' }
 }
 
-export async function getMyLikesStudyRoom(userId: string): Promise<Likes[]> {
+export async function getMyLikesStudyRoom(
+  userId: string
+): Promise<ResultType<Likes[]>> {
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -131,16 +158,16 @@ export async function getMyLikesStudyRoom(userId: string): Promise<Likes[]> {
     .eq('user_id', userId)
 
   if (error) {
-    throw new Error(error.message)
+    return { ok: false, message: '"좋아요" 가져오기 실패...' }
   }
 
-  return data ?? []
+  return { ok: true, data: data ?? [] }
 }
 
 export async function removeLikesStudyRoom(
   studyId: string,
   userId: string
-): Promise<void> {
+): Promise<ResultType<void>> {
   const supabase = await createClient()
   const { error } = await supabase
     .from('likes')
@@ -148,5 +175,87 @@ export async function removeLikesStudyRoom(
     .eq('room_id', studyId)
     .eq('user_id', userId)
 
-  if (error) throw new Error(error.message)
+  if (error) {
+    return { ok: false, message: '"좋아요" 제거 실패...' }
+  }
+
+  return { ok: true, message: '"좋아요"가 제거 되었습니다.' }
+}
+
+export async function avatarUpload(
+  userId: string,
+  file: File | null
+): Promise<ResultType<string>> {
+  const supabase = await createClient()
+
+  if (!userId) {
+    return { ok: false, message: '로그인이 필요 합니다...' }
+  }
+  if (!file) {
+    // DB의 프로필 URL 기본 이미지로 변경
+
+    const { error: updateError } = await supabase
+      .from('profile')
+      .update({ profile_url: '/images/default-avatar.png' })
+      .eq('id', userId)
+
+    if (updateError) {
+      return { ok: false, message: '프로필 업로드 실패...' }
+    }
+    return { ok: true, message: '기본 프로필 이미지로 수정 되었습니다.' }
+  }
+
+  // ✅ 이미지 업로드 로직
+  const filePath = `profile/${userId}/${file.name}`
+
+  const { error: uploadError } = await supabase.storage
+    .from('profile')
+    .upload(filePath, file, { upsert: true })
+
+  if (uploadError) {
+    return { ok: false, message: '이미지 업로드 실패...' }
+  }
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from('profile').getPublicUrl(filePath)
+
+  const { error: updateError } = await supabase
+    .from('profile')
+    .update({ profile_url: publicUrl })
+    .eq('id', userId)
+
+  if (updateError) {
+    return { ok: false, message: '프로필 이미지 수정 실패...' }
+  }
+
+  return {
+    ok: true,
+    data: publicUrl,
+    message: '프로필 이미지가 변경 되었습니다.',
+  }
+}
+
+export async function updateUserProfile(
+  userId: string,
+  bio: string | null
+): Promise<ResultType<Profile> | null> {
+  const supabase = await createClient()
+
+  if (!userId) return null
+
+  const { data: profileData, error: profileError } = await supabase
+    .from('profile')
+    .update({
+      bio,
+    })
+    .eq('id', userId)
+    .select('*')
+    .single()
+
+  if (profileError) {
+    return { ok: false, message: '프로필 수정 실패...' }
+  }
+
+  return { ok: true, data: profileData, message: '프로필을 수정 하였습니다.' }
 }

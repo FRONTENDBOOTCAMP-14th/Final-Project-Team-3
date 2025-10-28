@@ -1,0 +1,70 @@
+/* ===========================
+   404 Not Found Page
+   =========================== */
+
+.not-found {
+  display: grid;
+  place-items: center;
+  min-block-size: 100dvh;
+  padding: var(--space-md);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  animation: fade-in 0.3s ease-out;
+}
+
+/* 카드 느낌 컨테이너 */
+.not-found::before {
+  content: '페이지를 찾을 수 없습니다.';
+  display: grid;
+  place-items: center;
+  inline-size: min(30rem, 92vi);
+  padding: var(--space-xl);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-secondary);
+  box-shadow: 0 0.625rem 1.875rem rgba(0 0 0 / 0.15);
+  font-size: 1rem;
+  font-weight: var(--font-semibold);
+  text-align: center;
+  color: var(--color-text-primary);
+  animation: pop-in 0.25s ease-out both;
+}
+
+/* ===========================
+   Animations
+   =========================== */
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 반응형 */
+@media screen and (width >= 48rem) {
+  .not-found::before {
+    inline-size: min(28rem, 90vi);
+    font-size: var(--font-md);
+    padding: var(--space-2xl);
+  }
+}
+
+@media screen and (width >= 64rem) {
+  .not-found::before {
+    inline-size: 32rem;
+    font-size: var(--font-md);
+    padding: var(--space-2xl);
+  }
+}

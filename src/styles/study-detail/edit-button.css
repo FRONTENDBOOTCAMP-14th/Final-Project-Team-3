@@ -1,0 +1,40 @@
+.edit-button-wrap {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  z-index: 100;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+
+  backdrop-filter: blur(4px);
+}
+
+.edit-button-link {
+  inline-size: 100%;
+  block-size: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-bg-primary);
+  box-shadow: 0 0.15rem 0.3rem rgba(0 0 0 / 10%);
+  transition:
+    background-color 0.2s,
+    transform 0.15s;
+  cursor: pointer;
+  color: #000;
+}
+.edit-button-link:hover {
+  background: #83bffa;
+  transform: scale(1.1);
+  color: #fff;
+}
+.edit-button-link:active {
+  transform: scale(0.96);
+}

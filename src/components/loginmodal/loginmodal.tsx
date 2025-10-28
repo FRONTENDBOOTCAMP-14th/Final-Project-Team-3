@@ -5,12 +5,13 @@ import { usePathname } from 'next/navigation'
 import { useActionState, useEffect, useRef, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 
+import useFocusTrap from '@/hooks/useFocusTrap'
+import useKeyEvent from '@/hooks/useKeyEvent'
+import useScrollLock from '@/hooks/useScrollLock'
+import { socialLogin } from '@/libs/supabase/api/auth'
+import supabase from '@/libs/supabase/client'
 import '@/styles/login-modal/login-modal.css'
-import useFocusTrap from '../../hooks/useFocusTrap'
-import useKeyEvent from '../../hooks/useKeyEvent'
-import useScrollLock from '../../hooks/useScrollLock'
-import { socialLogin } from '../../libs/supabase/api/auth'
-import supabase from '../../libs/supabase/client'
+
 import Icons from '../icons'
 
 async function loginAction(

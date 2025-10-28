@@ -1,11 +1,10 @@
 import type { User } from '@supabase/supabase-js'
 import { useState, useTransition } from 'react'
+import { toast } from 'sonner'
 
-import type { StudyRoom, StudyRoomRequests } from '../../libs/supabase'
-import {
-  studyRoomRequestCancel,
-  StudyRoomRequestsFn,
-} from '../../libs/supabase/api/study-room'
+import { useMember } from '@/hooks/useMember'
+import type { StudyRoom, StudyRoomRequests } from '@/libs/supabase'
+import { studyRoomRequestCancel } from '@/libs/supabase/api/study-room'
 
 interface Props {
   user: User | null
@@ -18,37 +17,55 @@ function RequestBtn({ studyRoomRequestsData, studyId, user }: Props) {
     (item) => item.user_id === user?.id
   )
 
+  const { requestsHandler } = useMember()
+
   const [requestData, setRequestData] = useState<
     StudyRoomRequests | null | undefined
   >(filterRequestsData)
   const [isPending, startTransition] = useTransition()
 
-  const handleRequestClick = () => {
-    if (!user) alert('로그인이 필요합니다.')
+  const handleRequestClick = async () => {
+    if (!user) {
+      toast.error('로그인이 필요 합니다...', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
+
+      return
+    }
+
+    if (!studyId || !user?.id) return
 
     startTransition(async () => {
-      try {
-        if (!studyId || !user?.id) return
+      const result = await requestsHandler(user?.id, 'PENDING')
 
-        const data = await StudyRoomRequestsFn(studyId, user?.id, 'PENDING')
-
-        setRequestData(data)
-        alert('신청이 완료 되었습니다.')
-      } catch (e) {
-        alert(`신청 에러 ${e.message}`)
-      }
+      setRequestData(result?.data)
     })
   }
 
   const handleRequestCancelClick = () => {
     startTransition(async () => {
-      try {
-        if (!studyId || !user?.id) return
+      if (!studyId || !user?.id) return
 
-        await studyRoomRequestCancel(studyId, user?.id)
+      const result = await studyRoomRequestCancel(studyId, user?.id)
+
+      if (result.ok) {
         setRequestData(null)
-      } catch (e) {
-        alert(`취소 에러 ${e.message}`)
+        toast.success(result.message, {
+          action: {
+            label: '닫기',
+            onClick: () => {},
+          },
+        })
+      } else {
+        toast.error(result.message, {
+          action: {
+            label: '닫기',
+            onClick: () => {},
+          },
+        })
       }
     })
   }

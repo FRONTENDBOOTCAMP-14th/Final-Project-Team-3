@@ -14,7 +14,7 @@ export default function StudyBanner({
   alt = '스터디 배너',
   className,
 }: StudyBannerProps) {
-  const isGif = src?.toLowerCase().endsWith('.gif')
+  const isGif = ['.gif', '_gif'].some((ext) => src?.toLowerCase().endsWith(ext))
 
   return (
     <div className={`study-banner ${className ?? ''}`}>

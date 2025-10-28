@@ -1,10 +1,18 @@
-// app/study-create/page.tsx
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
 import StudyCreateForm from '@/components/study-create/studycreateform'
 import { createClient } from '@/libs/supabase/server'
 
+import '@/styles/study-create/study-create.css'
+
 export const dynamic = 'force-dynamic'
+
+export const metadata: Metadata = {
+  title: '모이다(MOIDA) 스터디를 생성해 보아요.',
+  description:
+    '모이다(MOIDA) 스터디 모집 플랫폼과 함께 가까운 지역, 관심 분야 등 나와 가장 잘 맞는 스터디를 만들어 보세요.',
+}
 
 export default async function StudyCreatePage() {
   const supabase = await createClient()

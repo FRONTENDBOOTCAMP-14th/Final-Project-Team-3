@@ -1,33 +1,37 @@
+'use client'
 import '@/styles/study-detail/comment.css'
 import type { Dispatch, SetStateAction } from 'react'
-import { useEffect, useRef, useState, useTransition } from 'react'
-
-import { addComments } from '@/libs/supabase/api/comments'
+import { useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 
 interface Props {
-  studyId: string
   userId?: string | null
   commentId?: string
   comment?: string
-  type?: 'MODIFY'
   setModifyComment?: Dispatch<SetStateAction<boolean>>
+  parentId?: string | null
+  onCommentsHandler: (
+    comment: string,
+    commentId?: string,
+    options?: { type?: 'MODIFY' | 'CHILD_MODIFY'; parentId?: string | null }
+  ) => Promise<void>
+  isAdding: boolean
 }
 
 function CommentForm({
-  studyId,
   userId,
-  type,
   commentId,
   comment,
   setModifyComment,
+  parentId,
+  onCommentsHandler,
+  isAdding,
 }: Props) {
   const formRef = useRef<HTMLFormElement | null>(null)
   const [inputValue, setInputValue] = useState<string>(
-    type === 'MODIFY' && comment && userId ? comment : ''
+    comment && userId ? comment : ''
   )
   const [debounceValue, setDebounceValue] = useState<string>('')
-
-  const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -45,21 +49,22 @@ function CommentForm({
     const comment = formData.get('comment') as string
 
     if (!comment.trim()) {
-      alert('최소 한 글자 이상 적어주세요...')
+      toast.warning('최소 한 글자 이상 적어주세요...', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
       return
     }
 
-    startTransition(async () => {
-      try {
-        await addComments(studyId, comment, commentId)
-
-        if (type === 'MODIFY' && setModifyComment) setModifyComment(false)
-        setInputValue('')
-        alert(type === 'MODIFY' ? '댓글 수정 성공!' : '댓글 추가 성공!')
-      } catch (_error) {
-        alert(type === 'MODIFY' ? '댓글 수정 실패...' : '댓글 추가 실패...')
-      }
+    await onCommentsHandler(comment, commentId, {
+      type: parentId ? 'CHILD_MODIFY' : 'MODIFY',
+      parentId,
     })
+
+    if (setModifyComment) setModifyComment(false)
+    setInputValue('')
   }
 
   return (
@@ -85,7 +90,7 @@ function CommentForm({
               comment !== inputValue &&
               userId && (
                 <>
-                  {!type && !comment && (
+                  {!comment && (
                     <button
                       type="button"
                       className="comment-form-btn cancel-btn"
@@ -100,13 +105,13 @@ function CommentForm({
                   <button
                     type="submit"
                     className="comment-form-btn"
-                    disabled={isPending}
+                    disabled={isAdding}
                   >
-                    {comment && type === 'MODIFY'
-                      ? isPending
+                    {comment
+                      ? isAdding
                         ? '수정 중...'
                         : '수정'
-                      : isPending
+                      : isAdding
                         ? '등록 중...'
                         : '등록'}
                   </button>

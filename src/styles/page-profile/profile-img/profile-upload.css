@@ -1,0 +1,111 @@
+.user-avatar-wrapper {
+  position: relative;
+  inline-size: 10rem;
+  block-size: 10rem;
+  background-color: transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.user-avatar-wrapper:hover {
+  transform: scale(1.03);
+}
+
+.user-avatar {
+  inline-size: 100%;
+  block-size: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.avatar-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-tertiary);
+  font-size: 2rem;
+  transition: background 0.25s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.user-avatar-wrapper:hover .avatar-placeholder {
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+}
+
+.avatar-upload-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  pointer-events: none;
+}
+
+.uploader-clear-btn {
+  padding: 0;
+  position: absolute;
+  top: 0.1875rem;
+  right: 0.1875rem;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  inline-size: 1.8rem;
+  block-size: 1.8rem;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  z-index: 5;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & span {
+    display: inline-block;
+    inline-size: 100%;
+    block-size: 100%;
+    line-height: 1.6;
+  }
+}
+
+.uploader-clear-btn:hover {
+  background: var(--color-cancel);
+  transform: scale(1.1);
+}
+
+.user-avatar-wrapper.dragging {
+  outline: 2px dashed var(--color-primary);
+  outline-offset: 3px;
+}
+
+@media screen and (max-width: 48rem) {
+  .user-avatar-wrapper {
+    inline-size: 7rem;
+    block-size: 7rem;
+  }
+
+  .avatar-placeholder {
+    font-size: 1.6rem;
+  }
+
+  .uploader-clear-btn {
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    font-size: 1rem;
+  }
+}

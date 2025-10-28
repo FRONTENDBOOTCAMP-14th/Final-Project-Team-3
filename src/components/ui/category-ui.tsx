@@ -1,21 +1,21 @@
+'use client'
 import useSWR from 'swr'
-
-import Icons from '@/components/icons'
-import type { StudyRoom } from '@/libs/supabase'
-import { getStudyRoomDetail } from '@/libs/supabase/api/study-room'
 
 import '@/styles/ui/category-ui.css'
 
+import Icons from '@/components/icons'
+import { getStudyRoomDetail } from '@/libs/supabase/api/study-room'
+
 interface Props {
-  studyData: StudyRoom
+  studyId: string
 }
 
 const fetcher = (studyId: string) => getStudyRoomDetail(studyId)
 
-function CategoryUI({ studyData }: Props) {
-  const { data } = useSWR(
-    ['study_room_data', studyData.id],
-    () => fetcher(studyData.id),
+function CategoryUI({ studyId }: Props) {
+  const { data: studyRoomData } = useSWR(
+    [`study_room_data_${studyId}`],
+    () => fetcher(studyId),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -28,22 +28,22 @@ function CategoryUI({ studyData }: Props) {
     <div role="group" className="category-wrapper">
       <p>
         <Icons name="category" aria-hidden="true" />
-        <span>{data?.category}</span>
+        <span>{studyRoomData?.data?.category}</span>
       </p>
 
       <p>
         <Icons name="map-pin" aria-hidden="true" />
-        <span>{data?.region_depth}</span>
+        <span>{studyRoomData?.data?.region_depth}</span>
       </p>
 
       <p>
         <Icons name="user" aria-hidden="true" />
-        <span>멤버 {data?.member_count}</span>
+        <span>멤버 {studyRoomData?.data?.member_count}</span>
       </p>
 
       <p>
         <Icons name="heart" aria-hidden="true" />
-        <span>좋아요 {data?.likes_count}</span>
+        <span>좋아요 {studyRoomData?.data?.likes_count}</span>
       </p>
     </div>
   )

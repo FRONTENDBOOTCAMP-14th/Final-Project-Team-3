@@ -4,13 +4,13 @@ import Link from 'next/link'
 import type { StudyRoom } from '@/libs/supabase'
 
 interface Props {
-  studyData: StudyRoom[]
+  studyData: StudyRoom[] | undefined
 }
 
 function StudyRoomCard({ studyData }: Props) {
   return (
     <ul className="latest-lists">
-      {studyData.map((item) => (
+      {studyData?.map((item) => (
         <li className="latest-lists-item" key={item.id}>
           <Link href={`/study-detail/${item.id}`}>
             <div className="image-wrapper">
@@ -22,6 +22,9 @@ function StudyRoomCard({ studyData }: Props) {
                 aria-hidden="true"
                 sizes="(max-width: 768px) 165px, (max-width: 1023px) 200px, 250px"
                 priority
+                unoptimized={['.gif', '_gif'].some((gif) =>
+                  item.banner_image?.toLowerCase().endsWith(gif)
+                )}
               />
             </div>
             <h3 title={item.title}>{item.title}</h3>

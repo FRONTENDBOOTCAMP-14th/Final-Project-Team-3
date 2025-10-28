@@ -1,9 +1,11 @@
+'use client'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import type { Dispatch, SetStateAction } from 'react'
 import React from 'react'
 
 import Icons from '@/components/icons'
+import { useProfile } from '@/hooks/useProfile'
 import type { Profile } from '@/libs/supabase'
 
 interface Props {
@@ -13,7 +15,7 @@ interface Props {
   setUserProfile: Dispatch<SetStateAction<Profile | null>>
   selectCategory: string
   hidden: boolean
-  profile: Profile | null
+  profile: Profile | null | undefined
 }
 
 function HeaderContent({
@@ -25,6 +27,7 @@ function HeaderContent({
   profile,
 }: Props) {
   const router = useRouter()
+  const { avatarUrl } = useProfile()
 
   return (
     <div className="header-content-group" hidden={hidden}>
@@ -43,7 +46,7 @@ function HeaderContent({
           setSearchVisible(true)
         }}
       >
-        <Icons name="search" width={24} height={24} aria-hidden />
+        <Icons name="search" width={32} height={32} aria-hidden />
       </button>
       {profile && (
         <button
@@ -55,7 +58,7 @@ function HeaderContent({
         >
           {profile.profile_url ? (
             <Image
-              src={profile.profile_url}
+              src={avatarUrl ?? '/images/default-avatar.png'}
               alt={profile.nickname ?? '프로필 이미지'}
               width={24}
               height={24}
@@ -63,7 +66,7 @@ function HeaderContent({
               style={{ borderRadius: '50%' }}
             />
           ) : (
-            <Icons name="user" width={24} height={24} aria-hidden />
+            <Icons name="user" width={32} height={32} aria-hidden />
           )}
         </button>
       )}
@@ -74,7 +77,7 @@ function HeaderContent({
           setNavVisible(true)
         }}
       >
-        <Icons name="list" width={24} height={24} aria-hidden />
+        <Icons name="list" width={32} height={32} aria-hidden />
       </button>
     </div>
   )

@@ -50,29 +50,81 @@ export interface Database {
           },
         ]
       }
-      comments: {
+      chat: {
         Row: {
-          comment: string
           created_at: string
           id: string
+          message: string
           room_id: string
           user_id: string
         }
         Insert: {
-          comment: string
           created_at?: string
           id?: string
+          message: string
           room_id: string
           user_id: string
         }
         Update: {
-          comment?: string
           created_at?: string
           id?: string
+          message?: string
           room_id?: string
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: 'chat_room_id_fkey'
+            columns: ['room_id']
+            isOneToOne: false
+            referencedRelation: 'study_room'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'chat_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profile'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      comments: {
+        Row: {
+          child_comments_count: number
+          comment: string
+          created_at: string
+          id: string
+          parent_comment_Id: string | null
+          room_id: string
+          user_id: string
+        }
+        Insert: {
+          child_comments_count?: number
+          comment: string
+          created_at?: string
+          id?: string
+          parent_comment_Id?: string | null
+          room_id: string
+          user_id: string
+        }
+        Update: {
+          child_comments_count?: number
+          comment?: string
+          created_at?: string
+          id?: string
+          parent_comment_Id?: string | null
+          room_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'comments_parent_comment_Id_fkey'
+            columns: ['parent_comment_Id']
+            isOneToOne: false
+            referencedRelation: 'comments'
+            referencedColumns: ['id']
+          },
           {
             foreignKeyName: 'comments_room_id_fkey'
             columns: ['room_id']

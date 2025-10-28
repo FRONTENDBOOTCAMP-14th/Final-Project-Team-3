@@ -1,6 +1,7 @@
 'use client'
 import type { PropsWithChildren } from 'react'
-import { createContext, useCallback, useMemo } from 'react'
+import { createContext, useCallback, useEffect, useMemo } from 'react'
+import { toast } from 'sonner'
 import useSWR, { mutate } from 'swr'
 
 import { useAuth } from '@/hooks/useAuth'
@@ -10,10 +11,11 @@ import {
   removeLikesStudyRoom,
   setLikesStudyRoom,
 } from '@/libs/supabase/api/user'
+import type { ResultType } from '@/types/apiResultsType'
 
 export interface LikesContextValue {
   isLoading: boolean
-  likesData: Likes[] | null
+  likesData: ResultType<Likes[]> | null
   isRoomLiked: (roomId: string) => boolean
   likesHandler: (studyId: string, userId: string) => Promise<void>
 }
@@ -23,8 +25,8 @@ LikesContext.displayName = 'LikesContext'
 
 const fetcher = async (
   userId: string,
-  fetchFn: (userId: string) => Promise<Likes[] | null>
-): Promise<Likes[] | null> => {
+  fetchFn: (userId: string) => Promise<ResultType<Likes[]> | null>
+): Promise<ResultType<Likes[]> | null> => {
   if (!userId) return null
   return fetchFn(userId)
 }
@@ -44,9 +46,20 @@ export function LikesProvider({ children }: PropsWithChildren) {
     dedupingInterval: 10000,
   })
 
+  useEffect(() => {
+    if (!data?.ok && data !== undefined) {
+      toast.error(data?.message, {
+        action: {
+          label: '확인',
+          onClick: () => {},
+        },
+      })
+    }
+  }, [data])
+
   const isRoomLiked = useCallback(
     (studyId: string) => {
-      return !!data?.some((likes) => likes.room_id === studyId)
+      return !!data?.data?.some((likes) => likes.room_id === studyId)
     },
     [data]
   )
@@ -55,43 +68,63 @@ export function LikesProvider({ children }: PropsWithChildren) {
     async (studyId: string, userId: string) => {
       const isCurrentLikes = isRoomLiked(studyId)
 
-      let prevData: Likes[] | undefined | null
+      let prevData: ResultType<Likes[]> | undefined | null
 
-      const optimisticUpdate = (data: Likes[] | undefined | null) => {
+      const optimisticUpdate = (
+        data: ResultType<Likes[]> | undefined | null
+      ) => {
         prevData = data
-        const list = data ?? []
+        const list = data?.data ?? []
 
         if (!isCurrentLikes) {
-          return [
-            ...list,
-            {
-              id: crypto.randomUUID(),
-              user_id: userId,
-              room_id: studyId,
-              created_at: new Date().toISOString(),
-            },
-          ]
+          return {
+            ok: true,
+            data: [
+              ...list,
+              {
+                id: crypto.randomUUID(),
+                user_id: userId,
+                room_id: studyId,
+                created_at: new Date().toISOString(),
+              },
+            ],
+          }
         } else {
-          return list.filter((item) => item.room_id !== studyId)
+          return {
+            ok: true,
+            data: list.filter((item) => item.room_id !== studyId),
+          }
         }
       }
       await likesMutation(optimisticUpdate, {
         revalidate: false,
       })
 
-      try {
-        if (!isCurrentLikes) {
-          await setLikesStudyRoom(studyId, userId)
-          await mutate(['study_room_data', studyId])
-          alert('"좋아요"가 추가 되었습니다.!')
-        } else {
-          await removeLikesStudyRoom(studyId, userId)
-          await mutate(['study_room_data', studyId])
-          alert('"좋아요"가 삭제 되었습니다.!')
-        }
-      } catch (error) {
+      let result: { ok: boolean; message?: string | undefined }
+
+      if (!isCurrentLikes) {
+        result = await setLikesStudyRoom(studyId, userId)
+        await mutate([`study_room_data_${studyId}`])
+      } else {
+        result = await removeLikesStudyRoom(studyId, userId)
+        await mutate([`study_room_data_${studyId}`])
+      }
+
+      if (result.ok) {
+        toast.success(result.message, {
+          action: {
+            label: '확인',
+            onClick: () => {},
+          },
+        })
+      } else {
         await likesMutation(() => prevData, { revalidate: false })
-        alert(`"좋아요" 추가 실패 : ${error.message}`)
+        toast.error(result.message, {
+          action: {
+            label: '확인',
+            onClick: () => {},
+          },
+        })
       }
     },
     [isRoomLiked, likesMutation]
@@ -99,7 +132,7 @@ export function LikesProvider({ children }: PropsWithChildren) {
 
   const contextState: LikesContextValue = useMemo(
     () => ({
-      likesData: data ?? [],
+      likesData: data ?? { ok: true, data: [] },
       isRoomLiked,
       isLoading,
       likesHandler,

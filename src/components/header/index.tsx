@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -8,10 +9,9 @@ import LoginModal from '@/components/loginmodal/loginmodal'
 import NavBar from '@/components/navbar'
 import { useAuth } from '@/hooks/useAuth'
 import useScrollLock from '@/hooks/useScrollLock'
+import type { Profile } from '@/libs/supabase'
+import { getUserProfile } from '@/libs/supabase/api/user'
 import '@/styles/header/header.css'
-
-import type { Profile } from '../../libs/supabase'
-import { getUserProfile } from '../../libs/supabase/api/user'
 
 import HeaderContent from './header-content'
 import HeaderSearch from './header-search'
@@ -29,7 +29,9 @@ function Header() {
   )
   const [isDesktop, setIsDesktop] = useState<boolean>(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
-  const [userProfile, setUserProfile] = useState<Profile | null>(null)
+  const [userProfile, setUserProfile] = useState<Profile | null | undefined>(
+    null
+  )
 
   useEffect(() => {
     const media = window.matchMedia('(min-width: 64rem)')
@@ -51,7 +53,7 @@ function Header() {
     const fetchProfile = async () => {
       if (user) {
         const profileData = await getUserProfile(user.id)
-        setUserProfile(profileData)
+        setUserProfile(profileData?.data)
       }
     }
 
@@ -68,7 +70,17 @@ function Header() {
       <header className="main-header">
         <div className="header-logo" hidden={searchVisible ? true : undefined}>
           <h2>
-            <Link href={'/'}>모이다</Link>
+            <Link href={'/'}>
+              {/* 아이콘 추가 */}
+              <Image
+                src="/images/moida-icon.svg"
+                alt="모이다 로고 아이콘"
+                width={50}
+                height={50}
+                className="brand-icon"
+              />
+              모이다
+            </Link>
           </h2>
         </div>
         {isDesktop ? (

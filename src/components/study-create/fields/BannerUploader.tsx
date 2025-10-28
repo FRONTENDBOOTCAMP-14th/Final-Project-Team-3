@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 
 const ALLOWED = new Set(['image/jpeg', 'image/png', 'image/gif'])
 const MAX_SIZE = 10 * 1024 * 1024 // 10MB
@@ -7,9 +8,14 @@ const MAX_SIZE = 10 * 1024 * 1024 // 10MB
 interface Props {
   value: File | null
   onChange: (f: File | null) => void
+  isEdit?: boolean
 }
 
-export default function BannerUploader({ value, onChange }: Props) {
+export default function BannerUploader({
+  value,
+  onChange,
+  isEdit = false,
+}: Props) {
   const [isDragging, setIsDragging] = useState(false)
   const [_dragDepth, setDragDepth] = useState(0) // ✅ 드래그 안정화
   const [previewUrl, setPreviewUrl] = useState('')
@@ -41,11 +47,21 @@ export default function BannerUploader({ value, onChange }: Props) {
 
   const validate = (f: File) => {
     if (!ALLOWED.has(f.type)) {
-      alert('JPEG, PNG, GIF 파일만 업로드할 수 있습니다.')
+      toast.error('JPEG, PNG, GIF 파일만 업로드할 수 있습니다.', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
       return false
     }
     if (f.size > MAX_SIZE) {
-      alert('파일 용량은 최대 10MB까지 업로드할 수 있습니다.')
+      toast.error('파일 용량은 최대 10MB까지 업로드할 수 있습니다.', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
       return false
     }
     return true
@@ -81,6 +97,13 @@ export default function BannerUploader({ value, onChange }: Props) {
   return (
     <fieldset className="banner-fieldset form-field--full">
       <legend className="banner-legend">배너 이미지 (선택)</legend>
+
+      {isEdit && !previewUrl && (
+        <p className="edit-banner-notice" role="note">
+          배너 이미지를 수정하지 않으면{' '}
+          <strong>기존 이미지가 그대로 유지</strong>됩니다.
+        </p>
+      )}
 
       <input
         ref={inputRef}
@@ -141,7 +164,6 @@ export default function BannerUploader({ value, onChange }: Props) {
             <img
               className="banner-image"
               src={previewUrl}
-              alt="배너 미리보기"
               draggable={false}
               decoding="async"
             />

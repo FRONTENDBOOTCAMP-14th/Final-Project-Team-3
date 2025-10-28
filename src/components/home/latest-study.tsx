@@ -5,7 +5,7 @@ import type { StudyRoom } from '@/libs/supabase'
 import StudyRoomCard from './study-simple-card'
 
 interface Props {
-  studyData: StudyRoom[]
+  studyData: StudyRoom[] | undefined
 }
 
 function LatestStudy({ studyData }: Props) {

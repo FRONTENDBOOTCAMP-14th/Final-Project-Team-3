@@ -1,36 +1,69 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
+
+const ALLOWED = new Set(['image/jpeg', 'image/png'])
+const MAX_SIZE = 5 * 1024 * 1024
 
 interface Props {
   value: File | null
   onChange: (f: File | null) => void
+  externalPreview?: string
 }
 
-export default function ProfileImgUploader({ value, onChange }: Props) {
-  const [isDragging, setIsDragging] = useState(false)
+export default function ProfileImgUploader({
+  value,
+  onChange,
+  externalPreview,
+}: Props) {
   const [previewUrl, setPreviewUrl] = useState<string>('')
+  const [isDragging, setIsDragging] = useState(false)
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
-    if (!value) {
+    if (value) {
+      const url = URL.createObjectURL(value)
+      setPreviewUrl(url)
+      return () => URL.revokeObjectURL(url)
+    } else if (externalPreview) {
+      setPreviewUrl(externalPreview)
+    } else {
       setPreviewUrl('')
-      return
     }
-    const url = URL.createObjectURL(value)
-    setPreviewUrl(url)
-    return () => URL.revokeObjectURL(url)
-  }, [value])
+  }, [value, externalPreview])
 
-  const onFile = (file: File | null) => {
+  const validate = (f: File) => {
+    if (!ALLOWED.has(f.type)) {
+      toast.warning('JPG, PNG 형식만 가능합니다.', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
+      return false
+    }
+    if (f.size > MAX_SIZE) {
+      toast.warning('최대 5MB까지 업로드할 수 있습니다.', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
+      return false
+    }
+    return true
+  }
+
+  const handleFile = (file: File | null) => {
     if (!file) {
       onChange(null)
       if (inputRef.current) inputRef.current.value = ''
+      setPreviewUrl('')
       return
     }
 
-    if (!file.type.startsWith('image/')) {
-      alert('이미지 파일만 업로드 가능합니다.')
+    if (!validate(file)) {
       if (inputRef.current) inputRef.current.value = ''
       return
     }
@@ -39,50 +72,51 @@ export default function ProfileImgUploader({ value, onChange }: Props) {
   }
 
   return (
-    <div className="profile-uploader">
+    <div
+      className={`user-avatar-wrapper ${isDragging ? 'dragging' : ''}`}
+      onClick={() => inputRef.current?.click()}
+      onDragOver={(e) => {
+        e.preventDefault()
+        setIsDragging(true)
+      }}
+      onDragLeave={() => setIsDragging(false)}
+      onDrop={(e) => {
+        e.preventDefault()
+        setIsDragging(false)
+        handleFile(e.dataTransfer.files?.[0] ?? null)
+      }}
+      role="button"
+      tabIndex={0}
+    >
+      {previewUrl ? (
+        <img src={previewUrl} alt="이미지 미리보기" className="user-avatar" />
+      ) : (
+        <div className="avatar-placeholder">
+          <span className="avatar-upload-icon">📷</span>
+        </div>
+      )}
+
+      {previewUrl && (
+        <button
+          type="button"
+          className="uploader-clear-btn"
+          onClick={(e) => {
+            e.stopPropagation()
+            handleFile(null)
+          }}
+          aria-label="이미지 삭제"
+        >
+          <span>X</span>
+        </button>
+      )}
+
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
-        onChange={(e) => onFile(e.currentTarget.files?.[0] ?? null)}
+        accept="image/jpeg,image/png"
         style={{ display: 'none' }}
+        onChange={(e) => handleFile(e.currentTarget.files?.[0] ?? null)}
       />
-
-      <div
-        className={`uploader-box ${isDragging ? 'dragging' : ''}`}
-        onClick={() => inputRef.current?.click()}
-        onDragOver={(e) => {
-          e.preventDefault()
-          setIsDragging(true)
-        }}
-        onDragLeave={(e) => {
-          e.preventDefault()
-          setIsDragging(false)
-        }}
-        onDrop={(e) => {
-          e.preventDefault()
-          setIsDragging(false)
-          onFile(e.dataTransfer.files[0])
-        }}
-      >
-        {previewUrl ? (
-          <>
-            <img src={previewUrl} alt="미리보기" className="uploader-preview" />
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                onFile(null)
-              }}
-              className="uploader-clear-btn"
-            >
-              ×
-            </button>
-          </>
-        ) : (
-          <span className="uploader-icon">📷</span>
-        )}
-      </div>
     </div>
   )
 }

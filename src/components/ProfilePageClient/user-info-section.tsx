@@ -1,49 +1,119 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 
-import ProfileImgUploader from '@/components/study-create/fields/profileimguploader'
+const ALLOWED = new Set(['image/jpeg', 'image/png'])
+const MAX_SIZE = 5 * 1024 * 1024
 
 interface Props {
-  user: {
-    name: string
-    email: string
-    avatarUrl: string
-  }
-  setAvatarFile: (file: File | null) => void
+  value: File | null
+  onChange: (f: File | null) => void
+  externalPreview?: string
 }
 
-export default function UserInfoSection({ user, setAvatarFile }: Props) {
-  const [_avatarFile, setAvatarFileState] = useState<File | null>(null)
-  const [displayedImage, setDisplayedImage] = useState<string>(
-    user.avatarUrl || '/images/default-avatar.png'
-  )
-
-  const handleFileChange = (file: File | null) => {
-    setAvatarFileState(file)
-    setAvatarFile(file)
-  }
+export default function ProfileImgUploader({
+  value,
+  onChange,
+  externalPreview,
+}: Props) {
+  const [previewUrl, setPreviewUrl] = useState<string>('')
+  const [isDragging, setIsDragging] = useState(false)
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
-    if (_avatarFile) {
-      const url = URL.createObjectURL(_avatarFile)
-      setDisplayedImage(url)
+    if (value) {
+      const url = URL.createObjectURL(value)
+      setPreviewUrl(url)
       return () => URL.revokeObjectURL(url)
+    } else if (externalPreview) {
+      setPreviewUrl(externalPreview)
     } else {
-      setDisplayedImage(user.avatarUrl || '/images/default-avatar.png')
+      setPreviewUrl('')
     }
-  }, [_avatarFile, user.avatarUrl])
+  }, [value, externalPreview])
+
+  const validate = (f: File) => {
+    if (!ALLOWED.has(f.type)) {
+      toast.warning('JPG, PNG 형식만 가능합니다.', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
+      return false
+    }
+    if (f.size > MAX_SIZE) {
+      toast.warning('최대 5MB까지 업로드할 수 있습니다.', {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
+      return false
+    }
+    return true
+  }
+
+  const handleFile = (file: File | null) => {
+    if (!file) {
+      onChange(null)
+      if (inputRef.current) inputRef.current.value = ''
+      return
+    } else if (!validate(file)) {
+      if (inputRef.current) inputRef.current.value = ''
+      return
+    } else {
+      onChange(file)
+    }
+  }
 
   return (
-    <div className="user-info-section">
-      <ProfileImgUploader value={_avatarFile} onChange={handleFileChange} />
+    <div
+      className={`user-avatar-wrapper ${isDragging ? 'dragging' : ''}`}
+      onClick={() => inputRef.current?.click()}
+      onDragOver={(e) => {
+        e.preventDefault()
+        setIsDragging(true)
+      }}
+      onDragLeave={() => setIsDragging(false)}
+      onDrop={(e) => {
+        e.preventDefault()
+        setIsDragging(false)
+        handleFile(e.dataTransfer.files?.[0] ?? null)
+      }}
+      role="button"
+      tabIndex={0}
+    >
+      {previewUrl ? (
+        <img src={previewUrl} alt="이미지 미리보기" className="user-avatar" />
+      ) : (
+        <div className="avatar-placeholder">
+          <span className="avatar-upload-icon">📷</span>
+        </div>
+      )}
 
-      <div className="user-info-text">
-        <h2 className="user-name">{user.name}</h2>
-        <p className="user-email">{user.email}</p>
-      </div>
+      {previewUrl && (
+        <button
+          type="button"
+          className="uploader-clear-btn"
+          onClick={(e) => {
+            e.stopPropagation()
+            handleFile(null)
+          }}
+          aria-label="이미지 삭제"
+        >
+          <span>x</span>
+        </button>
+      )}
 
-      <img src={displayedImage} alt="User avatar" className="user-avatar" />
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/jpeg,image/png"
+        style={{ display: 'none' }}
+        onChange={(e) => handleFile(e.currentTarget.files?.[0] ?? null)}
+      />
     </div>
   )
 }
