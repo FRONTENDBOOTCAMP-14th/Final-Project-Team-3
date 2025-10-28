@@ -36,3 +36,32 @@
   font-size: var(--font-sm);
   color: var(--color-text-secondary);
 }
+.user-intro {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-block-start: var(--space-xs);
+}
+.intro-input {
+  font-size: var(--font-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-secondary, #f9f9f9);
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: all 0.2s ease;
+  max-inline-size: 20rem;
+}
+.intro-input:focus {
+  border-color: var(--color-primary, #6a5af9);
+  background-color: var(--color-bg-primary);
+}
+.intro-edit-btn:hover {
+  background-color: var(--color-bg-secondary, #f4f4f4);
+  border-color: var(--color-border-strong, #ccc);
+}
+
+.intro-edit-btn:active {
+  background-color: var(--color-bg-tertiary, #e9e9e9);
+  transform: scale(0.97);
+}
