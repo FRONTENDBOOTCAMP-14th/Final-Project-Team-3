@@ -11,7 +11,7 @@ import { useBookMark } from '@/hooks/useBookmark'
 import { useLikes } from '@/hooks/useLikes'
 import type { StudyRoom } from '@/libs/supabase'
 
-import DeleteConfirmModal from '../ProfilePageClient/modals/delete-confirm-modal'
+import DeleteConfirmModal from '../profile-page-client/modals/delete-confirm-modal'
 
 interface Props {
   item: StudyRoom
