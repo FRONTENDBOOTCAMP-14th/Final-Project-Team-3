@@ -1,9 +1,8 @@
+import ToastMessage from '@/components/toast-message/toast-message'
 import {
   getLatestStudyRoom,
   getQueryStudyRoom,
 } from '@/libs/supabase/api/study-room'
-
-import ToastMessage from '../toast-message/toast-message'
 
 import LatestStudy from './latest-study'
 import RegionStudy from './region-study'

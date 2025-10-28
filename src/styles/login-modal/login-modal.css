@@ -123,19 +123,20 @@
 }
 
 .login-links {
-  text-align: center;
-  font-size: var(--font-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3125rem;
+  font-size: var(--font-xs);
   color: var(--color-text-secondary);
   margin-block-end: var(--space-lg);
-  white-space: nowrap;
+  flex-wrap: wrap;
 }
 
 .login-links a {
   color: var(--color-text-secondary);
   text-decoration: none;
   transition: color 0.2s;
-  padding-inline: var(--space-sm);
-  white-space: nowrap;
 }
 
 .login-links a:hover {
