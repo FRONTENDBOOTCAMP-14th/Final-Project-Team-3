@@ -8,6 +8,8 @@ export async function socialLogin(
 ): Promise<ResultType<void>> {
   const redirectToUrl = `${window.origin}/auth/callback?next=${pathname}`
 
+  const msg = provider === 'google' ? '구글' : '카카오'
+
   const { error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
@@ -18,9 +20,9 @@ export async function socialLogin(
   if (error) {
     return {
       ok: false,
-      message: '소셜 로그인 실패... 잠시후 다시 시도해 주세요',
+      message: `${msg} 로그인 실패... 잠시후 다시 시도해 주세요.`,
     }
   }
 
-  return { ok: true, message: '소셜 로그인 성공!' }
+  return { ok: true, message: `${msg} 로그인 성공!` }
 }

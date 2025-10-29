@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useActionState, useEffect, useRef, useState } from 'react'
 import { useFormStatus } from 'react-dom'
+import { toast } from 'sonner'
 
 import useFocusTrap from '@/hooks/useFocusTrap'
 import useKeyEvent from '@/hooks/useKeyEvent'
@@ -26,10 +27,31 @@ async function loginAction(
     password,
   })
 
-  if (error) {
-    return { error: error.message }
+  if (error && error.code === 'invalid_credentials') {
+    toast.error('이메일 및 비밀번호를 확인해 주세요.', {
+      action: {
+        label: '닫기',
+        onClick: () => {},
+      },
+    })
+    return { error: '이메일 및 비밀번호를 확인해 주세요.' }
+  } else if (error) {
+    toast.error('로그인 실패. 잠시후 다시 시도해 주세요.', {
+      action: {
+        label: '닫기',
+        onClick: () => {},
+      },
+    })
+    return { error: '로그인 실패. 잠시후 다시 시도해 주세요.' }
+  } else {
+    toast.success('이메일 로그인 성공!', {
+      action: {
+        label: '닫기',
+        onClick: () => {},
+      },
+    })
+    return { error: undefined }
   }
-  return { error: undefined }
 }
 
 interface Props {
@@ -58,23 +80,27 @@ export default function LoginModal({ openModal, setOpenModal }: Props) {
 
   const toggleModal = () => setOpenModal((prev) => !prev)
 
-  const signInKakao = async () => {
+  const socialLoginHandler = async (provider: 'kakao' | 'google') => {
     setSocialError(null)
-    try {
-      await socialLogin('kakao', pathname)
-      setOpenModal((prev) => !prev)
-    } catch (error) {
-      setSocialError(error instanceof Error ? error.message : String(error))
-    }
-  }
 
-  const signInGoogle = async () => {
-    setSocialError(null)
-    try {
-      await socialLogin('google', pathname)
+    const res = await socialLogin(provider, pathname)
+
+    if (res.ok) {
       setOpenModal((prev) => !prev)
-    } catch (error) {
-      setSocialError(error instanceof Error ? error.message : String(error))
+      toast.success(res.message, {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
+    } else {
+      toast.error(res.message, {
+        action: {
+          label: '닫기',
+          onClick: () => {},
+        },
+      })
+      setSocialError(res.message as string)
     }
   }
 
@@ -117,21 +143,27 @@ export default function LoginModal({ openModal, setOpenModal }: Props) {
             )}
 
             <div className="login-links">
-              <Link href="/">비밀번호 찾기</Link> |{' '}
+              <Link href="/">비밀번호 찾기</Link> |
               <Link href="/sign-up" onClick={() => setOpenModal(false)}>
                 회원가입
               </Link>{' '}
-              | <Link href="/">아이디 찾기</Link>
+              |<Link href="/">아이디 찾기</Link>
             </div>
 
             <div className="social-login">
               <p>간편 로그인</p>
               <div className="social-buttons">
-                <button onClick={signInKakao} className="social-btn kakao">
+                <button
+                  onClick={() => socialLoginHandler('kakao')}
+                  className="social-btn kakao"
+                >
                   <Icons name="kakao-icon" width={24} height={24} />
                   카카오
                 </button>
-                <button onClick={signInGoogle} className="social-btn google">
+                <button
+                  onClick={() => socialLoginHandler('google')}
+                  className="social-btn google"
+                >
                   <Icons name="google" width={24} height={24} />
                   구글
                 </button>
