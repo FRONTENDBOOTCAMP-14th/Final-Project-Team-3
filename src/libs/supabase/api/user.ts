@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 
 import type { ResultType } from '@/types/apiResultsType'
 
-import type { Bookmark, Likes, Profile } from '..'
+import type { Bookmark, Likes, Profile, StudyRoom } from '..'
 import { createClient } from '../server'
 
 interface SignUpData {
@@ -106,6 +106,7 @@ export async function setBookMarkStudyRoom(
     }
   }
 
+  revalidatePath(`/my-profile/${userId}`, 'page')
   return { ok: true, message: '즐겨찾기에 추가 되었습니다..' }
 }
 
@@ -262,4 +263,23 @@ export async function updateUserProfile(
   }
 
   return { ok: true, data: profileData, message: '프로필을 수정 하였습니다.' }
+}
+
+export async function getMyParticipantsStudyRoom(
+  userId: string
+): Promise<ResultType<StudyRoom[]>> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('study_participants')
+    .select('study_room:room_id(*)')
+    .eq('user_id', userId)
+
+  if (error) {
+    return { ok: false, message: '"참여중인 스터디"정보 조회 실패...' }
+  }
+
+  const studyData = data.map((room) => room.study_room)
+
+  return { ok: true, data: studyData ?? [] }
 }

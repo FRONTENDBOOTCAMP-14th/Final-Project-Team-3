@@ -7,6 +7,24 @@
   padding-inline: var(--space-md);
 }
 
+.my-profile-categories {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+
+  & li button {
+    padding: 0;
+    border: 0;
+    font-size: var(--font-lg);
+    color: var(--color-text-tertiary);
+    font-weight: 700;
+
+    &.active {
+      color: var(--color-text-primary);
+    }
+  }
+}
+
 /* 제목 간격만 담당 */
 .section-subtitle {
   font-size: var(--font-lg);

@@ -19,13 +19,24 @@ interface Props {
   user: Profile
   studies: StudyRoom[]
   favorites: StudyRoom[]
+  participants: StudyRoom[]
 }
 
-export default function ProfilePageClient({ user, studies, favorites }: Props) {
+const CATEGORY = ['내 스터디', '참여중인 스터디', '즐겨찾기'] as const
+
+export default function ProfilePageClient({
+  user,
+  studies,
+  favorites,
+  participants,
+}: Props) {
   const { handleAvatarUpload, avatarUrl, _avatarFile } = useProfile()
   const [isDesktop, setIsDesktop] = useState<boolean>(false)
   const [editing, setEditing] = useState(false)
   const [bio, setIntro] = useState(user?.bio ?? '')
+  const [category, setCategory] = useState<(typeof CATEGORY)[number]>(
+    CATEGORY[0]
+  )
   const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
@@ -64,6 +75,10 @@ export default function ProfilePageClient({ user, studies, favorites }: Props) {
         })
       }
     })
+  }
+
+  const categoryHandler = (item: (typeof CATEGORY)[number]) => {
+    setCategory(item)
   }
 
   return (
@@ -131,21 +146,35 @@ export default function ProfilePageClient({ user, studies, favorites }: Props) {
 
       <div style={{ marginBlockEnd: 'var(--space-xl)' }} />
 
-      <h3 className="section-subtitle">내 스터디</h3>
+      <ul className="my-profile-categories">
+        {CATEGORY.map((item, idx) => (
+          <li key={idx}>
+            <button
+              type="button"
+              onClick={() => categoryHandler(item)}
+              className={item === category ? 'active' : ''}
+            >
+              {item}
+            </button>
+          </li>
+        ))}
+      </ul>
       <PaginationList
-        items={studies}
+        items={
+          category === '내 스터디'
+            ? studies
+            : category === '참여중인 스터디'
+              ? participants
+              : favorites
+        }
         itemsPerPage={8}
+        category={category}
         renderItem={(pageItems) => (
-          <StudyCardLists studyData={pageItems} type="MYSTUDY" />
+          <StudyCardLists
+            studyData={pageItems}
+            type={category === '내 스터디' ? 'MYSTUDY' : undefined}
+          />
         )}
-        isDeskTop={isDesktop}
-      />
-
-      <h3 className="section-subtitle">즐겨찾기</h3>
-      <PaginationList
-        items={favorites}
-        itemsPerPage={8}
-        renderItem={(pageItems) => <StudyCardLists studyData={pageItems} />}
         isDeskTop={isDesktop}
       />
     </section>

@@ -70,7 +70,7 @@ const initialFormState: ResultType<void> = {
 async function signUpAction(
   _prevState: ResultType<void>,
   formData: FormData
-): Promise<ResultType<void>> {
+): Promise<{ ok: boolean }> {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
   const confirmPassword = formData.get('confirmPassword') as string
@@ -102,6 +102,7 @@ async function signUpAction(
         onClick: () => {},
       },
     })
+    return { ok: true }
   } else {
     toast.error(res.message, {
       action: {
@@ -109,9 +110,8 @@ async function signUpAction(
         onClick: () => {},
       },
     })
+    return { ok: false }
   }
-
-  return { ok: res.ok, message: res.message }
 }
 
 export default function SignUpForm() {
@@ -125,18 +125,12 @@ export default function SignUpForm() {
 
   useEffect(() => {
     if (state.ok) {
-      toast.success(state.message, {
-        action: {
-          label: '닫기',
-          onClick: () => {},
-        },
-      })
       setEmail('')
       setPassword('')
       setNickname('')
       setConfirmPassword('')
     }
-  }, [state.message, state.ok])
+  }, [state.ok])
 
   return (
     <form className="sign-up-form" action={formAction}>
