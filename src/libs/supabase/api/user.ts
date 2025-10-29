@@ -1,5 +1,7 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
+
 import type { ResultType } from '@/types/apiResultsType'
 
 import type { Bookmark, Likes, Profile } from '..'
@@ -121,6 +123,8 @@ export async function removeBookMarkStudyRoom(
   if (error) {
     return { ok: false, message: '즐겨찾기 제거 실패.' }
   }
+
+  revalidatePath(`/my-profile/${userId}`, 'page')
 
   return { ok: true, message: '즐겨찾기가 제거 되었습니다..' }
 }
