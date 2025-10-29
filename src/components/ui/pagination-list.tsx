@@ -15,6 +15,7 @@ interface PaginationListProps<T extends { id: string | number }> {
   renderItem: (items: T[] | StudyRoom[]) => ReactNode
   className?: string
   isDeskTop: boolean
+  category: '내 스터디' | '참여중인 스터디' | '즐겨찾기'
 }
 
 export default function PaginationList<T extends { id: string | number }>({
@@ -23,6 +24,7 @@ export default function PaginationList<T extends { id: string | number }>({
   renderItem,
   className = '',
   isDeskTop,
+  category,
 }: PaginationListProps<T>) {
   const [currentPage, setCurrentPage] = useState(0)
   const [currentData, setCurrentData] = useState<StudyRoom[]>([])
@@ -43,6 +45,10 @@ export default function PaginationList<T extends { id: string | number }>({
       setCurrentData(initialItems as StudyRoom[])
     }
   }, [currentPage, items, itemsPerPage])
+
+  useEffect(() => {
+    setCurrentPage(0)
+  }, [category])
 
   useEffect(() => {
     if (isDeskTop) {
