@@ -1,5 +1,7 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
+
 import type { ResultType } from '@/types/apiResultsType'
 
 import type { Profile, StudyRoom, StudyRoomRequests } from '..'
@@ -393,6 +395,8 @@ export const deleteStudyRoom = async (
       message: '스터디 삭제 중 오류가 발생했습니다.',
     }
   }
+
+  revalidatePath(`/my-profile/${userId}`, 'page')
 
   return {
     ok: true,
