@@ -2,12 +2,14 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
 import ProfilePageClient from '@/components/profile-page-client'
-import type { Profile, StudyRoom } from '@/libs/supabase'
+import type { Profile } from '@/libs/supabase'
 import { getUserBookmarks } from '@/libs/supabase/api/bookmark'
 import { getMyStudyRoom } from '@/libs/supabase/api/study-room'
-import { getUserProfile } from '@/libs/supabase/api/user'
+import {
+  getMyParticipantsStudyRoom,
+  getUserProfile,
+} from '@/libs/supabase/api/user'
 import { createClient } from '@/libs/supabase/server'
-import type { ResultType } from '@/types/apiResultsType'
 
 interface Props {
   params: Promise<{ userId: string }>
@@ -37,18 +39,23 @@ export default async function MyProfilePage({ params }: Props) {
   if (!loggedInUser) redirect('/')
   if (userId === 'sign-up') redirect('/')
 
-  const profile = await getUserProfile(userId)
+  const [profile, allStudies] = await Promise.all([
+    getUserProfile(userId),
+    getMyStudyRoom(userId),
+  ])
+
   if (!profile) throw new Error('유저 프로필 정보를 불러올 수 없습니다.')
 
-  const allStudies: ResultType<StudyRoom[]> = await getMyStudyRoom(userId)
-
   const favorites = await getUserBookmarks(userId)
+
+  const participantsData = await getMyParticipantsStudyRoom(userId)
 
   return (
     <ProfilePageClient
       user={profile?.data as Profile}
       studies={allStudies.data ?? []}
       favorites={favorites?.data ?? []}
+      participants={participantsData.data ?? []}
     />
   )
 }
